@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "jsx": "preserve",
+        "baseUrl": "./src",
+        "paths": {
+           "@/components/*" : ["./components/*"],
+           "@/pages/*" : ["./pages/*"],
+           "@/helpers/*" : ["./helpers/*"],
+           "@/services/*" : ["./services/*"],
+           "@/store/*" : ["./store/*"],
+           "@/types/*" : ["./types/*"],
+           "@/hooks/*" : ["./hooks/*"]
+         }
+    },
+    "exclude": ["node_modules"]
+}

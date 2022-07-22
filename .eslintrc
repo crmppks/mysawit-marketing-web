@@ -1,0 +1,105 @@
+{
+    "root": true,
+    "env": {
+      "browser": true,
+      "es6": true,
+      "jest": true
+    },
+    "extends": [
+      "react-app",
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "settings": {
+      "import/extensions": [".jsx", ".mjs", ".ts", ".tsx"],
+      "import/resolver": {
+        "typescript": {
+          "project": "./tsconfig.json"
+        },
+        "node": {
+          "paths": [
+            "src"
+          ]
+        }
+      },
+      "react": {
+        "version": "detect"
+      }
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "babelOptions": {
+        "presets": [
+          "@babel/preset-react"
+        ]
+      },
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "ecmaVersion": 2020,
+      "requireConfigFile": false,
+      "sourceType": "module",
+      "project": "tsconfig.json"
+    },
+    "plugins": [
+      "prettier", "import"
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {},
+        {
+          "usePrettierrc": true
+        }
+      ],
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "quote-props": [
+        "error",
+        "as-needed"
+      ],
+      "space-before-function-paren": 0,
+      "react/react-in-jsx-scope": 0,
+      "multiline-ternary": 0,
+      "default-param-last": 0,
+      "import/extensions": ["error", "ignorePackages",
+        {
+          // "js": "never",
+          "jsx": "never",
+          "ts": "never",
+          "tsx": "never"
+        }
+      ],
+      "import/newline-after-import": "off",
+      "import/no-named-as-default": "error",
+      "import/no-amd": "error",
+      "import/no-commonjs": "off",
+      "import/no-named-default": "error",
+      "import/no-namespace": "off",
+      "import/no-nodejs-modules": "off",
+      "import/order": [
+        "warn",
+        {
+          "groups": [
+            "builtin",
+            [
+              "external",
+              "internal"
+            ],
+            "parent",
+            [
+              "sibling",
+              "index"
+            ]
+          ]
+        }
+      ]
+    }
+}

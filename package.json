@@ -1,5 +1,5 @@
 {
-  "name": "admin",
+  "name": "marketing",
   "version": "0.1.0",
   "private": true,
   "homepage": "./",
@@ -65,6 +65,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "resolutions": {
+    "@types/react": "17.0.43"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.17.0",

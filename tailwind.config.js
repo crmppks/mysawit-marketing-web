@@ -15,6 +15,11 @@ module.exports = {
         '2/9': '20%'
       }
     },
+    fontFamily: {
+      noto: [
+        'Noto Sans HK', 'sans-serif'
+      ],
+    }
   },
   variants: {
     extend: {

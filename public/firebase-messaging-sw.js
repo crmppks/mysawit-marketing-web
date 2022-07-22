@@ -3,13 +3,14 @@ import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
 
 // Initialize the Firebase app in the service worker by passing the generated config
 const firebaseConfig = {
-  apiKey: "AIzaSyDhJQ5e2hX6tBWkhtmJm-dI-g-9jt9Ak0A",
-  authDomain: "pensiun-hebat.firebaseapp.com",
-  projectId: "pensiun-hebat",
-  storageBucket: "pensiun-hebat.appspot.com",
-  messagingSenderId: "630425012942",
-  appId: "1:630425012942:web:6ecb823b338f92f4759e9f",
-  measurementId: "G-6GLPHTH307"
+  apiKey: "AIzaSyBry7iC5TsPqS0QAu9tDFg46zP1NY018mU",
+  authDomain: "chatty-c1a1c.firebaseapp.com",
+  databaseURL: "https://chatty-c1a1c.firebaseio.com",
+  projectId: "chatty-c1a1c",
+  storageBucket: "chatty-c1a1c.appspot.com",
+  messagingSenderId: "377715460836",
+  appId: "1:377715460836:web:0353e692582d5464c4baf1",
+  measurementId: "G-CKJ4LZE5XD"
 };
 
 const firebase = initializeApp(firebaseConfig);

@@ -3,6 +3,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind variants;
 
 @layer base {
     body {
@@ -25,36 +26,36 @@
 
 @layer components {
     .bg-color-theme{
-        @apply bg-green-700
+        @apply bg-amber-500
     }
     .hover\:bg-color-theme{
-        @apply hover:bg-green-700
+        @apply hover:bg-amber-500
     }
 
     .text-color-theme{
-        @apply text-green-700
+        @apply text-amber-500
     }
     .hover\:text-color-theme{
-        @apply hover:text-green-700
+        @apply hover:text-amber-500
     }
 
     .border-color-theme{
-        @apply border-green-700
+        @apply border-amber-500
     }
     .focus\:border-color-theme{
-        @apply focus:border-green-700
+        @apply focus:border-amber-500
     }
     .hover\:border-color-theme{
-        @apply hover:border-green-700
+        @apply hover:border-amber-500
     }
 
-    .anticon {
+    .mysawit-app .anticon {
         vertical-align: 2px !important;
     }
-
+    
     nav.my-sidebar{
         background-image: url("../public/sidebar_background_gradient.png"); /* The image used */
-        background-color: rgb(21 128 61); /* Used if the image is unavailable */
+        background-color: #F59E0B; /* Used if the image is unavailable */
         background-position: center; /* Center the image */
         background-repeat: no-repeat; /* Do not repeat the image */
         background-size: cover; /* Resize the background image to cover the entire container */

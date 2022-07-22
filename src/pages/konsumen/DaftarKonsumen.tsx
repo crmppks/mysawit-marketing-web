@@ -1,25 +1,12 @@
 import 'webix/webix.css';
-import { Button, Pagination, Dropdown, Menu, PageHeader, message, Skeleton } from 'antd';
+import { Button, Pagination, PageHeader } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import * as webix from '@xbs/webix-pro';
 import moment from 'moment';
-import { DeleteOutlined, LockOutlined, MoreOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  deleteHapusKonsumen,
-  getSemuaKategoriKonsumen,
-  getSemuaKategoriKonsumenCascader,
-  getSemuaKategoriKonsumenOptions,
-  getSemuaKonsumen,
-  postTambahKategoriKonsumen,
-  putResetPasswordKonsumen,
-  putUpdateKategoriKonsumen,
-} from '@/services/konsumen';
+import { useNavigate } from 'react-router-dom';
+import { getSemuaKategoriKonsumenOptions, getSemuaKonsumen } from '@/services/konsumen';
 import UserKonsumen from '@/types/UserKonsumen';
 import { webixTableParams } from '@/helpers/webix_helper';
-import { confirmAlert } from '@/helpers/swal_helper';
-import Kategori from '@/types/Kategori';
-import ModalKategori, { ModalKategoriItem } from '@/components/ModalKategoriComponent';
 
 export default function HalamanDaftarKonsumen() {
   const webixTableRef = useRef<any>();
@@ -27,13 +14,6 @@ export default function HalamanDaftarKonsumen() {
 
   const navigate = useNavigate();
 
-  const [modalKategoriItem, setModalKategoriItem] = useState<ModalKategoriItem | null>(
-    null,
-  );
-  const [kategoris, setKategoris] = useState<{
-    data: Kategori[];
-    loading: boolean;
-  }>({ data: [], loading: true });
   const [konsumen, setKonsumen] = useState<UserKonsumen | null>(null);
   const [page, setPage] = useState<{
     current: number;
@@ -41,40 +21,6 @@ export default function HalamanDaftarKonsumen() {
     total: number;
     per_page: number;
   }>({ current: 1, last: 1, total: 1, per_page: 15 });
-
-  const handleResetPassword = () => {
-    confirmAlert(
-      'Reset Password Konsumen',
-      <>
-        Apakah anda yakin untuk mereset password akun <b>{konsumen?.nama}</b>?
-      </>,
-    ).then((willDelete: boolean) => {
-      if (willDelete) {
-        putResetPasswordKonsumen(konsumen?.user_id!).then(() => {
-          message.success('Password berhasil di reset');
-        });
-      }
-    });
-  };
-
-  const handleHapusAkun = () => {
-    confirmAlert(
-      'Hapus Akun Konsumen',
-      <>
-        Apakah anda yakin untuk menghapus akun <b>{konsumen?.nama}</b>?
-      </>,
-    ).then((willDelete: boolean) => {
-      if (willDelete) {
-        deleteHapusKonsumen(konsumen?.user_id!).then(() => {
-          message.success('Akun berhasil dihapus');
-          const childs = uiTable.current.getChildViews();
-          if (childs) {
-            childs[0].remove(childs[0].getSelectedId());
-          }
-        });
-      }
-    });
-  };
 
   useEffect(() => {
     uiTable.current = webix.ui(
@@ -137,10 +83,11 @@ export default function HalamanDaftarKonsumen() {
             ],
             scroll: true,
             autoheight: true,
-            // autowidth:true,
+            leftSplit: 1,
+            // autowidth: true,
             select: true,
             // footer:true,
-            resizeColumn: true,
+            // resizeColumn: true,
             url: async function (params: any) {
               try {
                 const {
@@ -186,10 +133,6 @@ export default function HalamanDaftarKonsumen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page.current]);
 
-  useEffect(() => {
-    getSemuaKategoriKonsumen().then(({ data }) => setKategoris({ loading: false, data }));
-  }, []);
-
   // useEffect(() => {
   //   if (selectedKategori) {
   //     const childs = uiTable.current.getChildViews();
@@ -212,64 +155,6 @@ export default function HalamanDaftarKonsumen() {
         title="Daftar Konsumen"
         subTitle="Daftar semua konsumen yang tersedia"
       />
-      <ModalKategori
-        visible={!!modalKategoriItem}
-        tipe="Konsumen"
-        kategoriItem={modalKategoriItem}
-        getCascaderAction={getSemuaKategoriKonsumenCascader}
-        postAddAction={(params) => postTambahKategoriKonsumen(params)}
-        putUpdateAction={(kategori_id, params) =>
-          putUpdateKategoriKonsumen(kategori_id, params)
-        }
-        onFinishAdd={(kategori: Kategori) =>
-          setKategoris((old) => ({ loading: false, data: [...old.data, kategori] }))
-        }
-        onFinishUpdate={(kategori: Kategori) =>
-          setKategoris((old) => ({
-            loading: false,
-            data: old.data.map((item) => {
-              if (item.id === modalKategoriItem?.item?.id) {
-                return kategori;
-              }
-              return item;
-            }),
-          }))
-        }
-        onCancel={() => setModalKategoriItem(null)}
-      />
-      {kategoris.loading && <Skeleton.Input active block className="px-5" />}
-      {!kategoris.loading && (
-        <div className="flex items-start space-x-3 overflow-x-auto px-5">
-          <button
-            onClick={() => setModalKategoriItem({ tipe: 'TAMBAH' })}
-            className="px-5 py-2 md:px-10 rounded-md border-2 border-color-theme text-color-theme bg-white flex items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </button>
-          {kategoris.data.map((kategori) => (
-            <Link
-              key={kategori.id}
-              to={`/kategori/konsumen/${kategori.id}`}
-              className="my-kategori-produk text-lg px-5 py-3 rounded-md border-2 relative flex-none max-w-xs"
-            >
-              {kategori.nama}
-            </Link>
-          ))}
-        </div>
-      )}
       <div className="p-5 flex flex-col space-y-5 md:space-y-0 md:flex-row items-center justify-between">
         <Pagination
           onChange={(current) => setPage((old) => ({ ...old, current }))}
@@ -287,22 +172,6 @@ export default function HalamanDaftarKonsumen() {
           >
             Lihat Detail
           </Button>
-          <Dropdown
-            disabled={!konsumen}
-            arrow
-            overlay={
-              <Menu>
-                <Menu.Item icon={<LockOutlined />}>
-                  <button onClick={() => handleResetPassword()}>Reset Password</button>
-                </Menu.Item>
-                <Menu.Item danger icon={<DeleteOutlined />}>
-                  <button onClick={() => handleHapusAkun()}>Hapus Akun</button>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <Button type="default" icon={<MoreOutlined />}></Button>
-          </Dropdown>
         </div>
       </div>
       <div className="overflow-x-auto" ref={webixTableRef}></div>

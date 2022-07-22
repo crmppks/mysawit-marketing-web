@@ -1,12 +1,21 @@
-import { CLEAR_SESI, GET_SESI_REQUEST, UPDATE_SESI_REQUEST } from '../types';
+import {
+  CLEAR_SESI,
+  GET_PROFILE_REQUEST,
+  SIGNIN_USER_REQUEST,
+  UPDATE_PROFILE_REQUEST,
+} from '../types';
 
-export const getSesiAction = (params: { id: string; password: string }) => ({
-  type: GET_SESI_REQUEST,
+export const signInUserAction = (params: { id: string; password: string }) => ({
+  type: SIGNIN_USER_REQUEST,
   params,
 });
 
-export const updateSesiAction = (params: any) => ({
-  type: UPDATE_SESI_REQUEST,
+export const getProfileDetailAction = () => ({
+  type: GET_PROFILE_REQUEST,
+});
+
+export const updateProfileAction = (params: any) => ({
+  type: UPDATE_PROFILE_REQUEST,
   params,
 });
 

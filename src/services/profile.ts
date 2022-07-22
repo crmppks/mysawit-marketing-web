@@ -1,7 +1,7 @@
 import axios from './axios';
 
-export const getProfile = () => {
-  return axios.get('/profile');
+export const getProfileDetail = () => {
+  return axios.get('/profile/marketing');
 };
 
 export const postUpdatePassword = (params: any) => {
@@ -9,7 +9,7 @@ export const postUpdatePassword = (params: any) => {
 };
 
 export const postUpdateProfile = (params: any) => {
-  return axios.post('/admin/profile/update', params);
+  return axios.post('/profile/update/marketing', params);
 };
 
 export const getPermissions = () => {

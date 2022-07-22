@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
     'Content-Type': 'application/json',
     Authorization: `Bearer ${Cookies.get(process.env.REACT_APP_ACCESS_TOKEN!)}`,
     'X-MySawit-Refresh-Token': Cookies.get(process.env.REACT_APP_REFRESH_TOKEN!)!,
-    'X-MySawit-Role': 'ADMIN',
+    'X-MySawit-Role': 'MARKETING',
   },
 });
 

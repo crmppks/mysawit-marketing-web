@@ -4,9 +4,6 @@ import {
   HomeOutlined,
   ShoppingOutlined,
   UserOutlined,
-  SettingOutlined,
-  QuestionCircleOutlined,
-  BookOutlined,
   BellFilled,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -57,72 +54,15 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
                 className="max-w-full md:w-8/12"
               />
             </div>
-            <Menu mode="inline">
-              <Menu.Item icon={<HomeOutlined />}>
+            <Menu mode="inline" defaultSelectedKeys={['dashboard']}>
+              <Menu.Item key={'dashboard'} icon={<HomeOutlined />}>
                 <Link to="/">Dashboard</Link>
               </Menu.Item>
-              <Menu.SubMenu title="Marketing" icon={<UserOutlined />}>
-                <Menu.Item>
-                  <Link to="/marketing/tambah">Tambah Marketing</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to="/marketing">Daftar Marketing</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to="/marketing/struktur">Struktur Marketing</Link>
-                </Menu.Item>
-                <Menu.SubMenu title="Laporan Marketing">
-                  <Menu.Item>
-                    <Link to="/marketing/laporan/annual">Annual Report</Link>
-                  </Menu.Item>
-                  <Menu.Item>
-                    <Link to="/marketing/laporan/monthly">Monthly Report</Link>
-                  </Menu.Item>
-                  <Menu.Item>
-                    <Link to="/marketing/laporan/daily">Daily Report</Link>
-                  </Menu.Item>
-                </Menu.SubMenu>
-              </Menu.SubMenu>
-              <Menu.SubMenu title="Produk" icon={<ShoppingOutlined />}>
-                <Menu.Item>
-                  <Link to="/produk/tambah">Tambah Produk</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to="/produk">Daftar Produk</Link>
-                </Menu.Item>
-              </Menu.SubMenu>
-              <Menu.SubMenu title="Konsumen" icon={<UserOutlined />}>
-                <Menu.Item>
-                  <Link to="/konsumen/tambah">Tambah Konsumen</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to="/konsumen">Daftar Konsumen</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to="/konsumen/struktur">Struktur Konsumen</Link>
-                </Menu.Item>
-              </Menu.SubMenu>
-              <Menu.SubMenu title="Aksesoris" icon={<SettingOutlined />}>
-                <Menu.Item>
-                  <Link to="/aksesoris/karousel">Info Karousel</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to="/aksesoris/popup">Info Popup</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to="/aksesoris/surat-pernyataan">Surat Pernyataan</Link>
-                </Menu.Item>
-              </Menu.SubMenu>
-              <Menu.SubMenu title="Blog" icon={<BookOutlined />}>
-                <Menu.Item>
-                  <Link to="/blog/tulis">Tulis Artikel</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to="/blog">Daftar Artikel</Link>
-                </Menu.Item>
-              </Menu.SubMenu>
-              <Menu.Item icon={<QuestionCircleOutlined />}>
-                <Link to="/faq">F.A.Q</Link>
+              <Menu.Item key={'konsumen'} icon={<UserOutlined />}>
+                <Link to="/konsumen">Konsumen</Link>
+              </Menu.Item>
+              <Menu.Item key={'pesanan'} icon={<ShoppingOutlined />}>
+                <Link to="/pesanan">Pesanan</Link>
               </Menu.Item>
             </Menu>
           </nav>

@@ -1,9 +1,9 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '@/store/index';
-import { SesiState } from '@/store/reducers/sesi';
+import { SesiValueType } from '@/store/reducers/sesi';
 
 interface RootState {
-  sesi: SesiState;
+  sesi: SesiValueType;
 }
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`

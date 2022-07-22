@@ -1,13 +1,7 @@
 import axios from './axios';
 
 export const postAuthMasuk = (data: { id: string; password: string }) => {
-  return axios.post(
-    '/auth/sign-in',
-    { ...data, role: 'ADMIN' },
-    {
-      withCredentials: true,
-    },
-  );
+  return axios.post('/auth/sign-in', { ...data, role: 'MARKETING' });
 };
 
 export const postAuthLupaPassword = (params: any) => {

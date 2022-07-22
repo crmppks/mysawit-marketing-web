@@ -1,23 +1,13 @@
 import ReviewComponent from '@/components/ReviewComponent';
-import { confirmAlert } from '@/helpers/swal_helper';
 import {
-  deleteProduk,
   getDetailProdukWithStok,
   getRatingProduk,
   getUlasanProduk,
-  putUpdateActivateProduk,
-  putUpdateDeactivateProduk,
 } from '@/services/produk';
 import Paging from '@/types/Paging';
 import Produk from '@/types/Produk';
 import UlasanProduk from '@/types/UlasanProduk';
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  StarFilled,
-} from '@ant-design/icons';
+import { EditOutlined, StarFilled } from '@ant-design/icons';
 import {
   Alert,
   Badge,
@@ -25,7 +15,6 @@ import {
   Empty,
   Image,
   Menu,
-  message,
   PageHeader,
   Pagination,
   Progress,
@@ -42,7 +31,6 @@ export default function HalamanDetailProduk() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [onAction, setOnAction] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [produk, setProduk] = useState<Produk | null>(null);
   const [rating, setRating] = useState<{
@@ -62,41 +50,6 @@ export default function HalamanDetailProduk() {
     getUlasanProduk(id as string, value).then(({ data }: AxiosResponse<any>) =>
       setUlasan(data),
     );
-  };
-
-  const handleActivateProduk = () => {
-    setOnAction(true);
-    putUpdateActivateProduk(id as string).then(() => {
-      message.success(`Produk ${produk?.nama} di aktifkan`);
-      setProduk((old) => ({ ...old!, is_active: true }));
-    });
-  };
-
-  const handleDeactivateProduk = () => {
-    setOnAction(true);
-    putUpdateDeactivateProduk(id as string).then(() => {
-      message.warning(`Produk ${produk?.nama} di non-aktifkan`);
-      setProduk((old) => ({ ...old!, is_active: false }));
-    });
-  };
-
-  const handleHapus = () => {
-    confirmAlert(
-      'Hapus Produk',
-      <>
-        Apakah anda yakin untuk menghapus produk <b>{produk?.nama}</b>?
-      </>,
-    ).then((willDelete: boolean) => {
-      if (willDelete) {
-        setOnAction(true);
-        deleteProduk(id as string)
-          .then(() => {
-            message.success('Produk berhasil dihapus');
-            navigate('/produk');
-          })
-          .finally(() => setOnAction(false));
-      }
-    });
   };
 
   useEffect(() => {
@@ -178,28 +131,12 @@ export default function HalamanDetailProduk() {
                   <Menu.Item icon={<EditOutlined />}>
                     <Link to={`stok`}>Perbaharui Stok</Link>
                   </Menu.Item>
-                  {produk?.is_active && (
-                    <Menu.Item danger icon={<CloseCircleOutlined />}>
-                      <button onClick={handleDeactivateProduk}>Deaktivasi Produk</button>
-                    </Menu.Item>
-                  )}
-                  {!produk?.is_active && (
-                    <Menu.Item icon={<CheckCircleOutlined />}>
-                      <button onClick={handleActivateProduk}>Aktivasi Produk</button>
-                    </Menu.Item>
-                  )}
-                  <Menu.Item danger icon={<DeleteOutlined />}>
-                    <button onClick={handleHapus}>Hapus Produk</button>
-                  </Menu.Item>
                 </Menu>
               }
               placement="bottomRight"
               arrow
             >
-              <button
-                disabled={onAction}
-                className="absolute right-0 top-0 p-2 border rounded bg-white disabled:bg-gray-400 disabled:text-gray-600"
-              >
+              <button className="absolute right-0 top-0 p-2 border rounded bg-white disabled:bg-gray-400 disabled:text-gray-600">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"

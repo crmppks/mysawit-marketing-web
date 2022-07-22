@@ -2,20 +2,20 @@ import { Form, Input, Button, PageHeader } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@/hooks/redux_hooks';
-import { updateSesiAction } from '@/store/actions/sesi';
+import { updateProfileAction } from '@/store/actions/sesi';
 import { CheckCircleFilled } from '@ant-design/icons';
 
 export default function HalamanUpdateProfile() {
   const dispatch = useDispatch();
 
   const session = useAppSelector((state) => state.sesi.user);
-  const loading = useAppSelector((state) => state.sesi.loading);
+  const loading = useAppSelector((state) => state.sesi.request_profile.loading);
 
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const handleUpdateProfile = (params: any) => {
-    dispatch(updateSesiAction(params));
+    dispatch(updateProfileAction(params));
   };
 
   return (

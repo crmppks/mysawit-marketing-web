@@ -1,8 +1,8 @@
 import { useAppDispatch, useAppSelector } from '@/hooks/redux_hooks';
 import { getJumlahBadgeNotifikasi } from '@/services/notifikasi';
-import { clearSesiAction } from '@/store/actions/sesi';
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { Badge, Dropdown, Empty, Menu } from 'antd';
+import { clearSesiAction, getProfileDetailAction } from '@/store/actions/sesi';
+// import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { Badge, Dropdown, Empty } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SearchBoxComponent from './SearchBoxComponent';
@@ -19,8 +19,9 @@ export default function HeaderComponent() {
   };
 
   useEffect(() => {
+    dispatch(getProfileDetailAction());
     getJumlahBadgeNotifikasi().then(({ data }) => setBadgeNotification(data));
-  }, []);
+  }, [dispatch]);
 
   return (
     <nav className="flex justify-end px-5 py-2 bg-white">
@@ -99,16 +100,41 @@ export default function HeaderComponent() {
           </div>
           <Dropdown
             overlay={
-              <Menu>
-                <Menu.Item icon={<UserOutlined />}>
-                  <Link to={'/profile'}>Akun Saya ({user?.nama})</Link>
-                </Menu.Item>
-                <Menu.Item icon={<LogoutOutlined />}>
-                  <button onClick={handleSignOut}>Keluar</button>
-                </Menu.Item>
-              </Menu>
+              <div className="bg-white rounded border shadow">
+                <div className="p-5">
+                  <div className="flex space-x-5 items-center mt-2">
+                    <img
+                      src={user.avatar}
+                      alt={user.nama}
+                      className="w-12 flex-none rounded-full shadow"
+                    />
+                    <div className="flex-grow">
+                      <h5 className="font-bold mb-0 leading-tight">{user.nama}</h5>
+                      <span>{user.kategori_produk?.nama}</span>
+                    </div>
+                  </div>
+                </div>
+                <ul className="mb-0 divide-y border-t">
+                  <li>
+                    <Link
+                      className="block uppercase text-left hover:bg-gray-200 text-gray-500 hover:text-gray-500 px-5 py-2"
+                      to={'/profile'}
+                    >
+                      Kelola Akun
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      className="w-full uppercase text-left hover:bg-gray-200 text-gray-500 px-5 py-2"
+                      onClick={handleSignOut}
+                    >
+                      Keluar
+                    </button>
+                  </li>
+                </ul>
+              </div>
             }
-            placement="bottomLeft"
+            placement="bottomRight"
             arrow
           >
             <button className="rounded-full overflow-hidden shadow hover:ring ring-gray-200">

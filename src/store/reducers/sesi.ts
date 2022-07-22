@@ -1,80 +1,160 @@
+import UserMarketing from '@/types/UserMarketing';
 import {
-  GET_SESI_REQUEST,
-  GET_SESI_SUCCESS,
-  GET_SESI_FAILURE,
   CLEAR_SESI,
-  UPDATE_SESI_REQUEST,
-  UPDATE_SESI_SUCCESS,
-  UPDATE_SESI_FAILURE,
-} from '@/store/types';
-import UserAdmin from '@/types/UserAdmin';
+  GET_PROFILE_REQUEST,
+  GET_PROFILE_SUCCESS,
+  SIGNIN_USER_FAILURE,
+  SIGNIN_USER_REQUEST,
+  SIGNIN_USER_SUCCESS,
+  UPDATE_PROFILE_FAILURE,
+  UPDATE_PROFILE_REQUEST,
+  UPDATE_PROFILE_SUCCESS,
+} from '../types';
 
-export interface SesiAction {
+export interface SesiActionType {
   type: string;
-  payload?: {
-    token: string;
-    user: UserAdmin;
-  };
-  params?: {
-    id: string;
-    password: string;
-  };
+  user: UserMarketing | null;
+  message?: string;
+  errors?: any;
 }
 
-export interface SesiState {
-  user: UserAdmin | null;
-  loading: boolean;
+export interface SesiValueType {
+  user: UserMarketing | null;
+  request_login: {
+    loading: boolean;
+    message?: string;
+    errors?: any;
+  };
+  request_profile: {
+    loading: boolean;
+    message?: string;
+    errors?: any;
+  };
+  user_prev?: any;
 }
 
-const initialState: SesiState = {
+const initialState: SesiValueType = {
+  request_login: {
+    loading: false,
+    message: undefined,
+    errors: null,
+  },
+  request_profile: {
+    loading: false,
+    message: undefined,
+    errors: null,
+  },
   user: null,
-  loading: false,
+  user_prev: null,
 };
 
-export default function sessionReducer(state = initialState, action: SesiAction) {
-  const { type, payload } = action;
+export default function sessionReducer(
+  state = initialState,
+  action: SesiActionType,
+): SesiValueType {
+  const { type, errors, message, user } = action;
 
-  if (type === GET_SESI_REQUEST) {
+  if (type === SIGNIN_USER_REQUEST) {
     return {
       ...state,
-      loading: true,
+      request_login: {
+        ...state.request_login,
+        loading: true,
+      },
     };
   }
 
-  if (type === GET_SESI_SUCCESS) {
+  if (type === SIGNIN_USER_SUCCESS) {
     return {
       ...state,
-      loading: false,
-      user: payload?.user,
+      request_login: {
+        ...state.request_login,
+        loading: false,
+        message: null,
+        errors: null,
+      },
+      user,
     };
   }
 
-  if (type === GET_SESI_FAILURE) {
+  if (type === SIGNIN_USER_FAILURE) {
     return {
       ...state,
-      loading: false,
+      request_login: {
+        loading: false,
+        message,
+        errors,
+      },
     };
   }
 
-  if (type === UPDATE_SESI_REQUEST) {
+  if (type === UPDATE_PROFILE_REQUEST) {
     return {
       ...state,
-      loading: true,
+      request_profile: {
+        ...state.request_profile,
+        loading: true,
+      },
     };
   }
 
-  if (type === UPDATE_SESI_SUCCESS) {
+  if (type === UPDATE_PROFILE_SUCCESS) {
     return {
       ...state,
-      loading: false,
-      user: payload?.user,
+      request_profile: {
+        ...state.request_profile,
+        loading: false,
+        message: null,
+        errors: null,
+      },
+      user,
     };
   }
 
-  if (type === UPDATE_SESI_FAILURE) {
+  if (type === UPDATE_PROFILE_FAILURE) {
     return {
       ...state,
-      loading: false,
+      request_profile: {
+        ...state.request_profile,
+        loading: false,
+        message,
+        errors,
+      },
+    };
+  }
+
+  if (type === GET_PROFILE_REQUEST) {
+    return {
+      ...state,
+      request_profile: {
+        ...state.request_profile,
+        loading: true,
+      },
+    };
+  }
+
+  if (type === GET_PROFILE_SUCCESS) {
+    return {
+      ...state,
+      request_profile: {
+        ...state.request_profile,
+        loading: false,
+        errors: null,
+        message: null,
+      },
+      user,
+    };
+  }
+
+  if (type === GET_PROFILE_SUCCESS) {
+    return {
+      ...state,
+      request_profile: {
+        ...state.request_profile,
+        loading: false,
+        errors,
+        message,
+      },
     };
   }
 

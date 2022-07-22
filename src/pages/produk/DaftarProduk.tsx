@@ -1,28 +1,13 @@
-import ModalKategori, { ModalKategoriItem } from '@/components/ModalKategoriComponent';
-import { confirmAlert } from '@/helpers/swal_helper';
 import { webixTableParams } from '@/helpers/webix_helper';
 import {
-  deleteProduk,
   getSemuaFilteredProduk,
   getSemuaKategoriProduk,
-  getSemuaKategoriProdukCascader,
   getSemuaProduk,
-  postTambahKategoriProduk,
-  putUpdateActivateProduk,
-  putUpdateDeactivateProduk,
-  putUpdateKategoriProduk,
 } from '@/services/produk';
 import Kategori from '@/types/Kategori';
 import Paging from '@/types/Paging';
 import Produk from '@/types/Produk';
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  LoadingOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, LoadingOutlined } from '@ant-design/icons';
 import {
   Button,
   Dropdown,
@@ -31,7 +16,6 @@ import {
   Image,
   Input,
   Menu,
-  message,
   PageHeader,
   Select,
   Skeleton,
@@ -42,9 +26,6 @@ import { Link } from 'react-router-dom';
 
 export default function HalamanDaftarProduk() {
   const [formFilter] = Form.useForm();
-  const [modalKategoriItem, setModalKategoriItem] = useState<ModalKategoriItem | null>(
-    null,
-  );
   const [kategoris, setKategoris] = useState<{
     data: Kategori[];
     loading: boolean;
@@ -66,61 +47,6 @@ export default function HalamanDaftarProduk() {
         }));
       })
       .finally(() => setLoadingHalaman(false));
-  };
-
-  const handleHapusProduk = (produk: Produk) => {
-    confirmAlert(
-      'Hapus Produk',
-      <>
-        Apakah anda yakin untuk menghapus produk <b>{produk?.nama}</b>?
-      </>,
-    ).then((willDelete: boolean) => {
-      if (willDelete) {
-        deleteProduk(produk.id).then(() => {
-          message.success('Produk berhasil dihapus');
-          setProduks((old) => ({
-            ...old,
-            data: old.data.filter((item) => item.id !== produk.id),
-          }));
-        });
-      }
-    });
-  };
-
-  const handleActivateProduk = (produk: Produk) => {
-    putUpdateActivateProduk(produk.id).then(() => {
-      message.success(`Produk ${produk?.nama} di aktifkan`);
-      setProduks((old) => ({
-        ...old,
-        data: old.data.map((item) => {
-          if (item.id === produk.id) {
-            return {
-              ...produk,
-              is_active: true,
-            };
-          }
-          return item;
-        }),
-      }));
-    });
-  };
-
-  const handleDeactivateProduk = (produk: Produk) => {
-    putUpdateDeactivateProduk(produk.id).then(() => {
-      message.warning(`Produk ${produk?.nama} di non-aktifkan`);
-      setProduks((old) => ({
-        ...old,
-        data: old.data.map((item) => {
-          if (item.id === produk.id) {
-            return {
-              ...produk,
-              is_active: false,
-            };
-          }
-          return item;
-        }),
-      }));
-    });
   };
 
   const handleFilterProduk = (values: any) => {
@@ -150,64 +76,14 @@ export default function HalamanDaftarProduk() {
 
   return (
     <>
-      <ModalKategori
-        tipe="Produk"
-        visible={!!modalKategoriItem}
-        kategoriItem={modalKategoriItem}
-        getCascaderAction={getSemuaKategoriProdukCascader}
-        postAddAction={(params) => postTambahKategoriProduk(params)}
-        putUpdateAction={(kategori_id, params) =>
-          putUpdateKategoriProduk(kategori_id, params)
-        }
-        onFinishAdd={(kategori: Kategori) =>
-          setKategoris((old) => ({ loading: false, data: [...old.data, kategori] }))
-        }
-        onFinishUpdate={(kategori: Kategori) =>
-          setKategoris((old) => ({
-            loading: false,
-            data: old.data.map((item) => {
-              if (item.id === modalKategoriItem?.item?.id) {
-                return kategori;
-              }
-              return item;
-            }),
-          }))
-        }
-        onCancel={() => setModalKategoriItem(null)}
-      />
       <div className="md:pr-5 flex flex-col md:space-x-5 md:flex-row md:items-center md:justify-between">
         <PageHeader title="Daftar Produk" subTitle="Daftar semua produk yang tersedia" />
-
-        <Link className="mx-5 md:mx-0" to="tambah">
-          <Button className="w-full" type="primary" icon={<PlusOutlined />}>
-            Tambah Produk
-          </Button>
-        </Link>
       </div>
 
       <section className="p-5">
         {kategoris.loading && <Skeleton.Input active block className="mb-5" />}
         {!kategoris.loading && (
           <div className="flex items-start space-x-3 overflow-x-auto">
-            <button
-              onClick={() => setModalKategoriItem({ tipe: 'TAMBAH' })}
-              className="h-20 px-5 py-3 md:px-10 rounded-md border-2 border-color-theme text-color-theme bg-white flex items-center"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </button>
             {kategoris.data?.map((kategori) => (
               <Link
                 key={kategori.id}
@@ -313,27 +189,6 @@ export default function HalamanDaftarProduk() {
                                 </Menu.Item>
                                 <Menu.Item icon={<EditOutlined />}>
                                   <Link to={`${produk.id}/stok`}>Perbaharui Stok</Link>
-                                </Menu.Item>
-                                {produk?.is_active && (
-                                  <Menu.Item danger icon={<CloseCircleOutlined />}>
-                                    <button
-                                      onClick={() => handleDeactivateProduk(produk)}
-                                    >
-                                      Deaktivasi Produk
-                                    </button>
-                                  </Menu.Item>
-                                )}
-                                {!produk?.is_active && (
-                                  <Menu.Item icon={<CheckCircleOutlined />}>
-                                    <button onClick={() => handleActivateProduk(produk)}>
-                                      Aktivasi Produk
-                                    </button>
-                                  </Menu.Item>
-                                )}
-                                <Menu.Item danger icon={<DeleteOutlined />}>
-                                  <button onClick={() => handleHapusProduk(produk)}>
-                                    Hapus Produk
-                                  </button>
                                 </Menu.Item>
                               </Menu>
                             }

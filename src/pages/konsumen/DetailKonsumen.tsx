@@ -1,12 +1,6 @@
-import { confirmAlert } from '@/helpers/swal_helper';
-import {
-  deleteHapusKonsumen,
-  getDetailKonsumen,
-  putResetPasswordKonsumen,
-} from '@/services/konsumen';
+import { getDetailKonsumen } from '@/services/konsumen';
 import UserKonsumen from '@/types/UserKonsumen';
-import { DeleteOutlined, LockOutlined } from '@ant-design/icons';
-import { Dropdown, Menu, message, PageHeader, Skeleton } from 'antd';
+import { PageHeader, Skeleton } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -17,37 +11,6 @@ export default function HalamanDetailKonsumen() {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [konsumen, setKonsumen] = useState<UserKonsumen | null>(null);
-
-  const handleResetPassword = () => {
-    confirmAlert(
-      'Reset Password Konsumen',
-      <>
-        Apakah anda yakin untuk mereset password akun <b>{konsumen?.nama}</b>?
-      </>,
-    ).then((willDelete: boolean) => {
-      if (willDelete) {
-        putResetPasswordKonsumen(konsumen?.user_id!).then(() => {
-          message.success('Password berhasil di reset');
-        });
-      }
-    });
-  };
-
-  const handleHapusAkun = () => {
-    confirmAlert(
-      'Hapus Akun Konsumen',
-      <>
-        Apakah anda yakin untuk menghapus akun <b>{konsumen?.nama}</b>?
-      </>,
-    ).then((willDelete: boolean) => {
-      if (willDelete) {
-        deleteHapusKonsumen(konsumen?.user_id!).then(() => {
-          message.success('Akun berhasil dihapus');
-          navigate('/konsumen');
-        });
-      }
-    });
-  };
 
   useEffect(() => {
     setLoading(true);
@@ -90,41 +53,6 @@ export default function HalamanDetailKonsumen() {
               <div className="flex justify-between">
                 <div className="flex-grow">
                   <h1 className="font-bold text-xl mb-0">{konsumen?.nama}</h1>
-                </div>
-                <div className="flex-none relative flex items-center space-x-3">
-                  <Dropdown
-                    overlay={
-                      <Menu>
-                        <Menu.Item icon={<LockOutlined />}>
-                          <button onClick={() => handleResetPassword()}>
-                            Reset Password
-                          </button>
-                        </Menu.Item>
-                        <Menu.Item danger icon={<DeleteOutlined />}>
-                          <button onClick={() => handleHapusAkun()}>Hapus Akun</button>
-                        </Menu.Item>
-                      </Menu>
-                    }
-                    placement="bottomRight"
-                    arrow
-                  >
-                    <button>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                        />
-                      </svg>
-                    </button>
-                  </Dropdown>
                 </div>
               </div>
               <hr className="my-5" />

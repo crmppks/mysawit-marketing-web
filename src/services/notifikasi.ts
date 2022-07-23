@@ -1,5 +1,12 @@
 import axios from './axios';
 
+export const postStoreFCMToken = (token: string) => {
+  return axios.post(`/fcm`, {
+    user_tipe: 'App\\UserMarketing',
+    token,
+  });
+};
+
 export const getSemuaNotifikasi = () => {
   return axios.get(`/notifikasi`);
 };

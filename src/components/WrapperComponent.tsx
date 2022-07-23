@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react';
-import { Menu, notification } from 'antd';
+import { Menu, message, notification } from 'antd';
 import {
   HomeOutlined,
   ShoppingOutlined,
@@ -9,15 +9,21 @@ import {
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { getFCMToken, onMessageListener } from '@/services/firebase';
+import { useAppSelector } from '@/hooks/redux_hooks';
+import { postStoreFCMToken } from '@/services/notifikasi';
 import HeaderComponent from './HeaderComponent';
 
 const mainBgColor = 'bg-gray-200';
 
 export default function WrapperComponent({ children }: { children: ReactNode }) {
+  const user = useAppSelector((state) => state.sesi.user);
+
   useEffect(() => {
     getFCMToken()
-      .then((token) => console.log(`token ${token}`))
-      .catch((e) => console.log(e));
+      .then(postStoreFCMToken)
+      .catch((e) => {
+        message.error(e.message);
+      });
 
     onMessageListener()
       .then((payload: any) => {
@@ -38,8 +44,17 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
       <HeaderComponent />
       <main className={`${mainBgColor} flex`}>
         <nav className="my-sidebar bg-white w-[250px] lg:w-[23vw] flex-none md:fixed left-0 top-0 z-40">
-          <div className="px-5 mt-10 mb-[50px]">
-            <img src="/logo_mysawit.png" alt="Logo PPKS" className="w-12 md:w-32" />
+          <div className="px-5 pb-5 mt-5 mb-[50px] flex space-x-3 flex-none border-b">
+            <div className="w-12 md:w-28 lg:w-32 flex-none flex items-center">
+              <img src="/logo_mysawit.png" alt="Logo PPKS" className="w-full" />
+            </div>
+
+            <div className="flex flex-col justify-center flex-grow mt-3 border-l pl-3 space-y-1 py-1">
+              <span className="text-xs text-gray-500">Marketing</span>
+              <span className="font-bold uppercase text-gray-700 leading-tight">
+                {user.kategori_produk.nama}
+              </span>
+            </div>
           </div>
           <Menu mode="inline" defaultSelectedKeys={['dashboard']}>
             <Menu.Item key={'dashboard'} icon={<HomeOutlined />}>

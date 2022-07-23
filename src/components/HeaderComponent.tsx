@@ -1,18 +1,27 @@
 import { useAppDispatch, useAppSelector } from '@/hooks/redux_hooks';
-import { getJumlahBadgeNotifikasi } from '@/services/notifikasi';
+import { getJumlahBadgeNotifikasi, getSemuaNotifikasi } from '@/services/notifikasi';
 import { clearSesiAction, getProfileDetailAction } from '@/store/actions/sesi';
+import Notifikasi from '@/types/Notifikasi';
+import Paging from '@/types/Paging';
 // import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { Badge, Dropdown, Empty } from 'antd';
+import { Badge, Dropdown, Empty, Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import NotificationItem from './NotificationItemComponent';
 import SearchBoxComponent from './SearchBoxComponent';
 
 export default function HeaderComponent() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.sesi.user);
 
-  const [badgeNotification, setBadgeNotification] = useState<number>(13);
+  const [badgeNotification, setBadgeNotification] = useState<number>(0);
   const [badgeMessage] = useState<number>(5);
+  const [badgeAgenda] = useState<number>(5);
+
+  const [notificationList, setNotificationList] = useState<Paging<Notifikasi>>({
+    loading: true,
+    data: [],
+  });
 
   const handleSignOut = () => {
     dispatch(clearSesiAction());
@@ -21,6 +30,11 @@ export default function HeaderComponent() {
   useEffect(() => {
     dispatch(getProfileDetailAction());
     getJumlahBadgeNotifikasi().then(({ data }) => setBadgeNotification(data));
+    getSemuaNotifikasi()
+      .then(({ data }) => {
+        setNotificationList(data);
+      })
+      .finally(() => setNotificationList((old) => ({ ...old, loading: false })));
   }, [dispatch]);
 
   return (
@@ -40,7 +54,7 @@ export default function HeaderComponent() {
       </div>
       <nav className="flex justify-end px-5 py-2 bg-color-theme z-50 relative">
         <div className="flex space-x-3 flex-none w-[250px] lg:w-[23vw]">
-          <div className="w-12 md:w-32 flex-none flex items-center">
+          <div className="w-12 md:w-28 lg:w-32 flex-none flex items-center">
             <img src="/logo_mysawit.png" alt="Logo PPKS" className="w-full" />
           </div>
 
@@ -59,17 +73,25 @@ export default function HeaderComponent() {
               <Dropdown
                 overlay={
                   <div
-                    className="bg-white rounded p-5 border shadow"
+                    className="bg-white rounded p-3 border shadow"
                     style={{ maxWidth: '80vh' }}
                   >
-                    {badgeNotification === 0 && (
-                      <Empty
-                        description={
-                          <span className="text-gray-500">
-                            Semua aman, tidak ada notifikasi tersedia
-                          </span>
-                        }
-                      />
+                    {notificationList.loading && <Skeleton active />}
+                    {!notificationList.loading && (
+                      <>
+                        {notificationList.total === 0 && (
+                          <Empty
+                            description={
+                              <p className="text-gray-500">
+                                Semua aman, tidak ada notifikasi
+                              </p>
+                            }
+                          />
+                        )}
+                        {notificationList.data.map((notifikasi) => (
+                          <NotificationItem key={notifikasi.id} notifikasi={notifikasi} />
+                        ))}
+                      </>
                     )}
                   </div>
                 }
@@ -105,7 +127,7 @@ export default function HeaderComponent() {
                   </svg>
                 </button>
               </Badge>
-              <Badge offset={[-7, 10]} count={badgeMessage}>
+              <Badge offset={[-7, 10]} count={badgeAgenda}>
                 <button className="rounded-full hover:bg-gray-400 p-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

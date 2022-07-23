@@ -103,7 +103,7 @@ export default function HalamanDaftarPesanan() {
                         className="mt-10"
                         description={
                           <div className="flex flex-col items-center justify-center">
-                            <p className="text-gray-400">Belum ada transaksi tersedia</p>
+                            <p className="text-gray-400">Belum ada pesanan tersedia</p>
                           </div>
                         }
                       />

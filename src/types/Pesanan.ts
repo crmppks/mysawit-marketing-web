@@ -1,0 +1,108 @@
+import Product from '@/types/Produk';
+import AlamatPengiriman from '@/types/AlamatPengiriman';
+import Tagihan from '@/types/Tagihan';
+
+interface PesananProduk extends Product {
+  order_quantity: number;
+  order_item_weight: number;
+  order_item_price: number;
+}
+
+interface Pesanan {
+  id: string;
+  status:
+    | 'VERIFIKASI_PERSYARATAN'
+    | 'MENUNGGU_PEMBAYARAN'
+    | 'DIKEMAS'
+    | 'DIKIRIM'
+    | 'SELESAI'
+    | 'DIBATALKAN';
+  status_diff: string;
+  konsumen_id: string;
+  total_harga: number;
+  total_bayar: number;
+  metode_pembayaran?: string;
+  catatan: string;
+  nomor_resi?: string;
+  is_tagihan_completed: boolean;
+  is_tagihan_canceled: boolean;
+  created_at: string;
+  updated_at: string;
+  total_produk: number;
+  items: Array<PesananProduk>;
+  tagihan?: Tagihan;
+  riwayat?: Array<{
+    status:
+      | 'VERIFIKASI_PERSYARATAN'
+      | 'MENUNGGU_PEMBAYARAN'
+      | 'DIKEMAS'
+      | 'DIKIRIM'
+      | 'SELESAI'
+      | 'DIBATALKAN';
+    informasi_tambahan: any;
+    created_at: string;
+  }>;
+  informasi?: {
+    to: string;
+    postal_code: string;
+    address?: AlamatPengiriman;
+    phone_number: string;
+    note: string;
+    weight: number;
+    courier?: {
+      code: string;
+      name: string;
+    };
+    courier_service?: {
+      service: string;
+      description: string;
+      cost: {
+        value: number;
+        etd: string;
+        note: string;
+      };
+    };
+  };
+  persyaratan?: {
+    id: number;
+    alamat_id?: number;
+    provinsi_id: number;
+    kota_kabupaten_id: number;
+    kecamatan: string;
+    detail_alamat: string;
+    created_at: string;
+    updated_at: string;
+    alamat_lengkap: string;
+    provinsi: {
+      id: number;
+      nama: string;
+    };
+    kota_kabupaten: {
+      id: number;
+      provinsi_id: number;
+      nama: string;
+      tipe: string;
+      kode_pos: string;
+    };
+    dokumen_surat_lahan: {
+      media_id: number;
+      url: string;
+      name: string;
+      size: number;
+    };
+    dokumen_surat_pernyataan: {
+      media_id: number;
+      url: string;
+      name: string;
+      size: number;
+    };
+    dokumen_ktp: {
+      media_id: number;
+      url: string;
+      name: string;
+      size: number;
+    };
+  };
+}
+
+export default Pesanan;

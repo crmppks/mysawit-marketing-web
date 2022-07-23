@@ -1,35 +1,15 @@
 import { webixTableParams } from '@/helpers/webix_helper';
-import {
-  getSemuaFilteredProduk,
-  getSemuaKategoriProduk,
-  getSemuaProduk,
-} from '@/services/produk';
-import Kategori from '@/types/Kategori';
+import { getSemuaFilteredProduk, getSemuaProduk } from '@/services/produk';
 import Paging from '@/types/Paging';
 import Produk from '@/types/Produk';
-import { EditOutlined, LoadingOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Dropdown,
-  Empty,
-  Form,
-  Image,
-  Input,
-  Menu,
-  PageHeader,
-  Select,
-  Skeleton,
-} from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Button, Empty, Form, Image, Input, PageHeader, Skeleton } from 'antd';
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function HalamanDaftarProduk() {
   const [formFilter] = Form.useForm();
-  const [kategoris, setKategoris] = useState<{
-    data: Kategori[];
-    loading: boolean;
-  }>({ data: [], loading: true });
   const [loadingHalaman, setLoadingHalaman] = useState<boolean>(false);
   const [filtering, setFiltering] = useState<boolean>(false);
   const [produks, setProduks] = useState<Paging<Produk>>({
@@ -66,7 +46,6 @@ export default function HalamanDaftarProduk() {
   };
 
   useEffect(() => {
-    getSemuaKategoriProduk().then(({ data }) => setKategoris({ data, loading: false }));
     getSemuaProduk()
       .then(({ data }: AxiosResponse<any>) => {
         setProduks({ ...data, loading: false });
@@ -81,20 +60,6 @@ export default function HalamanDaftarProduk() {
       </div>
 
       <section className="p-5">
-        {kategoris.loading && <Skeleton.Input active block className="mb-5" />}
-        {!kategoris.loading && (
-          <div className="flex items-start space-x-3 overflow-x-auto">
-            {kategoris.data?.map((kategori) => (
-              <Link
-                key={kategori.id}
-                to={`/kategori/produk/${kategori.id}`}
-                className="my-kategori-produk text-lg h-20 px-5 py-3 rounded-md border-2 border-white relative flex-none max-w-xs"
-              >
-                {kategori.nama}
-              </Link>
-            ))}
-          </div>
-        )}
         {produks.loading && (
           <>
             <Skeleton.Input block active className="mb-1" />
@@ -121,20 +86,6 @@ export default function HalamanDaftarProduk() {
                     />
                   </Form.Item>
                 </div>
-
-                <div className="w-full md:w-2/12 flex-none">
-                  <Form.Item name={'is_active'}>
-                    <Select
-                      size="large"
-                      defaultValue={null}
-                      onChange={() => formFilter.submit()}
-                    >
-                      <Select.Option value={null}>Semua</Select.Option>
-                      <Select.Option value="1">Aktif</Select.Option>
-                      <Select.Option value="0">Non Aktif</Select.Option>
-                    </Select>
-                  </Form.Item>
-                </div>
               </Form>
             </div>
 
@@ -151,7 +102,7 @@ export default function HalamanDaftarProduk() {
                 />
               )}
               {produks.data.length > 0 && (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                   {produks.data.map((produk) => (
                     <div
                       className={`border rounded bg-white overflow-hidden shadow ${
@@ -166,46 +117,13 @@ export default function HalamanDaftarProduk() {
                       />
                       <div className="px-5 py-3">
                         <h3 className="leading-tight text-lg mb-0">
-                          <Link to={`/produk/${produk.id}`} className="font-bold">
-                            {produk.nama}
-                          </Link>
+                          <Link to={`/produk/${produk.id}`}>{produk.nama}</Link>
                         </h3>
-                        <Link
-                          to={`/kategori/produk/${produk.kategori.id}`}
-                          className="text-yellow-500"
-                        >
-                          <span className="leading-tight">{produk.kategori.nama}</span>
-                        </Link>
 
-                        <div className="mt-3 mb-0 font-bold flex justify-between">
-                          <span className="text-lg">
+                        <div className="mt-3 mb-0 flex justify-between">
+                          <span>
                             {produk.harga_diff} / {produk.unit}
                           </span>
-                          <Dropdown
-                            overlay={
-                              <Menu>
-                                <Menu.Item icon={<EditOutlined />}>
-                                  <Link to={`${produk.id}/edit`}>Perbaharui</Link>
-                                </Menu.Item>
-                                <Menu.Item icon={<EditOutlined />}>
-                                  <Link to={`${produk.id}/stok`}>Perbaharui Stok</Link>
-                                </Menu.Item>
-                              </Menu>
-                            }
-                            placement="topRight"
-                            arrow
-                          >
-                            <button>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                              >
-                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                              </svg>
-                            </button>
-                          </Dropdown>
                         </div>
                       </div>
                     </div>

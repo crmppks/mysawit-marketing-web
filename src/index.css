@@ -5,9 +5,13 @@
 @tailwind utilities;
 @tailwind variants;
 
+.mysawit-app .anticon {
+    vertical-align: 2px !important;
+}
+
 @layer base {
     body {
-        @apply text-sm;
+        @apply text-sm font-noto;
         font-weight: 400;
     }
 
@@ -48,69 +52,18 @@
     .hover\:border-color-theme{
         @apply hover:border-amber-500
     }
-
-    .mysawit-app .anticon {
-        vertical-align: 2px !important;
-    }
     
-    nav.my-sidebar{
-        background-image: url("../public/sidebar_background_gradient.png"); /* The image used */
-        background-color: #F59E0B; /* Used if the image is unavailable */
-        background-position: center; /* Center the image */
-        background-repeat: no-repeat; /* Do not repeat the image */
-        background-size: cover; /* Resize the background image to cover the entire container */
+    nav.my-sidebar > ul {
+        @apply h-screen;
     }
 
-    nav.my-sidebar .ant-menu {
-        @apply bg-transparent
-    }
-
-    nav.my-sidebar .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title, nav.my-sidebar .ant-menu-inline > .ant-menu-item {
+    nav.my-sidebar > ul .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title, nav.my-sidebar .ant-menu-inline > .ant-menu-item {
         height: 40px;
         font-weight: 500;
         font-size: 15px;
     }
-    nav.my-sidebar .ant-menu-item:not(:last-child), nav.my-sidebar .ant-menu-item, nav.my-sidebar .ant-menu-submenu-title{
+    nav.my-sidebar > ul .ant-menu-item:not(:last-child), nav.my-sidebar .ant-menu-item, nav.my-sidebar .ant-menu-submenu-title{
         margin-bottom:0;
         margin-top:0;
-    }
-
-    nav.my-sidebar .ant-menu.ant-menu-root.ant-menu-inline {
-        border-right: 0;
-    }
-    nav.my-sidebar .ant-menu-item.ant-menu-item-only-child a, nav.my-sidebar .ant-menu-title-content, nav.my-sidebar .ant-menu-title-content a, nav.my-sidebar .ant-menu-item-icon {
-        @apply text-white
-    }
-    nav.my-sidebar .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected a, nav.my-sidebar .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected .ant-menu-item-icon{
-        /* background: #BF0007; */
-        @apply text-green-700
-    }
-
-    nav.my-sidebar .ant-menu-submenu .ant-menu-submenu-arrow, nav.my-sidebar .ant-menu-submenu-active .ant-menu-submenu-arrow {
-        @apply text-white
-    }
-
-    .my-kategori-produk.selected {
-        @apply bg-color-theme text-white
-    }
-
-    .my-kategori-produk {
-        @apply bg-white text-color-theme
-    }
-
-    .my-kategori-produk:hover {
-        @apply bg-color-theme text-white
-    }
-
-    .my-kategori-produk button {
-        @apply text-color-theme
-    }
-
-    .my-kategori-produk.selected button {
-        @apply text-white
-    }
-
-    .my-kategori-produk:hover button {
-        @apply text-white
     }
 }

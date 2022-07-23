@@ -60,7 +60,7 @@ export default function SearchBoxComponent() {
         }}
         placeholder="Cari produk"
         type="search"
-        className={`relative w-full px-4 py-[8px] bg-gray-200 border-2 border-white focus:border-green-700 ${
+        className={`relative w-full px-4 py-[8px] bg-white border-2 border-white focus:border-amber-500 ${
           searchValue ? 'rounded-t-md focus:border-b-white' : 'rounded-md'
         }`}
       />

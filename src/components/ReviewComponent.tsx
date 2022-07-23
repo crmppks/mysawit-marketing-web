@@ -1,9 +1,9 @@
-import { Avatar, Button, Form, Input, Popconfirm, Rate, Tooltip } from 'antd';
+import { Avatar, Button, Form, Input, Rate, Tooltip } from 'antd';
 import moment from 'moment';
 import UlasanProduk from '@/types/UlasanProduk';
-import { LikeFilled, SendOutlined, StarFilled } from '@ant-design/icons';
+import { LikeFilled, StarFilled } from '@ant-design/icons';
 import { useState } from 'react';
-import { deleteHapusTanggapanProduk, postSimpanTanggapanProduk } from '@/services/produk';
+import { postSimpanTanggapanProduk } from '@/services/produk';
 import { parseError } from '@/helpers/form_helper';
 
 const Editor = ({
@@ -39,13 +39,8 @@ const Editor = ({
           <Input placeholder="Tulis tanggapan disini" />
         </Form.Item>
         <div className="flex items-center space-x-4">
-          <Button
-            htmlType="submit"
-            loading={submitting}
-            icon={<SendOutlined />}
-            type="primary"
-          >
-            Kirim
+          <Button htmlType="submit" shape="round" loading={submitting} type="primary">
+            Kirim Tanggapan
           </Button>
           <button
             type="button"
@@ -75,10 +70,6 @@ export default function Review({
 }: ReviewProps) {
   const [item, setItem] = useState<UlasanProduk>(defaultItem);
   const [commenting, setCommenting] = useState<boolean>(false);
-
-  const handleHapusTanggapan = () => {
-    deleteHapusTanggapanProduk(item.produk_id, item.id).then(() => onDelete(item));
-  };
 
   return (
     <div className="flex space-x-5 mb-5">
@@ -121,20 +112,6 @@ export default function Review({
               </button>
             </>
           )}
-          <Popconfirm
-            title="Hapus komentar ini?"
-            placement="rightTop"
-            onConfirm={handleHapusTanggapan}
-            okButtonProps={{
-              danger: true,
-            }}
-            okText="Ya"
-            cancelText="Batal"
-          >
-            <button className="text-red-500" key={'aksi-hapus'}>
-              Hapus
-            </button>
-          </Popconfirm>
         </div>
 
         {commenting && (

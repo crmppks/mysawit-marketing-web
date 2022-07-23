@@ -45,14 +45,14 @@ export default function HalamanUpdatePassword() {
             label="Password Lama"
             rules={[{ required: true, message: 'Password lama diperlukan' }]}
           >
-            <Input.Password />
+            <Input.Password size="large" allowClear />
           </Form.Item>
           <Form.Item
             name="password"
             label="Password Baru"
             rules={[{ required: true, message: 'Password baru diperlukan' }]}
           >
-            <Input.Password />
+            <Input.Password size="large" allowClear />
           </Form.Item>
           <Form.Item
             name="password_confirmation"
@@ -69,12 +69,13 @@ export default function HalamanUpdatePassword() {
               }),
             ]}
           >
-            <Input.Password />
+            <Input.Password size="large" allowClear />
           </Form.Item>
         </Form>
         <div className="mt-5">
           <Button
             size="large"
+            shape="round"
             icon={<CheckCircleFilled />}
             loading={loading}
             onClick={() => form.submit()}

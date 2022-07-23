@@ -153,7 +153,7 @@ export default function HalamanDaftarKonsumen() {
       <PageHeader
         className="site-page-header"
         title="Daftar Konsumen"
-        subTitle="Daftar semua konsumen yang tersedia"
+        subTitle="Daftar semua konsumen yang memilih anda sebagai Marketing Kecambah"
       />
       <div className="p-5 flex flex-col space-y-5 md:space-y-0 md:flex-row items-center justify-between">
         <Pagination

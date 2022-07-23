@@ -14,7 +14,7 @@ export default function HalamanDetailProfile() {
         <div className="flex space-x-5 md:space-x-10 w-full bg-white p-5 rounded border">
           <span className="flex-none">
             <img
-              className="w-20 md:w-36 rounded ring ring-green-600"
+              className="w-20 md:w-36 rounded-full shadow"
               src={session?.avatar}
               alt={session?.nama}
             />

@@ -44,7 +44,7 @@ export default function HalamanUpdateProfile() {
             label="Nama"
             rules={[{ required: true, message: 'Nama lama diperlukan' }]}
           >
-            <Input />
+            <Input size="large" allowClear />
           </Form.Item>
           <Form.Item
             name="email"
@@ -54,12 +54,13 @@ export default function HalamanUpdateProfile() {
               { type: 'email', message: 'Format email tidak valid' },
             ]}
           >
-            <Input />
+            <Input size="large" allowClear />
           </Form.Item>
         </Form>
         <div className="mt-5">
           <Button
             size="large"
+            shape="round"
             icon={<CheckCircleFilled />}
             loading={loading}
             onClick={() => form.submit()}

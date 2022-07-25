@@ -1,6 +1,7 @@
 import Product from '@/types/Produk';
 import AlamatPengiriman from '@/types/AlamatPengiriman';
 import Tagihan from '@/types/Tagihan';
+import UserKonsumen from './UserKonsumen';
 
 interface PesananProduk extends Product {
   order_quantity: number;
@@ -19,8 +20,7 @@ interface Pesanan {
     | 'DIBATALKAN';
   status_diff: string;
   konsumen_id: string;
-  total_harga: number;
-  total_bayar: number;
+  konsumen?: UserKonsumen;
   metode_pembayaran?: string;
   catatan: string;
   nomor_resi?: string;
@@ -42,7 +42,12 @@ interface Pesanan {
     informasi_tambahan: any;
     created_at: string;
   }>;
-  informasi?: {
+  informasi_harga: {
+    harga_total_bayar: number;
+    harga_total_produk: number;
+    harga_nego?: number;
+  };
+  informasi_pengiriman?: {
     to: string;
     postal_code: string;
     address?: AlamatPengiriman;
@@ -64,6 +69,7 @@ interface Pesanan {
     };
   };
   persyaratan?: {
+    status?: 'LULUS' | 'TIDAK-LULUS';
     id: number;
     alamat_id?: number;
     provinsi_id: number;
@@ -73,6 +79,7 @@ interface Pesanan {
     created_at: string;
     updated_at: string;
     alamat_lengkap: string;
+    informasi_penolakan?: string;
     provinsi: {
       id: number;
       nama: string;

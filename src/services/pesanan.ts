@@ -23,3 +23,7 @@ export const getPesananByKategori = (kategori: string, page: number = 1) => {
 export const getOrderInsight = () => {
   return axios.get('/marketing/pesanan/insight');
 };
+
+export const postConfirmPesananVerification = (pesanan_id: string, params: any) => {
+  return axios.post(`/marketing/pesanan/${pesanan_id}/konfirmasi-verifikasi`, params);
+};

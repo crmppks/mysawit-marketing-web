@@ -1,6 +1,7 @@
 import { postAuthMasuk } from '@/services/auth';
 import { getProfileDetail, postUpdateProfile } from '@/services/profile';
 import {
+  GET_ALL_NOTIFICATION_REQUEST,
   GET_PROFILE_FAILURE,
   GET_PROFILE_SUCCESS,
   SIGNIN_USER_FAILURE,
@@ -38,6 +39,7 @@ export function* getProfileDetailHandler() {
     const { data } = yield call(getProfileDetail);
 
     yield put({ type: GET_PROFILE_SUCCESS, user: data });
+    yield put({ type: GET_ALL_NOTIFICATION_REQUEST });
   } catch (e) {
     yield put({
       type: GET_PROFILE_FAILURE,

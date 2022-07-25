@@ -3,9 +3,17 @@ import moment from 'moment';
 import { useAppSelector } from '@/hooks/redux_hooks';
 import { Link } from 'react-router-dom';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { useEffect } from 'react';
+import { getProfileDetailAction } from '@/store/actions/sesi';
+import { useDispatch } from 'react-redux';
 
 export default function HalamanDetailProfile() {
+  const dispatch = useDispatch();
   const session = useAppSelector((state) => state.sesi.user);
+
+  useEffect(() => {
+    dispatch(getProfileDetailAction());
+  }, [dispatch]);
 
   return (
     <>

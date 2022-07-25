@@ -1,6 +1,6 @@
 export const formatCurrency = (x: string | number) => {
   if (!x) return '-';
-  return `Rp ${x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+  return `Rp${x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
 };
 
 export const formatWeight = (x: number) => {

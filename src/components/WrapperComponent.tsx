@@ -7,15 +7,18 @@ import {
   BellFilled,
   ProjectOutlined,
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
 import { getFCMToken, onMessageListener } from '@/services/firebase';
 import { useAppSelector } from '@/hooks/redux_hooks';
 import { postStoreFCMToken } from '@/services/notifikasi';
-import HeaderComponent from './HeaderComponent';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { getAllNotificationAction } from '@/store/actions/notifikasi';
+import HeaderComponent from '@/components/HeaderComponent';
 
 const mainBgColor = 'bg-gray-200';
 
 export default function WrapperComponent({ children }: { children: ReactNode }) {
+  const dispatch = useDispatch();
   const user = useAppSelector((state) => state.sesi.user);
 
   useEffect(() => {
@@ -27,25 +30,31 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
 
     onMessageListener()
       .then((payload: any) => {
+        dispatch(getAllNotificationAction());
+        console.log(payload);
         notification.open({
           message: payload.notification.title,
           description: payload.notification.body,
-          icon: <BellFilled className="text-2xl text-green-700" />,
+          icon: (
+            <span className="text-color-theme">
+              <BellFilled className="text-2xl" />
+            </span>
+          ),
           onClick: () => {
             //   console.log('Notification Clicked!');
           },
         });
       })
       .catch((err) => console.log('failed: ', err));
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
       <HeaderComponent />
       <main className={`${mainBgColor} flex`}>
-        <nav className="my-sidebar bg-white w-[250px] lg:w-[23vw] flex-none md:fixed left-0 top-0 z-40">
+        <nav className="my-sidebar bg-white w-[250px] lg:w-[23vw] flex-none fixed left-0 top-0 z-40">
           <div className="px-5 pb-5 mt-5 mb-[50px] flex space-x-3 flex-none border-b">
-            <div className="w-12 md:w-28 lg:w-32 flex-none flex items-center">
+            <div className="w-28 lg:w-32 flex-none flex items-center">
               <img src="/logo_mysawit.png" alt="Logo PPKS" className="w-full" />
             </div>
 
@@ -71,7 +80,7 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
             </Menu.Item>
           </Menu>
         </nav>
-        <section className="flex-grow md:ml-[250px] lg:ml-[23vw] min-h-[100vh]">
+        <section className="flex-grow ml-[250px] lg:ml-[23vw] min-h-[100vh] overflow-x-scroll">
           {children}
         </section>
       </main>

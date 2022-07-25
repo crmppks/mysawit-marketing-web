@@ -16,6 +16,7 @@ import HalamanDetailProfile from './pages/profile';
 import HalamanUpdatePassword from './pages/profile/UpdatePassword';
 import HalamanUpdateProfile from './pages/profile/UpdateProfile';
 import HalamanDaftarPesanan from './pages/pesanan/DaftarPesanan';
+import HalamanDetailPesanan from './pages/pesanan/DetailPesanan';
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
           </Route>
           <Route path="/pesanan" element={<Outlet />}>
             <Route index element={<HalamanDaftarPesanan />} />
+            <Route path=":id" element={<HalamanDetailPesanan />} />
           </Route>
           <Route path="/konsumen" element={<Outlet />}>
             <Route index element={<HalamanDaftarKonsumen />} />

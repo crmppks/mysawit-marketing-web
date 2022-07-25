@@ -31,7 +31,7 @@ export default function SearchBoxComponent() {
   }, [searchValue]);
 
   return (
-    <div className="relative flex-grow">
+    <div className="relative hidden md:block flex-grow">
       {searchValue && (
         <button
           onClick={() => setSearchValue('')}

@@ -30,7 +30,7 @@ export default function HalamanMasuk() {
 
   return (
     <section className="flex bg-white w-full h-screen place-items-center items-center flex-col">
-      <div className="bg-white relative mx-6 my-auto md:m-auto w-full md:w-5/12 lg:w-4/12 rounded-md shadow p-8 h-auto border-color-theme border-2">
+      <div className="bg-white relative mx-6 my-auto md:m-auto w-full md:w-6/12 lg:w-4/12 rounded-md shadow p-8 h-auto border-color-theme md:border-2">
         <div className="mb-10 flex flex-col items-center">
           <img alt="Logo" className="w-40" src="/logo_mysawit.png" />
           {/* <h1 className="font-bold text-xl md:text-3xl mt-2">Marketing MySawit</h1> */}

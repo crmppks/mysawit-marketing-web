@@ -46,7 +46,7 @@ export default function HalamanDetailKonsumen() {
               <img
                 src={konsumen?.avatar}
                 alt={konsumen?.nama}
-                className="border rounded-md max-w-full"
+                className="border rounded-full shadow max-w-full"
               />
             </div>
             <div className="col-span-12 md:col-span-9">

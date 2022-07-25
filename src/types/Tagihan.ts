@@ -1,3 +1,5 @@
+import Pesanan from './Pesanan';
+
 interface Tagihan {
   id: string;
   status: 'DIBUAT' | 'DIBAYAR' | 'DIBATALKAN' | 'DIKONFIRMASI';
@@ -5,7 +7,7 @@ interface Tagihan {
   nilai: number;
   nilai_diff: string;
   deskripsi: string;
-  model_tagihan: any;
+  tagihable: Pesanan;
   metode_pembayaran: string;
   metode_pembayaran_code: 'qris' | 'gopay' | 'bank_transfer' | 'echannel' | 'manual';
   payload_pg: {

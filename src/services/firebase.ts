@@ -11,19 +11,6 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
-// let messaging: Messaging | undefined = undefined;
-// let app = undefined;
-
-// if (!firebase.getApps().length) {
-//   app = initializeApp(firebaseConfig);
-// }
-
-// try {
-//   messaging = getMessaging(app);
-// } catch (e) {
-//   console.log(e);
-// }
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 

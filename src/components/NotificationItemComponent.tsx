@@ -1,19 +1,20 @@
+import { readsNotificationAction } from '@/store/actions/notifikasi';
 import Notifikasi from '@/types/Notifikasi';
 import moment from 'moment';
-import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
   notifikasi: Notifikasi;
 }
-export default function NotificationItem({ notifikasi: defaultNotifikasi }: Props) {
+export default function NotificationItem({ notifikasi }: Props) {
   const navigate = useNavigate();
-  const [notifikasi, setNotifikasi] = useState<Notifikasi>(defaultNotifikasi);
+  const dispatch = useDispatch();
 
   const handleOnRead = () => {
-    setNotifikasi((old) => ({ ...old, read_at: old.updated_at }));
+    if (!notifikasi.read_at) dispatch(readsNotificationAction(notifikasi.id));
     if (notifikasi.data.reference_type === 'App\\Pesanan') {
-      navigate(`/pesanan`);
+      navigate(`/pesanan/${notifikasi.data.reference_id}`);
     }
   };
 

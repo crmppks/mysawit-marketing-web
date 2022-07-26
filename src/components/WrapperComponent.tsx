@@ -80,7 +80,7 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
             </Menu.Item>
           </Menu>
         </nav>
-        <section className="flex-grow ml-[250px] lg:ml-[23vw] min-h-[100vh] overflow-x-scroll">
+        <section className="flex-grow ml-[250px] lg:ml-[23vw] min-h-[100vh] overflow-x-auto">
           {children}
         </section>
       </main>

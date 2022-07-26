@@ -44,6 +44,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "build-vercel-boypanjaitan-com": "PUBLIC_URL=https://mysawit-marketing.boypanjaitan.com craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext js,jsx,ts,tsx --fix -- src"

@@ -18,6 +18,8 @@ import {
 import { Link, useParams } from 'react-router-dom';
 import ModalKonfirmasiVerifikasiPersyaratan from '@/components/ModalKonfirmasiVerifikasiPersyaratanComponent';
 import { handleCopy } from '@/helpers/string_helper';
+import ModalAturPengiriman from '@/components/ModalAturPengirimanComponent';
+import DaftarProdukPesanan from '@/components/DaftarProdukPesananComponent';
 
 const Row = ({ children, className = '' }: any) => (
   <div className={`flex justify-between space-x-5 ${className}`}>{children}</div>
@@ -30,6 +32,7 @@ export default function HalamanDetailPesanan() {
   const [pesanan, setPesanan] = useState<Pesanan>(null);
   const [stepsPosition, setStepsPosition] = useState<number>(0);
   const [showModalKonfirmasi, setShowModalKonfirmasi] = useState<boolean>(false);
+  const [showModalAturPengiriman, setShowModalAturPengiriman] = useState<boolean>(false);
 
   const handleLoadData = () => {
     setLoading(true);
@@ -73,6 +76,12 @@ export default function HalamanDetailPesanan() {
                 setShowModalKonfirmasi(false);
                 handleLoadData();
               }}
+            />
+          )}
+          {pesanan.status === 'DIKEMAS' && (
+            <ModalAturPengiriman
+              visible={showModalAturPengiriman}
+              onCancel={() => setShowModalAturPengiriman(false)}
             />
           )}
           <Steps
@@ -195,7 +204,7 @@ export default function HalamanDetailPesanan() {
               </div>
               {pesanan.persyaratan && (
                 <div
-                  className={`bg-white p-5 rounded space-y-1 ${
+                  className={`bg-white p-5 rounded ${
                     pesanan.persyaratan.status &&
                     `border ${
                       pesanan.persyaratan.status === 'LULUS'
@@ -204,7 +213,7 @@ export default function HalamanDetailPesanan() {
                     }`
                   }`}
                 >
-                  <div className="flex justify-between space-x-5 mb-5 items-center">
+                  <div className="flex justify-between space-x-5 mb-3 items-center">
                     <h4 className="font-bold text-lg mb-0">
                       Info Verifikasi Persyaratan
                     </h4>
@@ -224,134 +233,105 @@ export default function HalamanDetailPesanan() {
                       </span>
                     )}
                   </div>
-                  <Row>
-                    <span>Dokumen Surat Lahan</span>
-                    <a
-                      target="_blank"
-                      href={pesanan.persyaratan.dokumen_surat_lahan.url}
-                      rel="noreferrer"
-                    >
-                      {pesanan.persyaratan.dokumen_surat_lahan.name} <LinkOutlined />
-                    </a>
-                  </Row>
-                  <Row>
-                    <span>Dokumen Surat Pernyataan</span>
-                    <a
-                      target="_blank"
-                      href={pesanan.persyaratan.dokumen_surat_pernyataan.url}
-                      rel="noreferrer"
-                    >
-                      {pesanan.persyaratan.dokumen_surat_pernyataan.name} <LinkOutlined />
-                    </a>
-                  </Row>
-                  <Row>
-                    <span>Dokumen KTP</span>
-                    <a
-                      target="_blank"
-                      href={pesanan.persyaratan.dokumen_ktp.url}
-                      rel="noreferrer"
-                    >
-                      {pesanan.persyaratan.dokumen_ktp.name} <LinkOutlined />
-                    </a>
-                  </Row>
-                  <Row>
-                    <span>Alamat Kebun</span>
-                    <p className="mb-0 text-right max-w-[60%]">
-                      {pesanan.persyaratan.alamat_lengkap}
-                    </p>
-                  </Row>
-                  {pesanan.persyaratan.status === 'TIDAK-LULUS' && (
-                    <>
-                      <br />
-                      <div className="bg-red-600 px-5 py-3 text-white -mx-5 flex items-center space-x-3">
-                        <InfoCircleOutlined />{' '}
-                        <p className="mb-0">{pesanan.persyaratan.informasi_penolakan}</p>
-                      </div>
-                    </>
-                  )}
+                  <hr className="border-dashed mb-4" />
+                  <div className="space-y-1">
+                    <Row>
+                      <span>Dokumen Surat Lahan</span>
+                      <a
+                        target="_blank"
+                        href={pesanan.persyaratan.dokumen_surat_lahan.url}
+                        rel="noreferrer"
+                      >
+                        {pesanan.persyaratan.dokumen_surat_lahan.name} <LinkOutlined />
+                      </a>
+                    </Row>
+                    <Row>
+                      <span>Dokumen Surat Pernyataan</span>
+                      <a
+                        target="_blank"
+                        href={pesanan.persyaratan.dokumen_surat_pernyataan.url}
+                        rel="noreferrer"
+                      >
+                        {pesanan.persyaratan.dokumen_surat_pernyataan.name}{' '}
+                        <LinkOutlined />
+                      </a>
+                    </Row>
+                    <Row>
+                      <span>Dokumen KTP</span>
+                      <a
+                        target="_blank"
+                        href={pesanan.persyaratan.dokumen_ktp.url}
+                        rel="noreferrer"
+                      >
+                        {pesanan.persyaratan.dokumen_ktp.name} <LinkOutlined />
+                      </a>
+                    </Row>
+                    <Row>
+                      <span>Alamat Kebun</span>
+                      <p className="mb-0 text-right max-w-[60%]">
+                        {pesanan.persyaratan.alamat_lengkap}
+                      </p>
+                    </Row>
+                    {pesanan.persyaratan.status === 'TIDAK-LULUS' && (
+                      <>
+                        <br />
+                        <div className="bg-red-600 px-5 py-3 text-white -mx-5 flex items-center space-x-3">
+                          <InfoCircleOutlined />{' '}
+                          <p className="mb-0">
+                            {pesanan.persyaratan.informasi_penolakan}
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
-              <div className="bg-white p-5 rounded space-y-1">
+              <div className="bg-white p-5 rounded">
                 <h4 className="font-bold text-lg">Info Pengiriman</h4>
-                <Row>
-                  <span>Kurir</span>
-                  <span>
-                    {pesanan.informasi_pengiriman.courier.name} -{' '}
-                    {pesanan.informasi_pengiriman.courier_service.service}
-                  </span>
-                </Row>
-                <Row>
-                  <span>No. Resi</span>
-                  <span>{pesanan.nomor_resi ?? '-'}</span>
-                </Row>
-                <Row>
-                  <span>Catatan</span>
-                  <p className="mb-0 text-gray-400 text-right max-w-[60%]">
-                    {pesanan.catatan ?? '-'}
-                  </p>
-                </Row>
-                <hr className="border-dashed my-2" />
-                <Row>
-                  <span>Alamat Pengiriman</span>
-                  <div className="text-right max-w-[60%]">
-                    <b>{pesanan.informasi_pengiriman.to}</b>
-                    <p className="mb-0">
-                      {pesanan.informasi_pengiriman.address.no_hp_lengkap}
+                <hr className="border-dashed mb-4" />
+                <div className="space-y-1">
+                  <Row>
+                    <span>Kurir</span>
+                    <span>
+                      {pesanan.informasi_pengiriman.courier.name} -{' '}
+                      {pesanan.informasi_pengiriman.courier_service.service}
+                    </span>
+                  </Row>
+                  <Row>
+                    <span>No. Resi</span>
+                    <span>{pesanan.nomor_resi ?? '-'}</span>
+                  </Row>
+                  <Row>
+                    <span>Catatan</span>
+                    <p className="mb-0 text-gray-400 text-right max-w-[60%]">
+                      {pesanan.catatan ?? '-'}
                     </p>
-                    <p className="mb-0">
-                      {pesanan.informasi_pengiriman.address.alamat_lengkap}
-                    </p>
-                  </div>
-                </Row>
+                  </Row>
+                  <hr className="border-dashed my-2" />
+                  <Row>
+                    <span>Alamat Pengiriman</span>
+                    <div className="text-right max-w-[60%]">
+                      <b>{pesanan.informasi_pengiriman.to}</b>
+                      <p className="mb-0">
+                        {pesanan.informasi_pengiriman.address.no_hp_lengkap}
+                      </p>
+                      <p className="mb-0">
+                        {pesanan.informasi_pengiriman.address.alamat_lengkap}
+                      </p>
+                    </div>
+                  </Row>
+                </div>
               </div>
 
-              <div className="p-5 rounded bg-white my-10 space-y-5">
-                <h4 className="font-bold text-lg">Detail Produk</h4>
-                {pesanan.items.map((produk) => (
-                  <div key={produk.id} className="flex-grow flex space-x-3">
-                    <div className="flex-none w-24">
-                      <img
-                        alt={produk.nama}
-                        src={produk.banner}
-                        className="rounded max-w-full"
-                      />
-                    </div>
-
-                    <div className="flex-grow">
-                      <Link to={`/kategori/${produk.kategori.id}`}>
-                        {produk.kategori?.nama}
-                      </Link>
-                      <div className="flex items-center justify-between space-x-5">
-                        <h4 className="mb-0 text-lg">
-                          <Link to={`/produk/${produk.slug}`}>{produk.nama}</Link>
-                        </h4>
-                      </div>
-
-                      <div className="flex justify-between m-0">
-                        <span className="text-gray-500">
-                          {`${produk.order_quantity} x ${formatCurrency(
-                            produk.order_item_price,
-                          )}`}
-                        </span>
-                        <p className="flex flex-col items-end">
-                          <span className="text-gray-500 text-xs">Total Harga</span>
-                          <b>
-                            {formatCurrency(
-                              produk.order_item_price * produk.order_quantity,
-                            )}
-                          </b>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div className="p-5 rounded bg-white my-10">
+                <DaftarProdukPesanan pesanan={pesanan} />
               </div>
 
-              <div className="p-5 rounded bg-white space-y-[6px]">
+              <div className="p-5 rounded bg-white">
                 {pesanan.tagihan && (
                   <>
-                    <div className="flex space-x-5 justify-between items-center mb-5">
-                      <h4 className="font-bold text-lg mb-0">Detail Tagihan</h4>
+                    <div className="flex space-x-5 justify-between items-center mb-4">
+                      <h4 className="font-bold text-lg mb-0">Info Tagihan</h4>
                       <span
                         className={`${
                           pesanan.tagihan.is_finished
@@ -371,148 +351,154 @@ export default function HalamanDetailPesanan() {
                         &nbsp; {pesanan.tagihan?.status}
                       </span>
                     </div>
-                    <Row>
-                      <span>Nomor Tagihan</span>
-                      <button
-                        onClick={() => handleCopy(pesanan.tagihan.id, 'Nomor Tagihan')}
-                      >
-                        {pesanan.tagihan.id}
-                        &nbsp;
-                        <CopyOutlined />
-                      </button>
-                    </Row>
-                    <Row>
-                      <span>Tagihan Dibuat Pada</span>
-                      <span>
-                        {moment(new Date(pesanan.tagihan.created_at)).format(
-                          'dddd, DD MMMM yyyy HH:mm',
-                        )}
-                      </span>
-                    </Row>
-                    <Row>
-                      <span>Metode Pembayaran</span>
-                      <span>{pesanan.tagihan.metode_pembayaran}</span>
-                    </Row>
-                    {pesanan.tagihan?.payload_pg?.payment_type === 'gopay' && (
+                    <hr className="border-dashed mb-4" />
+                  </>
+                )}
+                <div className="space-y-2">
+                  {pesanan.tagihan && (
+                    <>
                       <Row>
-                        <span>QR Code</span>
-                        <div className="flex justify-end flex-grow items-end">
-                          <img
-                            className="max-w-sm"
-                            src={
-                              pesanan.tagihan.response_pg?.actions?.find(
-                                (i) => i.name === 'generate-qr-code',
-                              ).url
-                            }
-                            alt="QR CODE"
-                          />
-                        </div>
-                      </Row>
-                    )}
-                    {pesanan.tagihan?.payload_pg?.payment_type === 'qris' && (
-                      <Row>
-                        <span>QR Code</span>
-                        <div className="flex justify-end flex-grow items-end">
-                          <img
-                            className="max-w-sm"
-                            src={
-                              pesanan.tagihan.response_pg?.actions?.find(
-                                (i) => i.name === 'generate-qr-code',
-                              ).url
-                            }
-                            alt="QR CODE"
-                          />
-                        </div>
-                      </Row>
-                    )}
-                    {pesanan.tagihan?.payload_pg?.payment_type === 'bank_transfer' && (
-                      <Row>
-                        <span>Nomor Virtual Account</span>
+                        <span>Nomor Tagihan</span>
                         <button
-                          onClick={() =>
-                            handleCopy(
-                              pesanan.tagihan?.response_pg?.va_numbers?.find(
-                                (i) =>
-                                  i.bank ===
-                                  pesanan.tagihan.payload_pg?.bank_transfer?.bank,
-                              )?.va_number,
-                              'Nomor Virtual Account',
-                            )
-                          }
+                          onClick={() => handleCopy(pesanan.tagihan.id, 'Nomor Tagihan')}
                         >
-                          {
-                            pesanan.tagihan?.response_pg?.va_numbers?.find(
-                              (i) =>
-                                i.bank ===
-                                pesanan.tagihan.payload_pg?.bank_transfer?.bank,
-                            )?.va_number
-                          }
+                          {pesanan.tagihan.id}
                           &nbsp;
                           <CopyOutlined />
                         </button>
                       </Row>
-                    )}
-                    {pesanan.tagihan?.payload_pg?.payment_type === 'echannel' && (
-                      <>
+                      <Row>
+                        <span>Tagihan Dibuat Pada</span>
+                        <span>
+                          {moment(new Date(pesanan.tagihan.created_at)).format(
+                            'dddd, DD MMMM yyyy HH:mm',
+                          )}
+                        </span>
+                      </Row>
+                      <Row>
+                        <span>Metode Pembayaran</span>
+                        <span>{pesanan.tagihan.metode_pembayaran}</span>
+                      </Row>
+                      {pesanan.tagihan?.payload_pg?.payment_type === 'gopay' && (
                         <Row>
-                          <span>Bill Key</span>
-                          <button
-                            onClick={() =>
-                              handleCopy(
-                                pesanan.tagihan?.response_pg?.bill_key,
-                                'Bill Key',
-                              )
-                            }
-                          >
-                            {pesanan.tagihan?.response_pg?.bill_key}
-                            &nbsp;
-                            <CopyOutlined />
-                          </button>
+                          <span>QR Code</span>
+                          <div className="flex justify-end flex-grow items-end">
+                            <img
+                              className="max-w-sm"
+                              src={
+                                pesanan.tagihan.response_pg?.actions?.find(
+                                  (i) => i.name === 'generate-qr-code',
+                                ).url
+                              }
+                              alt="QR CODE"
+                            />
+                          </div>
                         </Row>
-                        <Row>
-                          <span>Bill Code</span>
-                          <button
-                            onClick={() =>
-                              handleCopy(
-                                pesanan.tagihan?.response_pg?.biller_code,
-                                'Bill Code',
-                              )
-                            }
-                          >
-                            {pesanan.tagihan?.response_pg?.biller_code}
-                            &nbsp;
-                            <CopyOutlined />
-                          </button>
-                        </Row>
-                      </>
-                    )}
-                    <Row>
-                      <span>Deskripsi</span>
-                      <span className="max-w-[60%]">{pesanan.tagihan.deskripsi}</span>
-                    </Row>
-                    <hr className="border-dashed border-color-theme" />
-                  </>
-                )}
-
-                <Row>
-                  <span>Total Harga Produk</span>
-                  <span>
-                    {formatCurrency(pesanan.informasi_harga.harga_total_produk)}
-                  </span>
-                </Row>
-                {pesanan.informasi_pengiriman.courier_service && (
-                  <Row>
-                    <span>
-                      Ongkos Kirim ({formatWeight(pesanan.informasi_pengiriman.weight)})
-                    </span>
-                    <span>
-                      {formatCurrency(
-                        pesanan.informasi_pengiriman.courier_service.cost.value,
                       )}
+                      {pesanan.tagihan?.payload_pg?.payment_type === 'qris' && (
+                        <Row>
+                          <span>QR Code</span>
+                          <div className="flex justify-end flex-grow items-end">
+                            <img
+                              className="max-w-sm"
+                              src={
+                                pesanan.tagihan.response_pg?.actions?.find(
+                                  (i) => i.name === 'generate-qr-code',
+                                ).url
+                              }
+                              alt="QR CODE"
+                            />
+                          </div>
+                        </Row>
+                      )}
+                      {pesanan.tagihan?.payload_pg?.payment_type === 'bank_transfer' && (
+                        <Row>
+                          <span>Nomor Virtual Account</span>
+                          <button
+                            onClick={() =>
+                              handleCopy(
+                                pesanan.tagihan?.response_pg?.va_numbers?.find(
+                                  (i) =>
+                                    i.bank ===
+                                    pesanan.tagihan.payload_pg?.bank_transfer?.bank,
+                                )?.va_number,
+                                'Nomor Virtual Account',
+                              )
+                            }
+                          >
+                            {
+                              pesanan.tagihan?.response_pg?.va_numbers?.find(
+                                (i) =>
+                                  i.bank ===
+                                  pesanan.tagihan.payload_pg?.bank_transfer?.bank,
+                              )?.va_number
+                            }
+                            &nbsp;
+                            <CopyOutlined />
+                          </button>
+                        </Row>
+                      )}
+                      {pesanan.tagihan?.payload_pg?.payment_type === 'echannel' && (
+                        <>
+                          <Row>
+                            <span>Bill Key</span>
+                            <button
+                              onClick={() =>
+                                handleCopy(
+                                  pesanan.tagihan?.response_pg?.bill_key,
+                                  'Bill Key',
+                                )
+                              }
+                            >
+                              {pesanan.tagihan?.response_pg?.bill_key}
+                              &nbsp;
+                              <CopyOutlined />
+                            </button>
+                          </Row>
+                          <Row>
+                            <span>Bill Code</span>
+                            <button
+                              onClick={() =>
+                                handleCopy(
+                                  pesanan.tagihan?.response_pg?.biller_code,
+                                  'Bill Code',
+                                )
+                              }
+                            >
+                              {pesanan.tagihan?.response_pg?.biller_code}
+                              &nbsp;
+                              <CopyOutlined />
+                            </button>
+                          </Row>
+                        </>
+                      )}
+                      <Row>
+                        <span>Deskripsi</span>
+                        <span className="max-w-[60%]">{pesanan.tagihan.deskripsi}</span>
+                      </Row>
+                    </>
+                  )}
+
+                  <Row>
+                    <span>Total Harga Produk</span>
+                    <span>
+                      {formatCurrency(pesanan.informasi_harga.harga_total_produk)}
                     </span>
                   </Row>
-                )}
-                <hr className="border-dashed border-color-theme" />
+                  {pesanan.informasi_pengiriman.courier_service && (
+                    <Row>
+                      <span>
+                        Ongkos Kirim ({formatWeight(pesanan.informasi_pengiriman.weight)})
+                      </span>
+                      <span>
+                        {formatCurrency(
+                          pesanan.informasi_pengiriman.courier_service.cost.value,
+                        )}
+                      </span>
+                    </Row>
+                  )}
+                </div>
+                <hr className="border-dashed border-color-theme mt-4 mb-4" />
                 <Row>
                   <span className="font-bold text-lg text-color-theme">Total Bayar</span>
                   <b className="text-lg">
@@ -521,7 +507,7 @@ export default function HalamanDetailPesanan() {
                 </Row>
               </div>
             </div>
-            <div className="col-span-12 lg:col-span-4 space-y-3">
+            <div className="col-span-12 lg:col-span-4 space-y-2">
               {pesanan.status === 'VERIFIKASI_PERSYARATAN' && (
                 <Button
                   disabled={!pesanan.persyaratan}
@@ -534,7 +520,12 @@ export default function HalamanDetailPesanan() {
                 </Button>
               )}
               {pesanan.status === 'DIKEMAS' && (
-                <Button block size="large" type={`primary`}>
+                <Button
+                  onClick={() => setShowModalAturPengiriman(true)}
+                  block
+                  size="large"
+                  type={`primary`}
+                >
                   Konfirmasi Pengiriman
                 </Button>
               )}

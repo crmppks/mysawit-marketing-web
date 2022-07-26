@@ -9,6 +9,7 @@ import Pesanan from '@/types/Pesanan';
 import { formatCurrency } from '@/helpers/order_helper';
 import { Link } from 'react-router-dom';
 import ModalKonfirmasiVerifikasiPersyaratan from '@/components/ModalKonfirmasiVerifikasiPersyaratanComponent';
+import DaftarProdukPesanan from '@/components/DaftarProdukPesananComponent';
 
 type OrderInsight = {
   code:
@@ -175,45 +176,7 @@ export default function HalamanDaftarPesanan() {
                                   'dddd DD MMMM yyyy, HH:mm',
                                 )}
                               </p>
-                              {pesanan.items.map((produk) => (
-                                <div key={produk.id} className="flex-grow flex space-x-3">
-                                  <div className="flex-none w-24">
-                                    <img
-                                      alt={produk.nama}
-                                      src={produk.banner}
-                                      className="rounded"
-                                    />
-                                  </div>
-
-                                  <div className="flex-grow">
-                                    <span>{produk.kategori.nama}</span>
-                                    <h4 className="mb-0 text-lg mt-0 leading-tight">
-                                      <Link to={`/produk/${produk.id}`}>
-                                        {produk.nama}
-                                      </Link>
-                                    </h4>
-                                    <div className="flex justify-between m-0">
-                                      <span className="text-gray-500">
-                                        {`${produk.order_quantity} x ${formatCurrency(
-                                          produk.order_item_price,
-                                        )}`}
-                                      </span>
-
-                                      <p className="flex flex-col items-end">
-                                        <span className="text-gray-500 text-xs">
-                                          Total Harga
-                                        </span>
-                                        <b>
-                                          {formatCurrency(
-                                            produk.order_item_price *
-                                              produk.order_quantity,
-                                          )}
-                                        </b>
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
+                              <DaftarProdukPesanan pesanan={pesanan} showHeader={false} />
                               {pesanan.informasi_pengiriman?.courier_service && (
                                 <div className="flex items-center justify-between border-t pt-5">
                                   <div className="flex flex-col">

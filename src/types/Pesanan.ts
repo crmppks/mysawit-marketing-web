@@ -3,7 +3,7 @@ import AlamatPengiriman from '@/types/AlamatPengiriman';
 import Tagihan from '@/types/Tagihan';
 import UserKonsumen from './UserKonsumen';
 
-interface PesananProduk extends Product {
+export interface PesananProduk extends Product {
   order_quantity: number;
   order_item_weight: number;
   order_item_price: number;

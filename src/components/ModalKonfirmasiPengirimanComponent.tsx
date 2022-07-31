@@ -1,24 +1,37 @@
+import { postConfirmPesananShipment } from '@/services/pesanan';
+import Pesanan from '@/types/Pesanan';
 import { Checkbox, DatePicker, Form, Input, Modal, ModalProps, Select } from 'antd';
 import moment from 'moment';
 import { useState } from 'react';
 
-interface Props extends ModalProps {}
+interface Props extends ModalProps {
+  pesanan: Pesanan;
+  onFinish: (pesanan: Pesanan) => void;
+}
 
 export default function ModalAturPengiriman({
   visible,
+  pesanan,
   title = 'Atur Pengiriman Pesanan',
   onCancel,
+  onFinish,
 }: Props) {
   const [form] = Form.useForm();
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const [satuan_durasi, set_satuan_durasi] = useState<'BULAN' | 'HARI'>('BULAN');
   const [mulai_hari_ini, set_mulai_hari_ini] = useState<boolean>(true);
 
   const handleSubmit = (values: any) => {
+    setSubmitting(true);
     const payload = {
       ...values,
       satuan_durasi,
     };
-    console.log(payload);
+    postConfirmPesananShipment(pesanan.id, payload)
+      .then(({ data }) => {
+        onFinish(data);
+      })
+      .finally(() => setSubmitting(false));
   };
 
   return (
@@ -26,10 +39,20 @@ export default function ModalAturPengiriman({
       title={title}
       visible={visible}
       okText="Selesai"
+      okButtonProps={{
+        loading: submitting,
+      }}
       onOk={() => form.submit()}
       onCancel={onCancel}
     >
       <Form onFinish={handleSubmit} form={form} layout="vertical">
+        <Form.Item
+          label="Nomor Resi"
+          name={'nomor_resi'}
+          rules={[{ required: true, message: 'Nomor resi dibutuhkan' }]}
+        >
+          <Input />
+        </Form.Item>
         <Form.Item
           label="Durasi Pengiriman"
           name={'durasi'}

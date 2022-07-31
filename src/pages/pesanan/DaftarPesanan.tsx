@@ -223,7 +223,7 @@ export default function HalamanDaftarPesanan() {
                                     </Link>
                                   )}
 
-                                  {['VERIFIKASI_PERSYARATAN', 'DIKIRIM'].includes(
+                                  {['VERIFIKASI_PERSYARATAN', 'SELESAI'].includes(
                                     pesanan.status,
                                   ) && (
                                     <Dropdown

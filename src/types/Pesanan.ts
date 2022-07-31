@@ -67,6 +67,12 @@ interface Pesanan {
         note: string;
       };
     };
+    duration?: {
+      estimation: string;
+      estimation_unit: 'BULAN' | 'HARI';
+      date_from: string;
+      date_to: string;
+    };
   };
   persyaratan?: {
     status?: 'LULUS' | 'TIDAK-LULUS';

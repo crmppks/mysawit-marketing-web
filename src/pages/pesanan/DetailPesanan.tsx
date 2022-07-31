@@ -18,8 +18,9 @@ import {
 import { Link, useParams } from 'react-router-dom';
 import ModalKonfirmasiVerifikasiPersyaratan from '@/components/ModalKonfirmasiVerifikasiPersyaratanComponent';
 import { handleCopy } from '@/helpers/string_helper';
-import ModalAturPengiriman from '@/components/ModalAturPengirimanComponent';
+import ModalKonfirmasiPengiriman from '@/components/ModalKonfirmasiPengirimanComponent';
 import DaftarProdukPesanan from '@/components/DaftarProdukPesananComponent';
+import { startCase } from 'lodash';
 
 const Row = ({ children, className = '' }: any) => (
   <div className={`flex justify-between space-x-5 ${className}`}>{children}</div>
@@ -79,8 +80,13 @@ export default function HalamanDetailPesanan() {
             />
           )}
           {pesanan.status === 'DIKEMAS' && (
-            <ModalAturPengiriman
+            <ModalKonfirmasiPengiriman
               visible={showModalAturPengiriman}
+              pesanan={pesanan}
+              onFinish={(p) => {
+                setPesanan((old) => ({ ...old, ...p }));
+                setShowModalAturPengiriman(false);
+              }}
               onCancel={() => setShowModalAturPengiriman(false)}
             />
           )}
@@ -193,7 +199,7 @@ export default function HalamanDetailPesanan() {
 
                 <Row>
                   <span>Konsumen</span>
-                  <Link to={`/konsumen/${pesanan.konsumen.user_id}`}>
+                  <Link className="text-lg" to={`/konsumen/${pesanan.konsumen.user_id}`}>
                     {pesanan.konsumen.nama}
                   </Link>
                 </Row>
@@ -286,10 +292,45 @@ export default function HalamanDetailPesanan() {
                   </div>
                 </div>
               )}
-              <div className="bg-white p-5 rounded">
-                <h4 className="font-bold text-lg">Info Pengiriman</h4>
+              <div
+                className={`bg-white p-5 rounded ${
+                  pesanan.informasi_pengiriman.duration && 'border border-green-600'
+                }`}
+              >
+                <div className="flex justify-between mb-4 space-x-5">
+                  <h4 className="font-bold text-lg mb-0">Info Pengiriman</h4>
+                  {pesanan.informasi_pengiriman.duration && (
+                    <span className="bg-green-600 px-3 py-[4px] rounded-full text-white text-[small]">
+                      <ClockCircleFilled /> &nbsp;
+                      {startCase(
+                        moment(pesanan.informasi_pengiriman.duration?.date_to).fromNow(),
+                      )}
+                    </span>
+                  )}
+                </div>
+
                 <hr className="border-dashed mb-4" />
                 <div className="space-y-1">
+                  {pesanan.informasi_pengiriman.duration && (
+                    <>
+                      <Row>
+                        <span>Terhitung Mulai</span>
+                        <span>
+                          {moment(pesanan.informasi_pengiriman.duration.date_from).format(
+                            'dddd, Do MMMM yyyy',
+                          )}
+                        </span>
+                      </Row>
+                      <Row>
+                        <span>Terhitung Hingga</span>
+                        <span>
+                          {moment(pesanan.informasi_pengiriman.duration.date_to).format(
+                            'dddd, Do MMMM yyyy',
+                          )}
+                        </span>
+                      </Row>
+                    </>
+                  )}
                   <Row>
                     <span>Kurir</span>
                     <span>
@@ -327,7 +368,11 @@ export default function HalamanDetailPesanan() {
                 <DaftarProdukPesanan pesanan={pesanan} />
               </div>
 
-              <div className="p-5 rounded bg-white">
+              <div
+                className={`p-5 rounded bg-white ${
+                  pesanan.tagihan?.status === 'DIBAYAR' && 'border border-green-600'
+                }`}
+              >
                 {pesanan.tagihan && (
                   <>
                     <div className="flex space-x-5 justify-between items-center mb-4">

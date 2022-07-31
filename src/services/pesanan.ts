@@ -27,3 +27,7 @@ export const getOrderInsight = () => {
 export const postConfirmPesananVerification = (pesanan_id: string, params: any) => {
   return axios.post(`/marketing/pesanan/${pesanan_id}/konfirmasi-verifikasi`, params);
 };
+
+export const postConfirmPesananShipment = (pesanan_id: string, params: any) => {
+  return axios.post(`/marketing/pesanan/${pesanan_id}/konfirmasi-pengiriman`, params);
+};

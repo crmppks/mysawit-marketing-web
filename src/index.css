@@ -9,6 +9,10 @@
     vertical-align: 2px !important;
 }
 
+.mysawit-app .ant-image-preview-img {
+    display: initial;
+}
+
 @layer base {
     body {
         @apply text-sm font-noto;

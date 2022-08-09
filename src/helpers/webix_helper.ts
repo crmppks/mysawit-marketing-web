@@ -18,6 +18,19 @@ export const webixTableParams = (params: any, key: any = null, parent: any = nul
         return a;
       }
 
+      if (moment.isMoment(params[k])) {
+        if (parent) {
+          a.push(
+            `${key ? `${parent}[${key}][${k}]` : k}=${moment(params[k]).format(
+              'yyyy-MM-DD',
+            )}`,
+          );
+          return a;
+        }
+        a.push(`${key ? `${key}[${k}]` : k}=${moment(params[k]).format('yyyy-MM-DD')}`);
+        return a;
+      }
+
       if (typeof params[k] === 'object') {
         a.push(webixTableParams(params[k], k, key));
         return a;

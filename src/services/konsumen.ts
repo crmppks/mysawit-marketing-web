@@ -5,7 +5,7 @@ export const getSemuaKategoriKonsumenCascader = () => {
 };
 
 export const getDetailKategoriKonsumen = (kategori_id: string) => {
-  return axios.get(`/admin/kategori/konsumen/${kategori_id}`);
+  return axios.get(`/marketing/kategori/konsumen/${kategori_id}`);
 };
 
 export const getSemuaKategoriKonsumen = () => {

@@ -79,9 +79,9 @@ export default function Review({
       <div className="flex-grow">
         <p className="flex items-center space-x-3 mb-0">
           <span className="font-semibold">{item.user.nama}</span>
-          <Tooltip title={moment(item.created_at).format('DD MMMM yyyy, HH:mm')}>
+          <Tooltip title={moment(item.rated_at).format('DD MMMM yyyy, HH:mm')}>
             <span className="text-xs text-gray-400">
-              {moment(new Date(item.created_at)).fromNow()}
+              {moment(new Date(item.rated_at)).fromNow()}
             </span>
           </Tooltip>
         </p>

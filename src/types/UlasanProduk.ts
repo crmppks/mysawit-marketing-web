@@ -11,6 +11,7 @@ type UlasanProduk = {
   user: User;
   sub_komentar: UlasanProduk[];
   reply_to: number;
+  rated_at: string;
 };
 
 export default UlasanProduk;

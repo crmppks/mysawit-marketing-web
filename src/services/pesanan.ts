@@ -16,7 +16,13 @@ export const getDetailPesanan = (pesanan_id: string) => {
   return axios.get(`/marketing/pesanan/${pesanan_id}`);
 };
 
-export const getPesananByKategori = (kategori: string, page: number = 1) => {
+export const getPesananByKategori = (
+  kategori: string,
+  page: number = 1,
+  filter: any = null,
+) => {
+  if (filter)
+    return axios.get(`/marketing/pesanan/kategori/${kategori}?page=${page}&${filter}`);
   return axios.get(`/marketing/pesanan/kategori/${kategori}?page=${page}`);
 };
 

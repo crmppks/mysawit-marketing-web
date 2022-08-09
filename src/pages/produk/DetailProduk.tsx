@@ -8,12 +8,22 @@ import {
 import Paging from '@/types/Paging';
 import Produk from '@/types/Produk';
 import UlasanProduk from '@/types/UlasanProduk';
-import { StarFilled } from '@ant-design/icons';
-import { Empty, PageHeader, Pagination, Progress, Rate, Skeleton, Tabs } from 'antd';
+import { ClockCircleOutlined, SmallDashOutlined, StarFilled } from '@ant-design/icons';
+import {
+  Alert,
+  Empty,
+  Image,
+  PageHeader,
+  Pagination,
+  Progress,
+  Rate,
+  Skeleton,
+  Tabs,
+} from 'antd';
 import { AxiosResponse } from 'axios';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 export default function HalamanDetailProduk() {
   const navigate = useNavigate();
@@ -74,21 +84,29 @@ export default function HalamanDetailProduk() {
         title="Detail Produk"
         subTitle="Lihat detail informasi tentang produk"
       />
-
+      {!produk?.is_active && (
+        <div className="mb-5 mx-5">
+          <Alert
+            message="Produk ini sedang tidak aktif, konsumen tidak akan dapat melakukan pemesanan"
+            banner
+          />
+        </div>
+      )}
       <section className="p-5 bg-white rounded mx-5 mb-5">
         <div className="w-full md:flex-grow">
           <div className="grid grid-cols-12 gap-10">
             <div className="col-span-12 md:col-span-5 lg:col-span-4">
-              <img
+              <Image
                 src={produk?.banner}
                 alt={produk?.nama}
                 className="md:w-full w-52 rounded overflow-hidden"
               />
             </div>
-            <div className="col-span-12 md:col-span-7">
+            <div className="col-span-12 md:col-span-7 lg:col-span-8 relative">
               <h1 className="text-2xl md:text-3xl font-bold mb-2">{produk?.nama}</h1>
               <p className="text-gray-400 text-xs">
-                Terjual {produk?.jumlah_terjual} .{produk?.jumlah_lihat}x
+                Terjual {produk?.jumlah_terjual} <SmallDashOutlined /> Dilihat{' '}
+                {produk?.jumlah_lihat}x
               </p>
               <p className="flex items-center">
                 <span className="text-3xl font-bold">{formatCurrency(produk.harga)}</span>
@@ -114,11 +132,29 @@ export default function HalamanDetailProduk() {
                       <span className="text-gray-500">Terjual</span>
                       <span>{produk.jumlah_terjual}</span>
                     </p>
+                    <p className="mb-0 pb-2 last:pb-0 pt-2 first:pt-0 flex items-center justify-between">
+                      <span className="text-gray-500">Kategori</span>
+                      <Link
+                        to={`/kategori/produk/${produk?.kategori.id}`}
+                        className="font-bold"
+                      >
+                        {produk?.kategori.nama}
+                      </Link>
+                    </p>
+                    <p className="mb-0 pb-2 last:pb-0 pt-2 first:pt-0 flex items-center justify-between">
+                      <span className="text-gray-500">Marketing</span>
+                      <Link
+                        to={`/marketing/${produk?.marketing.user_id}`}
+                        className="font-bold"
+                      >
+                        {produk?.marketing.nama}
+                      </Link>
+                    </p>
                   </div>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Stok" key={'3'}>
                   {produk?.stok?.length === 0 && (
-                    <div className="border border-dashed p-5 rounded">
+                    <div className="bg-gray-100 p-5 rounded">
                       <Empty
                         description={
                           <span className="text-gray-500">Tidak ada stok tersedia</span>
@@ -126,28 +162,29 @@ export default function HalamanDetailProduk() {
                       />
                     </div>
                   )}
-                  {produk?.stok?.map((item) => (
-                    <div key={item.id} className="border rounded px-5 py-3">
-                      <span className="font-bold text-gray-500">
-                        {moment(item.tersedia_dari).format('Do MMMM yyyy')} -{' '}
-                        {moment(item.tersedia_hingga).format('Do MMMM yyyy')}
-                      </span>
-                      <p className="mt-3 mb-0">
-                        <span className="font-bold text-2xl md:text-4xl text-color-theme">
-                          {item.jumlah}
-                        </span>
-                      </p>
+                  {produk?.stok?.length > 0 && (
+                    <div className="space-y-3">
+                      {produk?.stok?.map((item) => (
+                        <div key={item.id} className="border rounded px-5 py-2">
+                          <p className="flex space-x-2 items-center">
+                            <ClockCircleOutlined />
+                            <span className="text-gray-500">
+                              {moment(item.tersedia_dari).format('Do MMMM yyyy')} -{' '}
+                              {moment(item.tersedia_hingga).format('Do MMMM yyyy')}
+                            </span>
+                          </p>
+
+                          <p className="mb-0">
+                            <span className="font-bold text-2xl md:text-4xl text-color-theme">
+                              {item.jumlah}
+                            </span>
+                          </p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </Tabs.TabPane>
               </Tabs>
-              <hr className="my-5" />
-              <p className="flex justify-between">
-                <span className="text-gray-500">Kategori</span>
-                <span className="text-color-theme font-semibold">
-                  {produk.kategori.nama}
-                </span>
-              </p>
             </div>
           </div>
           <div className="mt-10">
@@ -185,7 +222,7 @@ export default function HalamanDetailProduk() {
             <p className="font-semibold uppercase">Semua Ulasan</p>
 
             {ulasan.data.length === 0 && (
-              <div className="border border-dashed p-5 rounded">
+              <div className="bg-gray-100 p-5 rounded">
                 <Empty
                   description={
                     <span className="text-gray-500">Tidak ada ulasan tersedia</span>

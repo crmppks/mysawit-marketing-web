@@ -1,5 +1,15 @@
-import { Tabs, Skeleton, Empty, Button, Pagination, Dropdown, Menu } from 'antd';
-import { useEffect, useState } from 'react';
+import {
+  Tabs,
+  Skeleton,
+  Empty,
+  Button,
+  Pagination,
+  Dropdown,
+  Menu,
+  Input,
+  DatePicker,
+} from 'antd';
+import { useCallback, useEffect, useState } from 'react';
 import Paging from '@/types/Paging';
 import moment from 'moment';
 import { CheckCircleFilled, InfoCircleOutlined, MoreOutlined } from '@ant-design/icons';
@@ -10,6 +20,8 @@ import { formatCurrency } from '@/helpers/order_helper';
 import { Link } from 'react-router-dom';
 import ModalKonfirmasiVerifikasiPersyaratan from '@/components/ModalKonfirmasiVerifikasiPersyaratanComponent';
 import DaftarProdukPesanan from '@/components/DaftarProdukPesananComponent';
+import lodash from 'lodash';
+import { webixTableParams } from '@/helpers/webix_helper';
 
 type OrderInsight = {
   code:
@@ -30,8 +42,20 @@ export default function HalamanDaftarPesanan() {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [categories, setCategories] = useState<Array<OrderInsight>>([]);
+  const [filter, setFilter] = useState<any>(null);
   const [selectedPesananKonfirmasi, setSelectedPesananKonfirmasi] =
     useState<Pesanan>(null);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceInput = useCallback(
+    lodash.debounce((name: string, value: string) => {
+      setFilter((old) => ({
+        ...old,
+        [name]: value,
+      }));
+    }, 500),
+    [],
+  );
 
   const handlePageChange = (category: string, page: number) => {
     setCategories((old) =>
@@ -44,17 +68,18 @@ export default function HalamanDaftarPesanan() {
       }),
     );
 
-    getPesananByKategori(category, page).then(({ data: data2 }) =>
-      setCategories((old) =>
-        old.map((item) => {
-          if (item.code !== category) return item;
-          return {
-            ...item,
-            data: data2,
-            loading: false,
-          };
-        }),
-      ),
+    getPesananByKategori(category, page, webixTableParams({ filter })).then(
+      ({ data: data2 }) =>
+        setCategories((old) =>
+          old.map((item) => {
+            if (item.code !== category) return item;
+            return {
+              ...item,
+              data: data2,
+              loading: false,
+            };
+          }),
+        ),
     );
   };
 
@@ -102,8 +127,8 @@ export default function HalamanDaftarPesanan() {
   useEffect(() => {
     setLoading(true);
     getOrderInsight().then(({ data }) => {
-      setCategories(data.map((item) => ({ ...item, loading: true, data: [] })));
       setLoading(false);
+      setCategories(data.map((item) => ({ ...item, loading: true, data: [] })));
 
       for (const category of data) {
         getPesananByKategori(category.code).then(({ data: data2 }) =>
@@ -120,11 +145,73 @@ export default function HalamanDaftarPesanan() {
         );
       }
     });
-    // dispatch(getUserOrderInsightAction());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (filter) {
+      setCategories((old) => old.map((item) => ({ ...item, loading: true })));
+
+      for (const category of categories) {
+        getPesananByKategori(
+          category.code,
+          1,
+          webixTableParams({
+            filter,
+          }),
+        ).then(({ data: data2 }) =>
+          setCategories((old) =>
+            old.map((item) => {
+              if (item.code !== category.code) return item;
+              return {
+                ...item,
+                data: data2,
+                loading: false,
+                total: data2.total,
+              };
+            }),
+          ),
+        );
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
 
   return (
     <section className="p-5">
+      <div className="mb-5 grid grid-cols-12 gap-5">
+        <div className="col-span-6 md:col-span-3">
+          <DatePicker.RangePicker
+            onChange={(values) =>
+              setFilter((old) => ({
+                ...old,
+                rentang_waktu_pesanan: values
+                  ? values.map((item) => item.format('yyyy-MM-DD'))
+                  : [],
+              }))
+            }
+            size="large"
+            className="w-full"
+          />
+        </div>
+        <div className="col-span-6 md:col-span-3">
+          <Input
+            onChange={(e) => debounceInput('id_pesanan', e.target.value)}
+            allowClear
+            size="large"
+            placeholder="ID Pesanan"
+            className="w-full"
+          />
+        </div>
+        <div className="col-span-12 md:col-span-6">
+          <Input
+            onChange={(e) => debounceInput('nama_konsumen', e.target.value)}
+            allowClear
+            size="large"
+            placeholder="Nama Konsumen"
+            className="w-full"
+          />
+        </div>
+      </div>
       {loading && <Skeleton active />}
       {!loading && (
         <>
@@ -171,11 +258,27 @@ export default function HalamanDaftarPesanan() {
                               key={pesanan.id}
                               className="px-5 pt-5 border bg-white rounded space-y-5"
                             >
-                              <p className="text-right">
-                                {moment(new Date(pesanan.created_at)).format(
-                                  'dddd DD MMMM yyyy, HH:mm',
-                                )}
-                              </p>
+                              <div className="flex justify-between space-x-5 mb-5">
+                                <div className="flex space-x-3 items-center">
+                                  <img
+                                    src={pesanan.konsumen.avatar}
+                                    alt={pesanan.konsumen.nama}
+                                    className="w-9 rounded-full shadow"
+                                  />
+                                  <Link
+                                    to={`/konsumen/${pesanan.konsumen_id}`}
+                                    className="font-bold text-lg"
+                                  >
+                                    {pesanan.konsumen?.nama}
+                                  </Link>
+                                </div>
+
+                                <span>
+                                  {moment(new Date(pesanan.created_at)).format(
+                                    'dddd DD MMMM yyyy, HH:mm',
+                                  )}
+                                </span>
+                              </div>
                               <DaftarProdukPesanan pesanan={pesanan} showHeader={false} />
                               {pesanan.informasi_pengiriman?.courier_service && (
                                 <div className="flex items-center justify-between border-t pt-5">

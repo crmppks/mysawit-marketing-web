@@ -91,7 +91,9 @@ export default function ModalAturPengiriman({
             checked={mulai_hari_ini}
             onChange={(e) => set_mulai_hari_ini(e.target.checked)}
           >
-            <span>Terhitung mulai hari ini</span>
+            <span className="font-semibold uppercase text-gray-500">
+              Terhitung mulai hari ini
+            </span>
           </Checkbox>
         </Form.Item>
       </Form>

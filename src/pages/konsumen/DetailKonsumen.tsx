@@ -75,7 +75,7 @@ export default function HalamanDetailKonsumen() {
                   <span className="text-gray-400">Marketing Kecambah</span>
                   <p>
                     {konsumen?.marketing ? (
-                      <Link to={`/marketing/${konsumen?.marketing.user_id}`}>
+                      <Link to={`/marketing/${konsumen?.marketing.id}`}>
                         {konsumen?.marketing?.nama}
                       </Link>
                     ) : (

@@ -17,6 +17,15 @@ import HalamanUpdatePassword from './pages/profile/UpdatePassword';
 import HalamanUpdateProfile from './pages/profile/UpdateProfile';
 import HalamanDaftarPesanan from './pages/pesanan/DaftarPesanan';
 import HalamanDetailPesanan from './pages/pesanan/DetailPesanan';
+import HalamanAnnualReport from './pages/laporan/AnnualReport';
+import HalamanMonthlyReport from './pages/laporan/MonthlyReport';
+import HalamanDailyReport from './pages/laporan/DailyReport';
+import HalamanTargetMarketing from './pages/kpi/TargetMarketing';
+import HalamanDetailKPI from './pages/kpi/DetailKPI';
+import HalamanDaftarMarketing from './pages/marketing/DaftarMarketing';
+import HalamanDetailMarketing from './pages/marketing/DetailMarketing';
+import HalamanDetailKategoriProduk from './pages/kategori/produk/DetailKategoriProduk';
+import HalamanDetailKategoriKonsumen from './pages/kategori/konsumen/DetailKategoriKonsumen';
 
 export default function App() {
   return (
@@ -45,10 +54,31 @@ export default function App() {
             <Route index element={<HalamanDaftarKonsumen />} />
             <Route path=":id" element={<HalamanDetailKonsumen />} />
           </Route>
+          <Route path="/kategori" element={<Outlet />}>
+            <Route path="produk" element={<Outlet />}>
+              <Route path=":id" element={<HalamanDetailKategoriProduk />} />
+            </Route>
+            <Route path="konsumen" element={<Outlet />}>
+              <Route path=":id" element={<HalamanDetailKategoriKonsumen />} />
+            </Route>
+          </Route>
+          <Route path="/marketing" element={<Outlet />}>
+            <Route index element={<HalamanDaftarMarketing />} />
+            <Route path=":id" element={<HalamanDetailMarketing />} />
+          </Route>
           <Route path="/profile" element={<Outlet />}>
             <Route index element={<HalamanDetailProfile />} />
             <Route path="password" element={<HalamanUpdatePassword />} />
             <Route path="perbaharui" element={<HalamanUpdateProfile />} />
+          </Route>
+          <Route path="/laporan" element={<Outlet />}>
+            <Route path="annual" element={<HalamanAnnualReport />} />
+            <Route path="monthly" element={<HalamanMonthlyReport />} />
+            <Route path="daily" element={<HalamanDailyReport />} />
+          </Route>
+          <Route path="/kpi" element={<Outlet />}>
+            <Route path="target" element={<HalamanTargetMarketing />} />
+            <Route path="detail" element={<HalamanDetailKPI />} />
           </Route>
         </Route>
         <Route path="/auth">

@@ -1,8 +1,7 @@
 import { formatCurrency } from '@/helpers/order_helper';
 import { useAppSelector } from '@/hooks/redux_hooks';
 import Pesanan, { PesananProduk } from '@/types/Pesanan';
-import { Checkbox } from 'antd';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 interface Props {
@@ -12,16 +11,8 @@ interface Props {
 
 export default function DaftarProdukPesanan({ pesanan, showHeader = true }: Props) {
   const user = useAppSelector((state) => state.sesi.user);
-  const [tampilkanKategoriLainnya, setTampilkanKategoriLainnya] = useState<boolean>(
-    !showHeader,
-  );
-
   const categorized = useMemo(() => {
-    return (
-      tampilkanKategoriLainnya
-        ? pesanan.items
-        : pesanan.items.filter((item) => item.kategori.id === user.kategori_produk.id)
-    ).reduce((acc, current) => {
+    return pesanan.items.reduce((acc, current) => {
       if (!acc[current.kategori.id]) {
         return {
           ...acc,
@@ -40,7 +31,7 @@ export default function DaftarProdukPesanan({ pesanan, showHeader = true }: Prop
         },
       };
     }, {});
-  }, [pesanan, user, tampilkanKategoriLainnya]);
+  }, [pesanan]);
 
   return (
     <>
@@ -48,25 +39,16 @@ export default function DaftarProdukPesanan({ pesanan, showHeader = true }: Prop
         <>
           <div className="flex justify-between">
             <h4 className="font-bold text-lg mb-0">Info Produk</h4>
-            <Checkbox
-              checked={tampilkanKategoriLainnya}
-              onChange={(e) => setTampilkanKategoriLainnya(e.target.checked)}
-            >
-              <span
-                className={`${
-                  tampilkanKategoriLainnya ? 'text-color-theme' : 'text-gray-500'
-                } uppercase text-xs font-semibold`}
-              >
-                Tampilkan kategori lainnya
-              </span>
-            </Checkbox>
           </div>
           <hr className="border-dashed mb-4 mt-2" />
         </>
       )}
       <div className="divide-y">
         {Object.keys(categorized).map((kategori_id) => (
-          <div key={kategori_id} className="py-3 first:pt-0 last:pb-0">
+          <div key={kategori_id} className="py-3 first:pt-0 last:pb-0 relative">
+            {kategori_id !== user.kategori_produk_id && (
+              <div className="absolute inset-0 bg-white bg-opacity-50"></div>
+            )}
             <h3 className="text-lg">{categorized[kategori_id].kategori.nama}</h3>
             <div className="space-y-3">
               {categorized[kategori_id].items.map((produk: PesananProduk) => (

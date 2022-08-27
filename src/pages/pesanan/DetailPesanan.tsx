@@ -20,7 +20,6 @@ import ModalKonfirmasiVerifikasiPersyaratan from '@/components/ModalKonfirmasiVe
 import { handleCopy } from '@/helpers/string_helper';
 import ModalKonfirmasiPengiriman from '@/components/ModalKonfirmasiPengirimanComponent';
 import DaftarProdukPesanan from '@/components/DaftarProdukPesananComponent';
-import { startCase } from 'lodash';
 
 const Row = ({ children, className = '' }: any) => (
   <div className={`flex justify-between space-x-5 ${className}`}>{children}</div>
@@ -301,10 +300,8 @@ export default function HalamanDetailPesanan() {
                   <h4 className="font-bold text-lg mb-0">Info Pengiriman</h4>
                   {pesanan.informasi_pengiriman.duration && (
                     <span className="bg-green-600 px-3 py-[4px] rounded-full text-white text-[small]">
-                      <ClockCircleFilled /> &nbsp;
-                      {startCase(
-                        moment(pesanan.informasi_pengiriman.duration?.date_to).fromNow(),
-                      )}
+                      <ClockCircleFilled /> &nbsp; Pengiriman{' '}
+                      {moment(pesanan.informasi_pengiriman.duration?.date_to).fromNow()}
                     </span>
                   )}
                 </div>
@@ -313,22 +310,20 @@ export default function HalamanDetailPesanan() {
                 <div className="space-y-1">
                   {pesanan.informasi_pengiriman.duration && (
                     <>
-                      <Row>
-                        <span>Terhitung Mulai</span>
+                      <div className="px-5 py-2 rounded text-green-600 border border-green-600 flex justify-between">
                         <span>
                           {moment(pesanan.informasi_pengiriman.duration.date_from).format(
                             'dddd, Do MMMM yyyy',
                           )}
                         </span>
-                      </Row>
-                      <Row>
-                        <span>Terhitung Hingga</span>
+                        <span>&rarr;</span>
                         <span>
                           {moment(pesanan.informasi_pengiriman.duration.date_to).format(
                             'dddd, Do MMMM yyyy',
                           )}
                         </span>
-                      </Row>
+                      </div>
+                      <br />
                     </>
                   )}
                   <Row>

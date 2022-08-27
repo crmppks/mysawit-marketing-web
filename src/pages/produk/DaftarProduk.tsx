@@ -61,11 +61,11 @@ export default function HalamanDaftarProduk() {
 
       <section className="p-5">
         {produks.loading && (
-          <>
+          <div className="grid grid-cols-3 gap-5">
             <Skeleton.Input block active className="mb-1" />
             <Skeleton.Input block active className="mb-1" />
             <Skeleton.Input block active className="mb-1" />
-          </>
+          </div>
         )}
         {!produks.loading && (
           <>

@@ -10,7 +10,11 @@ interface Props extends ModalProps {
 }
 
 const Row = ({ children, className = '' }: any) => (
-  <div className={`flex justify-between space-x-5 ${className}`}>{children}</div>
+  <div
+    className={`bg-color-theme px-3 py-2 rounded flex justify-between space-x-5 ${className}`}
+  >
+    {children}
+  </div>
 );
 
 export default function ModalKonfirmasiVerifikasiPersyaratan({
@@ -45,6 +49,7 @@ export default function ModalKonfirmasiVerifikasiPersyaratan({
         <Row>
           <span>Dokumen Surat Lahan</span>
           <a
+            className="text-gray-500 rounded-full px-3 py-[2px] bg-white text-xs"
             target="_blank"
             href={pesanan?.persyaratan.dokumen_surat_lahan.url}
             rel="noreferrer"
@@ -55,6 +60,7 @@ export default function ModalKonfirmasiVerifikasiPersyaratan({
         <Row>
           <span>Dokumen Surat Pernyataan</span>
           <a
+            className="text-gray-500 rounded-full px-3 py-[2px] bg-white text-xs"
             target="_blank"
             href={pesanan?.persyaratan.dokumen_surat_pernyataan.url}
             rel="noreferrer"
@@ -64,12 +70,17 @@ export default function ModalKonfirmasiVerifikasiPersyaratan({
         </Row>
         <Row>
           <span>Dokumen KTP</span>
-          <a target="_blank" href={pesanan?.persyaratan.dokumen_ktp.url} rel="noreferrer">
+          <a
+            className="text-gray-500 rounded-full px-3 py-[2px] bg-white text-xs"
+            target="_blank"
+            href={pesanan?.persyaratan.dokumen_ktp.url}
+            rel="noreferrer"
+          >
             {pesanan?.persyaratan.dokumen_ktp.name} <LinkOutlined />
           </a>
         </Row>
       </div>
-      <hr className="my-3" />
+      <hr className="my-5" />
       <b>Alamat Kebun</b>
       <p className="mb-0">{pesanan?.persyaratan.alamat_lengkap}</p>
       <hr className="my-3" />
@@ -79,7 +90,12 @@ export default function ModalKonfirmasiVerifikasiPersyaratan({
           name={'status_verifikasi'}
           rules={[{ required: true, message: 'Status verifikasi dibutuhkan' }]}
         >
-          <Select allowClear onChange={setStatusVerifikasi} className="w-full">
+          <Select
+            size="large"
+            allowClear
+            onChange={setStatusVerifikasi}
+            className="w-full"
+          >
             <Select.Option value={'LULUS'}>LULUS</Select.Option>
             <Select.Option value={'TIDAK-LULUS'}>TIDAK LULUS</Select.Option>
           </Select>

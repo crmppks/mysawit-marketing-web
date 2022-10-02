@@ -45,6 +45,7 @@ interface Pesanan {
   informasi_harga: {
     harga_total_bayar: number;
     harga_total_produk: number;
+    harga_kode_unik?: number;
     harga_nego?: number;
   };
   informasi_pengiriman?: {

@@ -5,7 +5,7 @@ import { getDetailPesanan } from '@/services/pesanan';
 import Pesanan from '@/types/Pesanan';
 import { AxiosResponse } from 'axios';
 import moment from 'moment';
-import { formatCurrency, formatWeight } from '@/helpers/order_helper';
+import { formatCurrency } from '@/helpers/order_helper';
 import {
   CheckCircleFilled,
   ClockCircleFilled,
@@ -233,7 +233,7 @@ export default function HalamanDetailPesanan() {
                       </span>
                     )}
                     {!pesanan.persyaratan.status && (
-                      <span className="rounded-full px-4 py-[3px] bg-yellow-500 text-white text-[small]">
+                      <span className="rounded-full px-4 py-[3px] bg-color-theme text-white text-[small]">
                         <ClockCircleOutlined /> &nbsp;Menunggu Konfirmasi
                       </span>
                     )}
@@ -326,13 +326,6 @@ export default function HalamanDetailPesanan() {
                       <br />
                     </>
                   )}
-                  <Row>
-                    <span>Kurir</span>
-                    <span>
-                      {pesanan.informasi_pengiriman.courier.name} -{' '}
-                      {pesanan.informasi_pengiriman.courier_service.service}
-                    </span>
-                  </Row>
                   <Row>
                     <span>No. Resi</span>
                     <span>{pesanan.nomor_resi ?? '-'}</span>
@@ -525,15 +518,11 @@ export default function HalamanDetailPesanan() {
                       {formatCurrency(pesanan.informasi_harga.harga_total_produk)}
                     </span>
                   </Row>
-                  {pesanan.informasi_pengiriman.courier_service && (
+                  {pesanan.informasi_harga.harga_kode_unik && (
                     <Row>
+                      <span>Kode Unik</span>
                       <span>
-                        Ongkos Kirim ({formatWeight(pesanan.informasi_pengiriman.weight)})
-                      </span>
-                      <span>
-                        {formatCurrency(
-                          pesanan.informasi_pengiriman.courier_service.cost.value,
-                        )}
+                        {formatCurrency(pesanan.informasi_harga.harga_kode_unik)}
                       </span>
                     </Row>
                   )}

@@ -1,6 +1,7 @@
 import {
   CLEAR_SESI,
   GET_PROFILE_REQUEST,
+  OVERRIDE_USER_ACTION,
   SIGNIN_USER_REQUEST,
   UPDATE_PROFILE_REQUEST,
 } from '../types';
@@ -21,4 +22,9 @@ export const updateProfileAction = (params: any) => ({
 
 export const clearSesiAction = () => ({
   type: CLEAR_SESI,
+});
+
+export const overrideUserAction = (user: any) => ({
+  type: OVERRIDE_USER_ACTION,
+  user,
 });

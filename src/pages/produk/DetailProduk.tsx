@@ -8,9 +8,11 @@ import {
 import Paging from '@/types/Paging';
 import Produk from '@/types/Produk';
 import UlasanProduk from '@/types/UlasanProduk';
-import { ClockCircleOutlined, SmallDashOutlined, StarFilled } from '@ant-design/icons';
+import { SmallDashOutlined, StarFilled } from '@ant-design/icons';
 import {
   Alert,
+  Badge,
+  Calendar,
   Empty,
   Image,
   PageHeader,
@@ -19,6 +21,7 @@ import {
   Rate,
   Skeleton,
   Tabs,
+  Tooltip,
 } from 'antd';
 import { AxiosResponse } from 'axios';
 import moment from 'moment';
@@ -162,26 +165,60 @@ export default function HalamanDetailProduk() {
                       />
                     </div>
                   )}
-                  {produk?.stok?.length > 0 && (
-                    <div className="space-y-3">
-                      {produk?.stok?.map((item) => (
-                        <div key={item.id} className="border rounded px-5 py-2">
-                          <p className="flex space-x-2 items-center">
-                            <ClockCircleOutlined />
-                            <span className="text-gray-500">
-                              {moment(item.tersedia_dari).format('Do MMMM yyyy')} -{' '}
-                              {moment(item.tersedia_hingga).format('Do MMMM yyyy')}
-                            </span>
-                          </p>
+                  {produk.stok?.length > 0 && (
+                    <Calendar
+                      mode="month"
+                      dateCellRender={(current) => {
+                        for (const stok of produk.stok) {
+                          if (
+                            current.format('yyyy-MM-Do') ===
+                            moment(stok.available_at).format('yyyy-MM-Do')
+                          ) {
+                            return (
+                              <ul className="list-stok">
+                                <li>
+                                  {stok.jumlah > 0 ? (
+                                    <Tooltip
+                                      title={`Tersedia ${stok.jumlah} ${produk.unit}`}
+                                    >
+                                      <Badge
+                                        status={'success'}
+                                        text={
+                                          <b className="text-green-700 text-xl">
+                                            {stok.jumlah}
+                                          </b>
+                                        }
+                                      />
+                                    </Tooltip>
+                                  ) : (
+                                    <Badge
+                                      status={'error'}
+                                      text={
+                                        <span className="text-red-700 text-xl">
+                                          Habis
+                                        </span>
+                                      }
+                                    />
+                                  )}
+                                </li>
+                              </ul>
+                            );
+                          }
+                        }
+                      }}
+                      disabledDate={(current) => {
+                        for (const stok of produk.stok) {
+                          if (
+                            current.format('yyyy-MM-Do') ===
+                            moment(stok.available_at).format('yyyy-MM-Do')
+                          ) {
+                            return false;
+                          }
+                        }
 
-                          <p className="mb-0">
-                            <span className="font-bold text-2xl md:text-4xl text-color-theme">
-                              {item.jumlah}
-                            </span>
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                        return true;
+                      }}
+                    />
                   )}
                 </Tabs.TabPane>
               </Tabs>

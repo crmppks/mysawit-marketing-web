@@ -105,7 +105,7 @@ export default function HalamanLupaPassword() {
                   { type: 'email', message: 'Email tidak valid' },
                 ]}
               >
-                <Input />
+                <Input allowClear size="large" />
               </Form.Item>
 
               <Form.Item>

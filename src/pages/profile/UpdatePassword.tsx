@@ -1,4 +1,4 @@
-import { Form, Input, Button, PageHeader } from 'antd';
+import { Form, Input, Button, PageHeader, message } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { parseError } from '@/helpers/form_helper';
@@ -34,7 +34,10 @@ export default function HalamanUpdatePassword() {
           onFinish={(values) => {
             setLoading(true);
             postUpdatePassword(values)
-              .then(() => navigate('/profile'))
+              .then(() => {
+                navigate('/profile');
+                message.success('Password anda berhasil diperbaharui');
+              })
               .catch((e: any) => parseError(form, e))
               .finally(() => setLoading(false));
           }}

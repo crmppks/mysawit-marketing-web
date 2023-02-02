@@ -38,7 +38,9 @@ export default function HalamanDaftarKonsumen() {
 
                   return data;
                 },
-                template: (o: any) => `<b>${o.kategori_konsumen.nama}</b>`,
+                template: function (o: any) {
+                  return `<b>${o.kategori_konsumen?.nama ?? '-'}</b>`;
+                },
               },
               {
                 id: 'nama',

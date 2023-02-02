@@ -3,6 +3,7 @@ import {
   CLEAR_SESI,
   GET_PROFILE_REQUEST,
   GET_PROFILE_SUCCESS,
+  OVERRIDE_USER_ACTION,
   SIGNIN_USER_FAILURE,
   SIGNIN_USER_REQUEST,
   SIGNIN_USER_SUCCESS,
@@ -54,113 +55,95 @@ export default function sessionReducer(
 ): SesiValueType {
   const { type, errors, message, user } = action;
 
-  if (type === SIGNIN_USER_REQUEST) {
-    return {
-      ...state,
-      request_login: {
-        ...state.request_login,
-        loading: true,
-      },
-    };
+  switch (type) {
+    case OVERRIDE_USER_ACTION:
+      return {
+        ...state,
+        user: { ...state.user, ...user },
+      };
+    case SIGNIN_USER_REQUEST:
+      return {
+        ...state,
+        request_login: {
+          ...state.request_login,
+          loading: true,
+        },
+      };
+    case SIGNIN_USER_SUCCESS:
+      return {
+        ...state,
+        request_login: {
+          ...state.request_login,
+          loading: false,
+          message: null,
+          errors: null,
+        },
+        user,
+      };
+    case SIGNIN_USER_FAILURE:
+      return {
+        ...state,
+        request_login: {
+          loading: false,
+          message,
+          errors,
+        },
+      };
+    case UPDATE_PROFILE_REQUEST:
+      return {
+        ...state,
+        request_profile: {
+          ...state.request_profile,
+          loading: true,
+          errors: null,
+          message: null,
+        },
+      };
+    case UPDATE_PROFILE_SUCCESS:
+      return {
+        ...state,
+        request_profile: {
+          ...state.request_profile,
+          loading: false,
+          message: null,
+          errors: null,
+        },
+        user,
+      };
+    case UPDATE_PROFILE_FAILURE:
+      return {
+        ...state,
+        request_profile: {
+          ...state.request_profile,
+          loading: false,
+          message,
+          errors,
+        },
+      };
+    case GET_PROFILE_REQUEST:
+      return {
+        ...state,
+        request_profile: {
+          ...state.request_profile,
+          loading: true,
+          errors: null,
+          message: null,
+        },
+      };
+    case GET_PROFILE_SUCCESS:
+      return {
+        ...state,
+        request_profile: {
+          ...state.request_profile,
+          loading: false,
+          errors: null,
+          message: null,
+        },
+        user,
+      };
+    case CLEAR_SESI:
+      return initialState;
+    default:
+      return state;
   }
-
-  if (type === SIGNIN_USER_SUCCESS) {
-    return {
-      ...state,
-      request_login: {
-        ...state.request_login,
-        loading: false,
-        message: null,
-        errors: null,
-      },
-      user,
-    };
-  }
-
-  if (type === SIGNIN_USER_FAILURE) {
-    return {
-      ...state,
-      request_login: {
-        loading: false,
-        message,
-        errors,
-      },
-    };
-  }
-
-  if (type === UPDATE_PROFILE_REQUEST) {
-    return {
-      ...state,
-      request_profile: {
-        ...state.request_profile,
-        loading: true,
-      },
-    };
-  }
-
-  if (type === UPDATE_PROFILE_SUCCESS) {
-    return {
-      ...state,
-      request_profile: {
-        ...state.request_profile,
-        loading: false,
-        message: null,
-        errors: null,
-      },
-      user,
-    };
-  }
-
-  if (type === UPDATE_PROFILE_FAILURE) {
-    return {
-      ...state,
-      request_profile: {
-        ...state.request_profile,
-        loading: false,
-        message,
-        errors,
-      },
-    };
-  }
-
-  if (type === GET_PROFILE_REQUEST) {
-    return {
-      ...state,
-      request_profile: {
-        ...state.request_profile,
-        loading: true,
-      },
-    };
-  }
-
-  if (type === GET_PROFILE_SUCCESS) {
-    return {
-      ...state,
-      request_profile: {
-        ...state.request_profile,
-        loading: false,
-        errors: null,
-        message: null,
-      },
-      user,
-    };
-  }
-
-  if (type === GET_PROFILE_SUCCESS) {
-    return {
-      ...state,
-      request_profile: {
-        ...state.request_profile,
-        loading: false,
-        errors,
-        message,
-      },
-    };
-  }
-
-  if (type === CLEAR_SESI) {
-    return initialState;
-  }
-
-  return state;
 }

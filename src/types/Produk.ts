@@ -30,9 +30,8 @@ interface Produk {
   stok?: Array<{
     id: number;
     jumlah: number;
-    tersedia_dari: string;
-    tersedia_hingga: string;
-    updated_at: string;
+    available_at: string;
+    updated_at?: string;
   }>;
   is_active: boolean;
 }

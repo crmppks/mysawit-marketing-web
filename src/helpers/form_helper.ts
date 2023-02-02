@@ -1,7 +1,11 @@
-import { FormInstance, message } from 'antd';
+import { FormInstance, message, UploadFile } from 'antd';
 
-export const parseError = (form: FormInstance<any>, errors: any) => {
-  const errs = errors.response?.data?.errors || {};
+export const parseError = (
+  form: FormInstance<any>,
+  errors: any,
+  from_axios_response: boolean = true,
+) => {
+  const errs = from_axios_response ? errors.response?.data?.errors || {} : errors;
   const keys = Object.keys(errs);
 
   const fields = keys.map((key) => ({
@@ -10,6 +14,22 @@ export const parseError = (form: FormInstance<any>, errors: any) => {
   }));
 
   form.setFields(fields);
+};
+
+export const beforeUploadImage = (file: UploadFile, max_size: number = 3) => {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('Ekstensi file yang diijinkan adalah png, jpg, jpeg');
+    return false;
+  }
+
+  const isLt2M = file.size / 1024 / 1024 <= max_size;
+  if (!isLt2M) {
+    message.error('File harus berukuran lebih kecil dari 3 MB');
+    return false;
+  }
+
+  return true;
 };
 
 export const beforeUpload = (
@@ -30,4 +50,10 @@ export const beforeUpload = (
   }
 
   return false;
+};
+
+export const getBase64 = (img: any, callback: (val: any) => void) => {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
 };

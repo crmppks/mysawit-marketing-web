@@ -52,7 +52,7 @@ export default function HalamanDetailKonsumen() {
             <div className="col-span-12 md:col-span-9">
               <div className="flex justify-between">
                 <div className="flex-grow">
-                  <h1 className="font-bold text-xl mb-0">{konsumen?.nama}</h1>
+                  <h1 className="font-bold text-xl md:text-2xl mb-0">{konsumen?.nama}</h1>
                 </div>
               </div>
               <hr className="my-5" />
@@ -60,16 +60,20 @@ export default function HalamanDetailKonsumen() {
                 <div>
                   <span className="text-gray-400">Kategori</span>
                   <p>
-                    <Link to={`/kategori/konsumen/${konsumen?.kategori_konsumen.id}`}>
-                      {konsumen?.kategori_konsumen.nama}
-                    </Link>
+                    {konsumen?.kategori_konsumen ? (
+                      <Link to={`/kategori/konsumen/${konsumen?.kategori_konsumen.id}`}>
+                        {konsumen?.kategori_konsumen.nama}
+                      </Link>
+                    ) : (
+                      '-'
+                    )}
                   </p>
                   <span className="text-gray-400">Username</span>
-                  <p>{konsumen?.username}</p>
+                  <p>{konsumen?.username ?? '-'}</p>
                   <span className="text-gray-400">Email</span>
                   <p>{konsumen?.email}</p>
                   <span className="text-gray-400">Tgl Lahir</span>
-                  <p>{konsumen?.tgl_lahir}</p>
+                  <p>{konsumen?.tgl_lahir ?? '-'}</p>
                 </div>
                 <div>
                   <span className="text-gray-400">Marketing Kecambah</span>
@@ -83,9 +87,7 @@ export default function HalamanDetailKonsumen() {
                     )}
                   </p>
                   <span className="text-gray-400">No. HP</span>
-                  <p>{konsumen?.no_hp}</p>
-                  <span className="text-gray-400">Alamat</span>
-                  <p>{konsumen?.alamat}</p>
+                  <p>{konsumen?.no_hp ?? '-'}</p>
                 </div>
               </div>
               <hr className="my-5" />

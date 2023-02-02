@@ -9,7 +9,13 @@ export const postUpdatePassword = (params: any) => {
 };
 
 export const postUpdateProfile = (params: any) => {
-  return axios.post('/profile/update/marketing', params);
+  return axios.post('/profile/marketing/update', params);
+};
+
+export const postToggleStatus = (is_aktif: boolean) => {
+  return axios.post(`/marketing/profile/status`, {
+    is_aktif,
+  });
 };
 
 export const getPermissions = () => {

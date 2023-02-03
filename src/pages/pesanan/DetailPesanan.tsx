@@ -239,38 +239,58 @@ export default function HalamanDetailPesanan() {
                     )}
                   </div>
                   <hr className="border-dashed mb-4" />
-                  <div className="space-y-1">
-                    <Row>
+                  <div className="space-y-2">
+                    <div className={`border px-3 py-2 rounded space-y-3`}>
                       <span>Dokumen Surat Lahan</span>
-                      <a
-                        target="_blank"
-                        href={pesanan.persyaratan.dokumen_surat_lahan.url}
-                        rel="noreferrer"
-                      >
-                        {pesanan.persyaratan.dokumen_surat_lahan.name} <LinkOutlined />
-                      </a>
-                    </Row>
-                    <Row>
+                      <ul>
+                        {pesanan?.persyaratan.dokumen_surat_lahan.map((dok) => (
+                          <li key={dok.media_id}>
+                            <a
+                              className="text-white hover:text-black rounded-full px-3 py-[2px] bg-green-600 text-xs"
+                              target="_blank"
+                              href={dok.url}
+                              rel="noreferrer"
+                            >
+                              {dok.name} <LinkOutlined />
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className={`border px-3 py-2 rounded space-y-3`}>
                       <span>Dokumen Surat Pernyataan</span>
-                      <a
-                        target="_blank"
-                        href={pesanan.persyaratan.dokumen_surat_pernyataan.url}
-                        rel="noreferrer"
-                      >
-                        {pesanan.persyaratan.dokumen_surat_pernyataan.name}{' '}
-                        <LinkOutlined />
-                      </a>
-                    </Row>
-                    <Row>
+                      <ul>
+                        {pesanan?.persyaratan.dokumen_surat_pernyataan.map((dok) => (
+                          <li key={dok.media_id}>
+                            <a
+                              className="text-white hover:text-black rounded-full px-3 py-[2px] bg-green-600 text-xs"
+                              target="_blank"
+                              href={dok.url}
+                              rel="noreferrer"
+                            >
+                              {dok.name} <LinkOutlined />
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className={`border px-3 py-2 rounded space-y-3`}>
                       <span>Dokumen KTP</span>
-                      <a
-                        target="_blank"
-                        href={pesanan.persyaratan.dokumen_ktp.url}
-                        rel="noreferrer"
-                      >
-                        {pesanan.persyaratan.dokumen_ktp.name} <LinkOutlined />
-                      </a>
-                    </Row>
+                      <ul>
+                        {pesanan?.persyaratan.dokumen_ktp.map((dok) => (
+                          <li key={dok.media_id}>
+                            <a
+                              className="text-white hover:text-black rounded-full px-3 py-[2px] bg-green-600 text-xs"
+                              target="_blank"
+                              href={dok.url}
+                              rel="noreferrer"
+                            >
+                              {dok.name} <LinkOutlined />
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                     <Row>
                       <span>Alamat Kebun</span>
                       <p className="mb-0 text-right max-w-[60%]">

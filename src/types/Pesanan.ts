@@ -98,24 +98,24 @@ interface Pesanan {
       tipe: string;
       kode_pos: string;
     };
-    dokumen_surat_lahan: {
+    dokumen_surat_lahan: Array<{
       media_id: number;
       url: string;
       name: string;
       size: number;
-    };
-    dokumen_surat_pernyataan: {
+    }>;
+    dokumen_surat_pernyataan: Array<{
       media_id: number;
       url: string;
       name: string;
       size: number;
-    };
-    dokumen_ktp: {
+    }>;
+    dokumen_ktp: Array<{
       media_id: number;
       url: string;
       name: string;
       size: number;
-    };
+    }>;
   };
 }
 

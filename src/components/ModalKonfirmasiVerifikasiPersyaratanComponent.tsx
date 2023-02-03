@@ -10,9 +10,7 @@ interface Props extends ModalProps {
 }
 
 const Row = ({ children, className = '' }: any) => (
-  <div
-    className={`bg-color-theme px-3 py-2 rounded flex justify-between space-x-5 ${className}`}
-  >
+  <div className={`border-color-theme border px-3 py-2 rounded space-y-3 ${className}`}>
     {children}
   </div>
 );
@@ -48,36 +46,54 @@ export default function ModalKonfirmasiVerifikasiPersyaratan({
       <div className="space-y-1">
         <Row>
           <span>Dokumen Surat Lahan</span>
-          <a
-            className="text-gray-500 rounded-full px-3 py-[2px] bg-white text-xs"
-            target="_blank"
-            href={pesanan?.persyaratan.dokumen_surat_lahan.url}
-            rel="noreferrer"
-          >
-            {pesanan?.persyaratan.dokumen_surat_lahan.name} <LinkOutlined />
-          </a>
+          <ul>
+            {pesanan?.persyaratan.dokumen_surat_lahan.map((dok) => (
+              <li key={dok.media_id}>
+                <a
+                  className="text-white hover:text-black rounded-full px-3 py-[2px] bg-color-theme text-xs"
+                  target="_blank"
+                  href={dok.url}
+                  rel="noreferrer"
+                >
+                  {dok.name} <LinkOutlined />
+                </a>
+              </li>
+            ))}
+          </ul>
         </Row>
         <Row>
           <span>Dokumen Surat Pernyataan</span>
-          <a
-            className="text-gray-500 rounded-full px-3 py-[2px] bg-white text-xs"
-            target="_blank"
-            href={pesanan?.persyaratan.dokumen_surat_pernyataan.url}
-            rel="noreferrer"
-          >
-            {pesanan?.persyaratan.dokumen_surat_pernyataan.name} <LinkOutlined />
-          </a>
+          <ul>
+            {pesanan?.persyaratan.dokumen_surat_pernyataan.map((dok) => (
+              <li key={dok.media_id}>
+                <a
+                  className="text-white hover:text-black rounded-full px-3 py-[2px] bg-color-theme text-xs"
+                  target="_blank"
+                  href={dok.url}
+                  rel="noreferrer"
+                >
+                  {dok.name} <LinkOutlined />
+                </a>
+              </li>
+            ))}
+          </ul>
         </Row>
         <Row>
           <span>Dokumen KTP</span>
-          <a
-            className="text-gray-500 rounded-full px-3 py-[2px] bg-white text-xs"
-            target="_blank"
-            href={pesanan?.persyaratan.dokumen_ktp.url}
-            rel="noreferrer"
-          >
-            {pesanan?.persyaratan.dokumen_ktp.name} <LinkOutlined />
-          </a>
+          <ul>
+            {pesanan?.persyaratan.dokumen_ktp.map((dok) => (
+              <li key={dok.media_id}>
+                <a
+                  className="text-white hover:text-black rounded-full px-3 py-[2px] bg-color-theme text-xs"
+                  target="_blank"
+                  href={dok.url}
+                  rel="noreferrer"
+                >
+                  {dok.name} <LinkOutlined />
+                </a>
+              </li>
+            ))}
+          </ul>
         </Row>
       </div>
       <hr className="my-5" />

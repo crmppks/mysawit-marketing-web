@@ -64,7 +64,7 @@
     nav.my-sidebar > ul .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title, nav.my-sidebar .ant-menu-inline > .ant-menu-item {
         height: 40px;
         font-weight: 500;
-        font-size: 15px;
+        /* font-size: 15px; */
     }
     nav.my-sidebar > ul .ant-menu-item:not(:last-child), nav.my-sidebar .ant-menu-item, nav.my-sidebar .ant-menu-submenu-title{
         margin-bottom:0;

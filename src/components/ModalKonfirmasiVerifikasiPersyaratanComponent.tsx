@@ -3,6 +3,7 @@ import Pesanan from '@/types/Pesanan';
 import { LinkOutlined } from '@ant-design/icons';
 import { Checkbox, Form, Input, Modal, ModalProps, Select } from 'antd';
 import { useState } from 'react';
+import swal from '@sweetalert/with-react';
 
 interface Props extends ModalProps {
   pesanan: Pesanan;
@@ -26,10 +27,30 @@ export default function ModalKonfirmasiVerifikasiPersyaratan({
   const [statusVerifikasi, setStatusVerifikasi] = useState<'LULUS' | 'TIDAK-LULUS'>(null);
 
   const handleSubmitKonfirmasi = (values: any) => {
-    setSubmitting(true);
-    postConfirmPesananVerification(pesanan.id, values)
-      .then(({ data }) => onFinishConfirmation(data))
-      .finally(() => setSubmitting(false));
+    swal({
+      title: 'Konfirmasi',
+      content: (
+        <p className="text-gray-500">
+          Apakah anda sudah yakin dengan hasil verifikasi persyaratan ini?
+        </p>
+      ),
+      buttons: {
+        cancel: 'Cek Kembali',
+        confirm: {
+          text: 'Ya, Lanjutkan',
+          className: 'bg-color-theme hover:bg-color-theme',
+          closeModal: true,
+        },
+      },
+      dangerMode: true,
+    }).then((confirmed: boolean) => {
+      if (confirmed) {
+        setSubmitting(true);
+        postConfirmPesananVerification(pesanan.id, values)
+          .then(({ data }) => onFinishConfirmation(data))
+          .finally(() => setSubmitting(false));
+      }
+    });
   };
 
   return (

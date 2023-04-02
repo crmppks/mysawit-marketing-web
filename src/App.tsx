@@ -26,8 +26,12 @@ import HalamanDaftarMarketing from './pages/marketing/DaftarMarketing';
 import HalamanDetailMarketing from './pages/marketing/DetailMarketing';
 import HalamanDetailKategoriProduk from './pages/kategori/produk/DetailKategoriProduk';
 import HalamanDetailKategoriKonsumen from './pages/kategori/konsumen/DetailKategoriKonsumen';
+import { useAppSelector } from './hooks/redux_hooks';
+import { ID_KATEGORI_PRODUK_KECAMBAH } from './helpers/constants';
 
 export default function App() {
+  const user = useAppSelector((state) => state.sesi.user);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -50,10 +54,12 @@ export default function App() {
             <Route index element={<HalamanDaftarPesanan />} />
             <Route path=":id" element={<HalamanDetailPesanan />} />
           </Route>
-          <Route path="/konsumen" element={<Outlet />}>
-            <Route index element={<HalamanDaftarKonsumen />} />
-            <Route path=":id" element={<HalamanDetailKonsumen />} />
-          </Route>
+          {user.kategori_produk_id === ID_KATEGORI_PRODUK_KECAMBAH && (
+            <Route path="/konsumen" element={<Outlet />}>
+              <Route index element={<HalamanDaftarKonsumen />} />
+              <Route path=":id" element={<HalamanDetailKonsumen />} />
+            </Route>
+          )}
           <Route path="/kategori" element={<Outlet />}>
             <Route path="produk" element={<Outlet />}>
               <Route path=":id" element={<HalamanDetailKategoriProduk />} />

@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getAllNotificationAction } from '@/store/actions/notifikasi';
 import HeaderComponent from '@/components/HeaderComponent';
+import { ID_KATEGORI_PRODUK_KECAMBAH } from '@/helpers/constants';
 
 const mainBgColor = 'bg-gray-200';
 
@@ -74,9 +75,11 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
             <Menu.Item key={'produk'} icon={<ShoppingOutlined />}>
               <Link to="/produk">Produk</Link>
             </Menu.Item>
-            <Menu.Item key={'konsumen'} icon={<UserOutlined />}>
-              <Link to="/konsumen">Konsumen</Link>
-            </Menu.Item>
+            {user.kategori_produk_id === ID_KATEGORI_PRODUK_KECAMBAH && (
+              <Menu.Item key={'konsumen'} icon={<UserOutlined />}>
+                <Link to="/konsumen">Konsumen</Link>
+              </Menu.Item>
+            )}
             <Menu.Item key={'pesanan'} icon={<ProjectOutlined />}>
               <Link to="/pesanan">Pesanan</Link>
             </Menu.Item>

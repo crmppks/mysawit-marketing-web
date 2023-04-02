@@ -538,14 +538,16 @@ export default function HalamanDetailPesanan() {
                       {formatCurrency(pesanan.informasi_harga.harga_total_produk)}
                     </span>
                   </Row>
-                  {pesanan.informasi_harga.harga_kode_unik && (
-                    <Row>
-                      <span>Kode Unik</span>
+                  <Row>
+                    <span>Kode Unik</span>
+                    {pesanan.informasi_harga.harga_kode_unik ? (
                       <span>
                         {formatCurrency(pesanan.informasi_harga.harga_kode_unik)}
                       </span>
-                    </Row>
-                  )}
+                    ) : (
+                      <span className="text-gray-400">belum ditentukan</span>
+                    )}
+                  </Row>
                 </div>
                 <hr className="border-dashed border-color-theme mt-4 mb-4" />
                 <Row>

@@ -224,7 +224,7 @@ export default function HalamanAnnualReport() {
             </div>
           )}
           <div className="flex space-x-5 items-center justify-between mb-10">
-            <h2 className="text-lg">Produk</h2>
+            <h2 className="text-lg">Berdasarkan Produk</h2>
             <DatePicker
               disabled={filterPenjualanProduk.loading}
               defaultValue={moment()}
@@ -270,7 +270,7 @@ export default function HalamanAnnualReport() {
             </div>
           )}
           <div className="flex space-x-5 items-center justify-between mb-10">
-            <h2 className="text-lg">Kategori</h2>
+            <h2 className="text-lg">Berdasarkan Kategori</h2>
             <DatePicker
               disabled={filterPenjualanKategori.loading}
               defaultValue={moment()}

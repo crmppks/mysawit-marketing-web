@@ -30,7 +30,7 @@ import { useAppSelector } from './hooks/redux_hooks';
 import { ID_KATEGORI_PRODUK_KECAMBAH } from './helpers/constants';
 
 export default function App() {
-  const user = useAppSelector((state) => state.sesi.user);
+  const user = useAppSelector((state) => state.sesi?.user);
 
   return (
     <BrowserRouter>
@@ -54,7 +54,7 @@ export default function App() {
             <Route index element={<HalamanDaftarPesanan />} />
             <Route path=":id" element={<HalamanDetailPesanan />} />
           </Route>
-          {user.kategori_produk_id === ID_KATEGORI_PRODUK_KECAMBAH && (
+          {user?.kategori_produk_id === ID_KATEGORI_PRODUK_KECAMBAH && (
             <Route path="/konsumen" element={<Outlet />}>
               <Route index element={<HalamanDaftarKonsumen />} />
               <Route path=":id" element={<HalamanDetailKonsumen />} />

@@ -301,6 +301,16 @@ export default function HalamanDaftarPesanan() {
                                   </span>
                                 </div>
                               )}
+                              {pesanan.informasi_harga.harga_kode_unik && (
+                                <div className="flex items-center justify-between border-t pt-5">
+                                  <b>Kode Unik</b>
+                                  <span>
+                                    {formatCurrency(
+                                      pesanan.informasi_harga.harga_kode_unik,
+                                    )}
+                                  </span>
+                                </div>
+                              )}
                               <div className="flex justify-between space-x-5 border-t py-1 -mx-10 px-10">
                                 <div className="flex items-center space-x-2">
                                   {pesanan.status === 'VERIFIKASI_PERSYARATAN' && (

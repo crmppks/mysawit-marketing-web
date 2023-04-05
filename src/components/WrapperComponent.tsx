@@ -7,7 +7,6 @@ import {
   BellFilled,
   ProjectOutlined,
   LineChartOutlined,
-  RiseOutlined,
 } from '@ant-design/icons';
 import { getFCMToken, onMessageListener } from '@/services/firebase';
 import { useAppSelector } from '@/hooks/redux_hooks';
@@ -92,14 +91,6 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
               </Menu.Item>
               <Menu.Item key={'daily'}>
                 <Link to="/laporan/daily">Daily Sales Report</Link>
-              </Menu.Item>
-            </Menu.SubMenu>
-            <Menu.SubMenu key={'kpi'} icon={<RiseOutlined />} title="KPI">
-              <Menu.Item key={'target'}>
-                <Link to="/kpi/target">Target Marketing</Link>
-              </Menu.Item>
-              <Menu.Item key={'detail'}>
-                <Link to="/kpi/detail">Detail KPI</Link>
               </Menu.Item>
             </Menu.SubMenu>
           </Menu>

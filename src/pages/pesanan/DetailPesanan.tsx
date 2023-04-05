@@ -11,7 +11,6 @@ import {
   ClockCircleFilled,
   ClockCircleOutlined,
   CloseCircleFilled,
-  CopyOutlined,
   InfoCircleOutlined,
   LinkOutlined,
 } from '@ant-design/icons';
@@ -83,8 +82,8 @@ export default function HalamanDetailPesanan() {
               visible={showModalAturPengiriman}
               pesanan={pesanan}
               onFinish={(p) => {
-                setPesanan((old) => ({ ...old, ...p }));
                 setShowModalAturPengiriman(false);
+                handleLoadData();
               }}
               onCancel={() => setShowModalAturPengiriman(false)}
             />
@@ -210,12 +209,7 @@ export default function HalamanDetailPesanan() {
               {pesanan.persyaratan && (
                 <div
                   className={`bg-white p-5 rounded ${
-                    pesanan.persyaratan.status &&
-                    `border ${
-                      pesanan.persyaratan.status === 'LULUS'
-                        ? 'border-green-600'
-                        : 'border-red-600'
-                    }`
+                    pesanan.persyaratan.status === 'LULUS' ? '' : 'border border-red-600'
                   }`}
                 >
                   <div className="flex justify-between space-x-5 mb-3 items-center">
@@ -242,15 +236,10 @@ export default function HalamanDetailPesanan() {
                   <div className="space-y-2">
                     <div className={`border px-3 py-2 rounded space-y-3`}>
                       <span>Dokumen Surat Lahan</span>
-                      <ul>
+                      <ul className="list-disc list-inside">
                         {pesanan?.persyaratan.dokumen_surat_lahan.map((dok) => (
                           <li key={dok.media_id}>
-                            <a
-                              className="text-white hover:text-black rounded-full px-3 py-[2px] bg-green-600 text-xs"
-                              target="_blank"
-                              href={dok.url}
-                              rel="noreferrer"
-                            >
+                            <a target="_blank" href={dok.url} rel="noreferrer">
                               {dok.name} <LinkOutlined />
                             </a>
                           </li>
@@ -259,15 +248,10 @@ export default function HalamanDetailPesanan() {
                     </div>
                     <div className={`border px-3 py-2 rounded space-y-3`}>
                       <span>Dokumen Surat Pernyataan</span>
-                      <ul>
+                      <ul className="list-disc list-inside">
                         {pesanan?.persyaratan.dokumen_surat_pernyataan.map((dok) => (
                           <li key={dok.media_id}>
-                            <a
-                              className="text-white hover:text-black rounded-full px-3 py-[2px] bg-green-600 text-xs"
-                              target="_blank"
-                              href={dok.url}
-                              rel="noreferrer"
-                            >
+                            <a target="_blank" href={dok.url} rel="noreferrer">
                               {dok.name} <LinkOutlined />
                             </a>
                           </li>
@@ -276,15 +260,10 @@ export default function HalamanDetailPesanan() {
                     </div>
                     <div className={`border px-3 py-2 rounded space-y-3`}>
                       <span>Dokumen KTP</span>
-                      <ul>
+                      <ul className="list-disc list-inside">
                         {pesanan?.persyaratan.dokumen_ktp.map((dok) => (
                           <li key={dok.media_id}>
-                            <a
-                              className="text-white hover:text-black rounded-full px-3 py-[2px] bg-green-600 text-xs"
-                              target="_blank"
-                              href={dok.url}
-                              rel="noreferrer"
-                            >
+                            <a target="_blank" href={dok.url} rel="noreferrer">
                               {dok.name} <LinkOutlined />
                             </a>
                           </li>
@@ -311,17 +290,14 @@ export default function HalamanDetailPesanan() {
                   </div>
                 </div>
               )}
-              <div
-                className={`bg-white p-5 rounded ${
-                  pesanan.informasi_pengiriman.duration && 'border border-green-600'
-                }`}
-              >
+              <div className={`bg-white p-5`}>
                 <div className="flex justify-between mb-4 space-x-5">
                   <h4 className="font-bold text-lg mb-0">Info Pengiriman</h4>
                   {pesanan.informasi_pengiriman.duration && (
                     <span className="bg-green-600 px-3 py-[4px] rounded-full text-white text-[small]">
-                      <ClockCircleFilled /> &nbsp; Pengiriman{' '}
-                      {moment(pesanan.informasi_pengiriman.duration?.date_to).fromNow()}
+                      <ClockCircleFilled /> &nbsp; Durasi pengiriman{' '}
+                      {pesanan.informasi_pengiriman.duration?.estimation}{' '}
+                      {pesanan.informasi_pengiriman.duration?.estimation_unit.toLowerCase()}
                     </span>
                   )}
                 </div>
@@ -373,14 +349,10 @@ export default function HalamanDetailPesanan() {
               </div>
 
               <div className="p-5 rounded bg-white my-10">
-                <DaftarProdukPesanan pesanan={pesanan} />
+                <DaftarProdukPesanan showHeader={false} pesanan={pesanan} />
               </div>
 
-              <div
-                className={`p-5 rounded bg-white ${
-                  pesanan.tagihan?.status === 'DIBAYAR' && 'border border-green-600'
-                }`}
-              >
+              <div className={`p-5 rounded bg-white`}>
                 {pesanan.tagihan && (
                   <>
                     <div className="flex space-x-5 justify-between items-center mb-4">
@@ -416,118 +388,11 @@ export default function HalamanDetailPesanan() {
                           onClick={() => handleCopy(pesanan.tagihan.id, 'Nomor Tagihan')}
                         >
                           {pesanan.tagihan.id}
-                          &nbsp;
-                          <CopyOutlined />
                         </button>
-                      </Row>
-                      <Row>
-                        <span>Tagihan Dibuat Pada</span>
-                        <span>
-                          {moment(new Date(pesanan.tagihan.created_at)).format(
-                            'dddd, DD MMMM yyyy HH:mm',
-                          )}
-                        </span>
                       </Row>
                       <Row>
                         <span>Metode Pembayaran</span>
                         <span>{pesanan.tagihan.metode_pembayaran}</span>
-                      </Row>
-                      {pesanan.tagihan?.payload_pg?.payment_type === 'gopay' && (
-                        <Row>
-                          <span>QR Code</span>
-                          <div className="flex justify-end flex-grow items-end">
-                            <img
-                              className="max-w-sm"
-                              src={
-                                pesanan.tagihan.response_pg?.actions?.find(
-                                  (i) => i.name === 'generate-qr-code',
-                                ).url
-                              }
-                              alt="QR CODE"
-                            />
-                          </div>
-                        </Row>
-                      )}
-                      {pesanan.tagihan?.payload_pg?.payment_type === 'qris' && (
-                        <Row>
-                          <span>QR Code</span>
-                          <div className="flex justify-end flex-grow items-end">
-                            <img
-                              className="max-w-sm"
-                              src={
-                                pesanan.tagihan.response_pg?.actions?.find(
-                                  (i) => i.name === 'generate-qr-code',
-                                ).url
-                              }
-                              alt="QR CODE"
-                            />
-                          </div>
-                        </Row>
-                      )}
-                      {pesanan.tagihan?.payload_pg?.payment_type === 'bank_transfer' && (
-                        <Row>
-                          <span>Nomor Virtual Account</span>
-                          <button
-                            onClick={() =>
-                              handleCopy(
-                                pesanan.tagihan?.response_pg?.va_numbers?.find(
-                                  (i) =>
-                                    i.bank ===
-                                    pesanan.tagihan.payload_pg?.bank_transfer?.bank,
-                                )?.va_number,
-                                'Nomor Virtual Account',
-                              )
-                            }
-                          >
-                            {
-                              pesanan.tagihan?.response_pg?.va_numbers?.find(
-                                (i) =>
-                                  i.bank ===
-                                  pesanan.tagihan.payload_pg?.bank_transfer?.bank,
-                              )?.va_number
-                            }
-                            &nbsp;
-                            <CopyOutlined />
-                          </button>
-                        </Row>
-                      )}
-                      {pesanan.tagihan?.payload_pg?.payment_type === 'echannel' && (
-                        <>
-                          <Row>
-                            <span>Bill Key</span>
-                            <button
-                              onClick={() =>
-                                handleCopy(
-                                  pesanan.tagihan?.response_pg?.bill_key,
-                                  'Bill Key',
-                                )
-                              }
-                            >
-                              {pesanan.tagihan?.response_pg?.bill_key}
-                              &nbsp;
-                              <CopyOutlined />
-                            </button>
-                          </Row>
-                          <Row>
-                            <span>Bill Code</span>
-                            <button
-                              onClick={() =>
-                                handleCopy(
-                                  pesanan.tagihan?.response_pg?.biller_code,
-                                  'Bill Code',
-                                )
-                              }
-                            >
-                              {pesanan.tagihan?.response_pg?.biller_code}
-                              &nbsp;
-                              <CopyOutlined />
-                            </button>
-                          </Row>
-                        </>
-                      )}
-                      <Row>
-                        <span>Deskripsi</span>
-                        <span className="max-w-[60%]">{pesanan.tagihan.deskripsi}</span>
                       </Row>
                     </>
                   )}

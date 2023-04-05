@@ -238,7 +238,7 @@ export default function HalamanDaftarPesanan() {
                 {!cat.loading && (
                   <>
                     {cat.data.data.length === 0 && (
-                      <div className="border border-dashed p-5 mt-5 bg-white rounded">
+                      <div className="p-5 mt-5 bg-white rounded">
                         <Empty
                           className="mt-10"
                           description={

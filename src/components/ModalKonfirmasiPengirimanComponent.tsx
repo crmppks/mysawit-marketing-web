@@ -23,11 +23,11 @@ export default function ModalAturPengiriman({
 
   const handleSubmit = (values: any) => {
     setSubmitting(true);
-    const payload = {
+    postConfirmPesananShipment(pesanan.id, {
       ...values,
       satuan_durasi,
-    };
-    postConfirmPesananShipment(pesanan.id, payload)
+      mulai_hari_ini: values.mulai_hari_ini ? 1 : 0,
+    })
       .then(({ data }) => {
         onFinish(data);
       })
@@ -46,12 +46,8 @@ export default function ModalAturPengiriman({
       onCancel={onCancel}
     >
       <Form onFinish={handleSubmit} form={form} layout="vertical">
-        <Form.Item
-          label="Nomor Resi"
-          name={'nomor_resi'}
-          rules={[{ required: true, message: 'Nomor resi dibutuhkan' }]}
-        >
-          <Input />
+        <Form.Item label="Nomor Resi" name={'nomor_resi'}>
+          <Input size="large" />
         </Form.Item>
         <Form.Item
           label="Durasi Pengiriman"
@@ -62,6 +58,7 @@ export default function ModalAturPengiriman({
           ]}
         >
           <Input
+            size="large"
             addonAfter={
               <Select value={satuan_durasi} onChange={set_satuan_durasi}>
                 <Select.Option value="BULAN">Bulan</Select.Option>
@@ -77,6 +74,7 @@ export default function ModalAturPengiriman({
             rules={[{ required: true, message: 'Tanggal mulai terhitung dibutuhkan' }]}
           >
             <DatePicker
+              size="large"
               className="w-full"
               disabledDate={(date) => date.isBefore(moment())}
             />

@@ -11,5 +11,5 @@ export const censorEmail = function (email: string) {
 
 export const handleCopy = (text: string | number, object: string = 'Teks') => {
   navigator.clipboard.writeText(text.toString());
-  message.success(`${object} berhasil disalin ke papan klip`);
+  message.success(`${object} disalin ke papan klip`);
 };

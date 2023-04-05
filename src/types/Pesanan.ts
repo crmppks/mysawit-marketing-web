@@ -26,6 +26,7 @@ interface Pesanan {
   nomor_resi?: string;
   is_tagihan_completed: boolean;
   is_tagihan_canceled: boolean;
+  is_pengiriman_editable: boolean;
   created_at: string;
   updated_at: string;
   total_produk: number;

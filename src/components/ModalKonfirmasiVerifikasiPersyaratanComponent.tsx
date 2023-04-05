@@ -47,7 +47,10 @@ export default function ModalKonfirmasiVerifikasiPersyaratan({
       if (confirmed) {
         setSubmitting(true);
         postConfirmPesananVerification(pesanan.id, values)
-          .then(({ data }) => onFinishConfirmation(data))
+          .then(({ data }) => {
+            onFinishConfirmation(data);
+            form.resetFields();
+          })
           .finally(() => setSubmitting(false));
       }
     });

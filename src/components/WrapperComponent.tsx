@@ -5,8 +5,8 @@ import {
   ShoppingOutlined,
   UserOutlined,
   BellFilled,
-  ProjectOutlined,
   LineChartOutlined,
+  StarOutlined,
 } from '@ant-design/icons';
 import { getFCMToken, onMessageListener } from '@/services/firebase';
 import { useAppSelector } from '@/hooks/redux_hooks';
@@ -71,7 +71,7 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
             <Menu.Item key={'dashboard'} icon={<HomeOutlined />}>
               <Link to="/">Dashboard</Link>
             </Menu.Item>
-            <Menu.Item key={'produk'} icon={<ShoppingOutlined />}>
+            <Menu.Item key={'produk'} icon={<StarOutlined />}>
               <Link to="/produk">Produk</Link>
             </Menu.Item>
             {user.kategori_produk_id === ID_KATEGORI_PRODUK_KECAMBAH && (
@@ -79,7 +79,7 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
                 <Link to="/konsumen">Konsumen</Link>
               </Menu.Item>
             )}
-            <Menu.Item key={'pesanan'} icon={<ProjectOutlined />}>
+            <Menu.Item key={'pesanan'} icon={<ShoppingOutlined />}>
               <Link to="/pesanan">Pesanan</Link>
             </Menu.Item>
             <Menu.SubMenu key={'laporan'} icon={<LineChartOutlined />} title="Laporan">

@@ -77,7 +77,7 @@ export default function HalamanDetailPesanan() {
               }}
             />
           )}
-          {pesanan.status === 'DIKEMAS' && (
+          {['DIKEMAS', 'DIKIRIM'].includes(pesanan.status) && (
             <ModalKonfirmasiPengiriman
               visible={showModalAturPengiriman}
               pesanan={pesanan}
@@ -443,6 +443,17 @@ export default function HalamanDetailPesanan() {
                   type={`primary`}
                 >
                   Konfirmasi Pengiriman
+                </Button>
+              )}
+              {pesanan.status === 'DIKIRIM' && (
+                <Button
+                  onClick={() => setShowModalAturPengiriman(true)}
+                  block
+                  disabled={!pesanan.is_pengiriman_editable}
+                  size="large"
+                  type={`primary`}
+                >
+                  Ubah Pengiriman
                 </Button>
               )}
             </div>

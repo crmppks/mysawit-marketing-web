@@ -18,8 +18,14 @@ export default function ModalAturPengiriman({
 }: Props) {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const [satuan_durasi, set_satuan_durasi] = useState<'BULAN' | 'HARI'>('BULAN');
-  const [mulai_hari_ini, set_mulai_hari_ini] = useState<boolean>(true);
+  const [satuan_durasi, set_satuan_durasi] = useState<'BULAN' | 'HARI'>(
+    pesanan.is_pengiriman_editable
+      ? pesanan.informasi_pengiriman.duration.estimation_unit
+      : 'BULAN',
+  );
+  const [mulai_hari_ini, set_mulai_hari_ini] = useState<boolean>(
+    pesanan.is_pengiriman_editable ? false : true,
+  );
 
   const handleSubmit = (values: any) => {
     setSubmitting(true);
@@ -30,6 +36,7 @@ export default function ModalAturPengiriman({
     })
       .then(({ data }) => {
         onFinish(data);
+        form.resetFields();
       })
       .finally(() => setSubmitting(false));
   };
@@ -38,14 +45,27 @@ export default function ModalAturPengiriman({
     <Modal
       title={title}
       visible={visible}
-      okText="Selesai"
+      okText="Simpan"
       okButtonProps={{
         loading: submitting,
       }}
       onOk={() => form.submit()}
       onCancel={onCancel}
     >
-      <Form onFinish={handleSubmit} form={form} layout="vertical">
+      <Form
+        onFinish={handleSubmit}
+        form={form}
+        layout="vertical"
+        initialValues={
+          pesanan.is_pengiriman_editable
+            ? {
+                nomor_resi: pesanan.nomor_resi,
+                durasi: pesanan.informasi_pengiriman.duration.estimation,
+                mulai_dari: moment(pesanan.informasi_pengiriman.duration.date_from),
+              }
+            : null
+        }
+      >
         <Form.Item label="Nomor Resi" name={'nomor_resi'}>
           <Input size="large" />
         </Form.Item>
@@ -76,22 +96,25 @@ export default function ModalAturPengiriman({
             <DatePicker
               size="large"
               className="w-full"
+              disabled={pesanan.is_pengiriman_editable}
               disabledDate={(date) => date.isBefore(moment())}
             />
           </Form.Item>
         )}
-        <Form.Item
-          initialValue={mulai_hari_ini}
-          valuePropName="checked"
-          name={'mulai_hari_ini'}
-        >
-          <Checkbox
-            checked={mulai_hari_ini}
-            onChange={(e) => set_mulai_hari_ini(e.target.checked)}
+        {!pesanan.is_pengiriman_editable && (
+          <Form.Item
+            initialValue={mulai_hari_ini}
+            valuePropName="checked"
+            name={'mulai_hari_ini'}
           >
-            <span className="text-gray-500">Terhitung dari hari ini</span>
-          </Checkbox>
-        </Form.Item>
+            <Checkbox
+              checked={mulai_hari_ini}
+              onChange={(e) => set_mulai_hari_ini(e.target.checked)}
+            >
+              <span className="text-gray-500">Terhitung dari hari ini</span>
+            </Checkbox>
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );

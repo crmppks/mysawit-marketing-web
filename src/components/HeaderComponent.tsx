@@ -7,16 +7,17 @@ import {
 import { clearSesiAction, getProfileDetailAction } from '@/store/actions/sesi';
 import { Badge, Button, Dropdown, Empty, Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import NotificationItem from './NotificationItemComponent';
 import SearchBoxComponent from './SearchBoxComponent';
 
 export default function HeaderComponent() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.sesi.user);
   const notifikasi = useAppSelector((state) => state.notifikasi);
 
-  const [badgeMessage] = useState<number>(5);
+  const [badgeMessage] = useState<number>(0);
 
   const handleSignOut = () => {
     dispatch(clearSesiAction());
@@ -129,7 +130,10 @@ export default function HeaderComponent() {
                 </Badge>
               </Dropdown>
               <Badge offset={[-7, 10]} count={badgeMessage}>
-                <button className="rounded-full hover:bg-gray-400 p-2">
+                <button
+                  onClick={() => navigate('/chat')}
+                  className="rounded-full hover:bg-gray-400 p-2"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6 text-white"

@@ -95,9 +95,9 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
             </Menu.SubMenu>
           </Menu>
         </nav>
-        <section className="flex-grow ml-[150px] md:ml-[250px] lg:ml-[23vw] min-h-[100vh] overflow-x-auto">
+        <div className="relative flex-grow ml-[150px] md:ml-[250px] lg:ml-[23vw] min-h-[100vh] overflow-x-auto">
           {children}
-        </section>
+        </div>
       </main>
     </>
   );

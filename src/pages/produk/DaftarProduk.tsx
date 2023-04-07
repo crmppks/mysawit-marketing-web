@@ -3,7 +3,7 @@ import { getSemuaFilteredProduk, getSemuaProduk } from '@/services/produk';
 import Paging from '@/types/Paging';
 import Produk from '@/types/Produk';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Button, Empty, Form, Image, Input, PageHeader, Skeleton } from 'antd';
+import { Button, Empty, Form, Input, PageHeader, Skeleton } from 'antd';
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -82,6 +82,7 @@ export default function HalamanDaftarProduk() {
                       size="large"
                       placeholder="Cari produk"
                       className="w-full"
+                      allowClear
                       onSearch={() => formFilter.submit()}
                     />
                   </Form.Item>
@@ -96,10 +97,13 @@ export default function HalamanDaftarProduk() {
                 </div>
               )}
               {produks.data.length === 0 && (
-                <Empty
-                  className="py-5 rounded bg-white mb-0"
-                  description={<p className="text-gray-500">Belum ada produk tersedia</p>}
-                />
+                <div className="py-5 rounded bg-white mb-0">
+                  <Empty
+                    description={
+                      <p className="text-gray-500">Belum ada produk tersedia</p>
+                    }
+                  />
+                </div>
               )}
               {produks.data.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
@@ -110,21 +114,11 @@ export default function HalamanDaftarProduk() {
                       }`}
                       key={produk.id}
                     >
-                      <Image
-                        src={produk.banner}
-                        alt={produk.nama}
-                        className="mwx-w-full"
-                      />
+                      <img src={produk.banner} alt={produk.nama} className="w-full" />
                       <div className="px-5 py-3">
                         <h3 className="leading-tight text-lg mb-0">
                           <Link to={`/produk/${produk.id}`}>{produk.nama}</Link>
                         </h3>
-
-                        <div className="mt-3 mb-0 flex justify-between">
-                          <span>
-                            {produk.harga_diff} / {produk.unit}
-                          </span>
-                        </div>
                       </div>
                     </div>
                   ))}

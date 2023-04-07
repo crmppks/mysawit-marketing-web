@@ -1,6 +1,6 @@
 import { getDetailKonsumen } from '@/services/konsumen';
 import UserKonsumen from '@/types/UserKonsumen';
-import { PageHeader, Skeleton } from 'antd';
+import { Image, PageHeader, Skeleton } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -43,7 +43,7 @@ export default function HalamanDetailKonsumen() {
         <section className="p-5">
           <div className="rounded bg-white p-5 shadow grid grid-cols-12 gap-5 md:gap-10">
             <div className="col-span-12 md:col-span-3">
-              <img
+              <Image
                 src={konsumen?.avatar}
                 alt={konsumen?.nama}
                 className="border rounded-full shadow max-w-full"

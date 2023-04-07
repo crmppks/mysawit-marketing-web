@@ -28,6 +28,7 @@ import HalamanDetailKategoriProduk from './pages/kategori/produk/DetailKategoriP
 import HalamanDetailKategoriKonsumen from './pages/kategori/konsumen/DetailKategoriKonsumen';
 import { useAppSelector } from './hooks/redux_hooks';
 import { ID_KATEGORI_PRODUK_KECAMBAH } from './helpers/constants';
+import HalamanDashboardChat from './pages/chat/DashboardChat';
 
 export default function App() {
   const user = useAppSelector((state) => state.sesi?.user);
@@ -46,6 +47,7 @@ export default function App() {
           }
         >
           <Route index element={<HalamanDashboard />} />
+          <Route path="/chat" element={<HalamanDashboardChat />} />
           <Route path="/produk" element={<Outlet />}>
             <Route index element={<HalamanDaftarProduk />} />
             <Route path=":id" element={<HalamanDetailProduk />} />

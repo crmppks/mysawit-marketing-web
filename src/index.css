@@ -70,4 +70,8 @@
         margin-bottom:0;
         margin-top:0;
     }
+
+    .no-ant-form-item-margin .ant-form-item{
+        @apply m-0 !important;
+    }
 }

@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
-import { Avatar, Badge, Button, Input } from 'antd';
+import { Avatar, Badge, Button, Dropdown, Input, Menu, Skeleton } from 'antd';
 import {
   query,
   where,
@@ -18,25 +17,31 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import {
   ArrowLeftOutlined,
+  DeleteOutlined,
   LoadingOutlined,
   MoreOutlined,
   SearchOutlined,
+  UserAddOutlined,
 } from '@ant-design/icons';
 import { getSearchPerson } from '@/services/chat';
 import lodash from 'lodash';
 import { useAppSelector } from '@/hooks/redux_hooks';
 import ChatRoom from '@/types/chat/ChatRoom';
-import BubbleChat from '@/components/chat/BubbleChat';
+import ChatBubble from '@/components/chat/ChatBubble';
+import ChatComposer from '@/components/chat/ChatComposer';
 
 export default function HalamanDashboardChat() {
   const me = useAppSelector((state) => state.sesi.user);
 
   const [rooms, setRooms] = useState<Array<ChatRoom>>([]);
+  const [users, setUsers] = useState<Array<ChatRoom>>([]);
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom>(null);
   const [messages, setMessages] = useState<Array<any>>([]);
-  const [messageValue, setMessageValue] = useState<string>('');
   const [searchRoomValue, setSearchRoomValue] = useState<string>('');
   const [searchRoomLoading, setSearchRoomLoading] = useState<boolean>(false);
+  const [listUserIdAlreadyChatWith, setListUserIdAlreadyChatWith] = useState<string[]>(
+    [],
+  );
 
   const writeMessageBoxRef = useRef<any>();
   const messagesAnchorRef = useRef<any>();
@@ -58,11 +63,20 @@ export default function HalamanDashboardChat() {
     [],
   );
 
-  const handleSearchRoom = (query: string) => {
+  const handleSearchRoom = (q: string) => {
+    console.log(q);
     setSearchRoomLoading(true);
-    getSearchPerson(query)
-      .then(({ data }) => setRooms(data))
+    getSearchPerson(q)
+      .then(({ data }) => setUsers(data))
       .finally(() => setSearchRoomLoading(false));
+    setRooms((prev) =>
+      prev.filter((room) => {
+        if (room.is_group) {
+          return room.title[me.user_id].toLowerCase().includes(q.toLowerCase());
+        }
+        return room.title[otherPersonId(room)].toLowerCase().includes(q.toLowerCase());
+      }),
+    );
   };
 
   const handleStartConversation = async () => {
@@ -80,10 +94,10 @@ export default function HalamanDashboardChat() {
     await addDoc(collection(doc(firestore, 'chat', chatRoomDoc.id), 'messages'), {
       type: 'EVENT',
       message: 'Percakapan dimulai',
-      user_id: me.user_id,
       created_at: serverTimestamp(),
     });
 
+    setSearchRoomValue('');
     setSelectedRoom((prev) => ({
       ...prev,
       id: chatRoomDoc.id,
@@ -91,25 +105,6 @@ export default function HalamanDashboardChat() {
       is_starting: false,
       updated_at: moment().toISOString(),
     }));
-  };
-
-  const handleSendMessage = async () => {
-    await addDoc(collection(doc(firestore, 'chat', selectedRoom.id), 'messages'), {
-      type: 'MESSAGE',
-      message: messageValue,
-      user_id: me.user_id,
-      created_at: serverTimestamp(),
-    });
-    setMessageValue('');
-    messagesAnchorRef.current.scrollIntoView({ behavior: 'smooth' });
-
-    updateDoc(doc(firestore, 'chat', selectedRoom.id), {
-      updated_at: serverTimestamp(),
-      last_sender: {
-        user_id: me.user_id,
-        message: messageValue,
-      },
-    });
   };
 
   useEffect(() => {
@@ -120,18 +115,20 @@ export default function HalamanDashboardChat() {
         orderBy('updated_at', 'desc'),
         limit(50),
       );
+
       const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
         const roomDocs = [];
         QuerySnapshot.forEach((doc) => {
           roomDocs.push({ ...doc.data(), id: doc.id });
         });
         setRooms(roomDocs);
-
-        if (selectedRoom) {
-          if (!roomDocs.find((value) => value.id === selectedRoom.id)) {
-            setSelectedRoom(null);
-          }
-        }
+        setListUserIdAlreadyChatWith(
+          roomDocs
+            .filter((room) => !room.is_group)
+            .map((item) => {
+              return item.user_ids.find((id: string) => id !== me.user_id);
+            }),
+        );
       });
       return () => {
         unsubscribe();
@@ -174,7 +171,6 @@ export default function HalamanDashboardChat() {
           setMessages(messageDocs);
           messagesAnchorRef.current.scrollIntoView({ behavior: 'smooth' });
         });
-
         return () => {
           updateDoc(doc(firestore, 'chat', selectedRoom.id), {
             last_seen: {
@@ -224,121 +220,181 @@ export default function HalamanDashboardChat() {
             className="w-full"
           />
         </div>
-        <div className="flex-1 divide-y divide-gray-400 border-gray-400">
-          {rooms.length === 0 && (
+        <div className="flex-1 border-gray-400">
+          {rooms.length === 0 && !searchRoomValue && (
             <div className="absolute px-5 inset-0 flex flex-col items-center justify-center">
-              {searchRoomValue ? (
-                <>
-                  {searchRoomLoading ? (
-                    <LoadingOutlined className="text-4xl" />
-                  ) : (
-                    <>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="text-gray-400 w-16 h-16"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                        />
-                      </svg>
-                      <p className="text-gray-400 text-center">
-                        Tidak ada hasil pencarian
-                      </p>
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="text-gray-400 w-16 h-16"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                    />
-                  </svg>
-                  <p className="text-gray-400 text-center">
-                    Cari pengguna untuk memulai percakapan
-                  </p>
-                </>
-              )}
+              <Skeleton />
             </div>
           )}
-          {rooms.map((room) => (
-            <div
-              key={room.id}
-              onClick={() => setSelectedRoom(room)}
-              className={`p-3 space-x-3 flex cursor-pointer hover:bg-gray-100 ${
-                selectedRoom?.id === room.id && 'bg-gray-100'
-              }`}
-            >
-              {room.id === selectedRoom?.id && selectedRoom?.is_starting ? (
-                <div className="w-[40px] flex items-center">
-                  <LoadingOutlined className="text-3xl" />
+          <div className="divide-y divide-gray-400">
+            {searchRoomValue && (
+              <>
+                <div className="p-3">
+                  <strong>PERCAKAPAN</strong>
                 </div>
-              ) : room.last_seen[otherPersonId(room)] === 'ONLINE' ? (
-                <Badge dot status="warning">
-                  <Avatar size="large" src={room.avatar[otherPersonId(room)]} />
-                </Badge>
-              ) : (
-                <Avatar size="large" src={room.avatar[otherPersonId(room)]} />
-              )}
+                {rooms.length === 0 && (
+                  <div className="p-5 flex flex-col items-center justify-center text-gray-400">
+                    <SearchOutlined className="text-4xl" />
+                    <p className="text-center">Tidak ada percakapan ditemukan</p>
+                  </div>
+                )}
+              </>
+            )}
+            {rooms.map((room) => (
               <div
-                className="flex-1 leading-tight overflow-hidden"
-                title={`${
-                  room.last_sender
-                    ? room.last_sender.message
-                    : room.title[otherPersonId(room)]
+                key={room.id}
+                onClick={() => setSelectedRoom(room)}
+                className={`p-3 space-x-3 flex cursor-pointer hover:bg-gray-100 ${
+                  selectedRoom?.id === room.id && 'bg-gray-100'
                 }`}
               >
-                <h4 className="mb-0">{room.title[otherPersonId(room)]}</h4>
-                <div className="flex space-x-1 items-center">
-                  {room.last_sender?.user_id === me.user_id && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="w-3 h-3 flex-0"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
-                  <p className="flex-1 mb-0 text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap">
-                    {room.last_sender
+                {room.id === selectedRoom?.id && selectedRoom?.is_starting ? (
+                  <div className="w-[40px] flex items-center">
+                    <LoadingOutlined className="text-3xl" />
+                  </div>
+                ) : room.last_seen[otherPersonId(room)] === 'ONLINE' ? (
+                  <Badge dot color="blue">
+                    <Avatar size="large" src={room.avatar[otherPersonId(room)]} />
+                  </Badge>
+                ) : (
+                  <Avatar size="large" src={room.avatar[otherPersonId(room)]} />
+                )}
+                <div
+                  className="flex-1 leading-tight overflow-hidden"
+                  title={`${
+                    room.last_sender
                       ? room.last_sender.message
-                      : room.subtitle[otherPersonId(room)]}
-                  </p>
+                      : room.title[otherPersonId(room)]
+                  }`}
+                >
+                  <h4 className="mb-0">{room.title[otherPersonId(room)]}</h4>
+                  <div className="flex space-x-1 items-center">
+                    {room.last_sender?.user_id === me.user_id && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="w-3 h-3 flex-0"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                    <p className="flex-1 mb-0 text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap">
+                      {room.last_sender
+                        ? room.last_sender.message
+                        : room.subtitle[otherPersonId(room)]}
+                    </p>
+                  </div>
                 </div>
+                {room.updated_at && (
+                  <small className="text-gray-400">
+                    {moment(room.updated_at.toDate()).format(
+                      moment().isSame(moment(room.updated_at.toDate()), 'day')
+                        ? 'HH:mm'
+                        : moment().isSame(moment(room.updated_at.toDate()), 'year')
+                        ? 'DD/MM HH:mm'
+                        : 'YYYY/MM/DD',
+                    )}
+                  </small>
+                )}
               </div>
-              {room.updated_at && (
-                <small className="text-gray-400">
-                  {moment(room.updated_at.toDate()).format(
-                    moment().isSame(moment(room.updated_at.toDate()), 'day')
-                      ? 'HH:mm'
-                      : moment().isSame(moment(room.updated_at.toDate()), 'year')
-                      ? 'DD/MM HH:mm'
-                      : 'YYYY/MM/DD',
-                  )}
-                </small>
-              )}
-            </div>
-          ))}
+            ))}
+            {searchRoomValue && (
+              <>
+                <div className="p-3">
+                  <strong>PENGGUNA</strong>
+                </div>
+                {searchRoomLoading ? (
+                  <Skeleton active className="px-3 pt-5" />
+                ) : (
+                  <>
+                    {users.filter((user) => !listUserIdAlreadyChatWith.includes(user.id))
+                      .length === 0 && (
+                      <div className="p-5 flex flex-col items-center justify-center text-gray-400">
+                        <SearchOutlined className="text-4xl" />
+                        <p className="text-center">Tidak ada pengguna ditemukan</p>
+                      </div>
+                    )}
+                    {users
+                      .filter((user) => !listUserIdAlreadyChatWith.includes(user.id))
+                      .map((room) => (
+                        <div
+                          key={room.id}
+                          onClick={() => setSelectedRoom(room)}
+                          className={`p-3 space-x-3 flex cursor-pointer hover:bg-gray-100 ${
+                            selectedRoom?.id === room.id && 'bg-gray-100'
+                          }`}
+                        >
+                          {room.id === selectedRoom?.id && selectedRoom?.is_starting ? (
+                            <div className="w-[40px] flex items-center">
+                              <LoadingOutlined className="text-3xl" />
+                            </div>
+                          ) : room.last_seen[otherPersonId(room)] === 'ONLINE' ? (
+                            <Badge dot color="blue">
+                              <Avatar
+                                size="large"
+                                src={room.avatar[otherPersonId(room)]}
+                              />
+                            </Badge>
+                          ) : (
+                            <Avatar size="large" src={room.avatar[otherPersonId(room)]} />
+                          )}
+                          <div
+                            className="flex-1 leading-tight overflow-hidden"
+                            title={`${
+                              room.last_sender
+                                ? room.last_sender.message
+                                : room.title[otherPersonId(room)]
+                            }`}
+                          >
+                            <h4 className="mb-0">{room.title[otherPersonId(room)]}</h4>
+                            <div className="flex space-x-1 items-center">
+                              {room.last_sender?.user_id === me.user_id && (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  className="w-3 h-3 flex-0"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              )}
+                              <p className="flex-1 mb-0 text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap">
+                                {room.last_sender
+                                  ? room.last_sender.message
+                                  : room.subtitle[otherPersonId(room)]}
+                              </p>
+                            </div>
+                          </div>
+                          {room.updated_at && (
+                            <small className="text-gray-400">
+                              {moment(room.updated_at.toDate()).format(
+                                moment().isSame(moment(room.updated_at.toDate()), 'day')
+                                  ? 'HH:mm'
+                                  : moment().isSame(
+                                      moment(room.updated_at.toDate()),
+                                      'year',
+                                    )
+                                  ? 'DD/MM HH:mm'
+                                  : 'YYYY/MM/DD',
+                              )}
+                            </small>
+                          )}
+                        </div>
+                      ))}
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
       <div className="w-full md:w-8/12 lg:w-9/12 relative flex flex-col">
@@ -384,7 +440,7 @@ export default function HalamanDashboardChat() {
                       selectedRoom.subtitle[otherPersonId(selectedRoom)]
                     ) : selectedRoom.last_seen[otherPersonId(selectedRoom)] ===
                       'ONLINE' ? (
-                      <span className="font-bold text-color-theme">online</span>
+                      <span className="font-bold text-green-600">online</span>
                     ) : (
                       <span className="text-gray-400">
                         {moment(
@@ -395,12 +451,25 @@ export default function HalamanDashboardChat() {
                   </>
                 )}
               </div>
-              <button className="text-lg">
-                <SearchOutlined />
-              </button>
-              <button className="text-lg">
-                <MoreOutlined />
-              </button>
+              <Dropdown
+                arrow
+                placement="bottomRight"
+                overlay={
+                  <Menu>
+                    <Menu.Item key={'add-people'} icon={<UserAddOutlined />}>
+                      Tambah Orang
+                    </Menu.Item>
+                    <Menu.Item key={'remove-room'} icon={<DeleteOutlined />}>
+                      Hapus Percakapan
+                    </Menu.Item>
+                  </Menu>
+                }
+                trigger={['click']}
+              >
+                <button className="text-lg">
+                  <MoreOutlined />
+                </button>
+              </Dropdown>
             </div>
             <div className="flex-1 relative overflow-y-auto">
               {selectedRoom.is_new && (
@@ -434,64 +503,27 @@ export default function HalamanDashboardChat() {
               )}
               {!selectedRoom.is_new && (
                 <div className="py-5 px-10">
-                  {messages.map((message) => (
-                    <BubbleChat key={message.id} message={message} />
+                  {messages.map((message, index) => (
+                    <ChatBubble
+                      key={message.id}
+                      message={message}
+                      before={index > 0 ? messages[index - 1] : null}
+                      after={index < messages.length ? messages[index + 1] : null}
+                    />
                   ))}
                 </div>
               )}
               <div ref={messagesAnchorRef}></div>
             </div>
             {!selectedRoom.is_new && (
-              <div
-                ref={writeMessageBoxRef}
-                className="flex space-x-5 items-center bg-gray-300 py-2 px-5"
-              >
-                <button className="text-lg">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18.97 3.659a2.25 2.25 0 00-3.182 0l-10.94 10.94a3.75 3.75 0 105.304 5.303l7.693-7.693a.75.75 0 011.06 1.06l-7.693 7.693a5.25 5.25 0 11-7.424-7.424l10.939-10.94a3.75 3.75 0 115.303 5.304L9.097 18.835l-.008.008-.007.007-.002.002-.003.002A2.25 2.25 0 015.91 15.66l7.81-7.81a.75.75 0 011.061 1.06l-7.81 7.81a.75.75 0 001.054 1.068L18.97 6.84a2.25 2.25 0 000-3.182z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button>
-                <div className="flex-1">
-                  <Input
-                    autoFocus
-                    value={messageValue}
-                    onChange={(event) => setMessageValue(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter') {
-                        handleSendMessage();
-                      }
-                    }}
-                    placeholder="Tulis pesan"
-                    className="w-full"
-                    size="large"
-                  />
-                </div>
-                <button
-                  onClick={() => {
-                    if (messageValue) {
-                      handleSendMessage();
-                    }
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-                  </svg>
-                </button>
-              </div>
+              <ChatComposer
+                firestore={firestore}
+                messagesAnchorRef={messagesAnchorRef}
+                containerRef={writeMessageBoxRef}
+                rooms={rooms}
+                selectedRoom={selectedRoom}
+                onRoomGone={() => setSelectedRoom(null)}
+              />
             )}
           </>
         )}

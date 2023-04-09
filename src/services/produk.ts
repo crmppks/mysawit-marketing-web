@@ -25,6 +25,11 @@ export const getSemuaProduk = (
   return axios.get(`/marketing/produk`);
 };
 
+export const getMostSeenProducts = (limit: number = null) => {
+  if (limit) return axios.get(`/produk/most-seen?limit=${limit}`);
+  return axios.get(`/produk/most-seen`);
+};
+
 export const getSemuaFilteredProduk = (params: any, page: number = 1) => {
   if (params) return axios.get(`/marketing/produk?${params}`);
   return axios.get(`/marketing/produk?page=${page}`);
@@ -54,6 +59,7 @@ export const getSemuaKategoriProdukOptions = () => {
   return axios.get(`/enums/kategori-produk`);
 };
 
-export const postCariProduk = (query: string = '') => {
+export const postCariProduk = (query: string = '', limit: number = null) => {
+  if (limit) return axios.post(`/produk?q=${query}&limit=${limit}`);
   return axios.post(`/produk?q=${query}`);
 };

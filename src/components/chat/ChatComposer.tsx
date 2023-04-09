@@ -93,6 +93,7 @@ export default function ChatComposer({
             id: attachmentProduct.id,
             nama: attachmentProduct.nama,
             banner: attachmentProduct.banner,
+            slug: attachmentProduct.slug,
           },
         };
       }

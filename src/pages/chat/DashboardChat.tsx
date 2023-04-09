@@ -64,7 +64,6 @@ export default function HalamanDashboardChat() {
   );
 
   const handleSearchRoom = (q: string) => {
-    console.log(q);
     setSearchRoomLoading(true);
     getSearchPerson(q)
       .then(({ data }) => setUsers(data))

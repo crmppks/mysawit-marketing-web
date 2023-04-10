@@ -12,7 +12,12 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import Paging from '@/types/Paging';
 import moment from 'moment';
-import { CheckCircleFilled, InfoCircleOutlined, MoreOutlined } from '@ant-design/icons';
+import {
+  CheckCircleFilled,
+  InfoCircleOutlined,
+  MoreOutlined,
+  WechatOutlined,
+} from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { getOrderInsight, getPesananByKategori } from '@/services/pesanan';
 import Pesanan from '@/types/Pesanan';
@@ -358,6 +363,11 @@ export default function HalamanDaftarPesanan() {
                                       <Button icon={<MoreOutlined />}></Button>
                                     </Dropdown>
                                   )}
+                                  <Link to={`/chat/${pesanan.konsumen_id}`}>
+                                    <Button icon={<WechatOutlined />} type="primary">
+                                      Chat Konsumen
+                                    </Button>
+                                  </Link>
                                 </div>
                                 <div className="flex flex-col items-end">
                                   <span className="text-gray-500">Total Belanja</span>

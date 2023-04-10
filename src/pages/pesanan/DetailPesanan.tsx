@@ -13,6 +13,7 @@ import {
   CloseCircleFilled,
   InfoCircleOutlined,
   LinkOutlined,
+  WechatOutlined,
 } from '@ant-design/icons';
 import { Link, useParams } from 'react-router-dom';
 import ModalKonfirmasiVerifikasiPersyaratan from '@/components/ModalKonfirmasiVerifikasiPersyaratanComponent';
@@ -424,6 +425,11 @@ export default function HalamanDetailPesanan() {
               </div>
             </div>
             <div className="col-span-12 lg:col-span-4 space-y-2">
+              <Link to={`/chat/${pesanan.konsumen_id}`}>
+                <Button icon={<WechatOutlined />} type="primary" block size="large">
+                  Chat Konsumen
+                </Button>
+              </Link>
               {pesanan.status === 'VERIFIKASI_PERSYARATAN' && (
                 <Button
                   disabled={!pesanan.persyaratan}

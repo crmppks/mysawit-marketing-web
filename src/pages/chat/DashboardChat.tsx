@@ -21,17 +21,20 @@ import {
   LoadingOutlined,
   MoreOutlined,
   SearchOutlined,
-  UserAddOutlined,
+  // UserAddOutlined,
 } from '@ant-design/icons';
-import { getSearchPerson } from '@/services/chat';
+import { getPersonInitial, getSearchPerson } from '@/services/chat';
 import lodash from 'lodash';
 import { useAppSelector } from '@/hooks/redux_hooks';
 import ChatRoom from '@/types/chat/ChatRoom';
 import ChatBubble from '@/components/chat/ChatBubble';
 import ChatComposer from '@/components/chat/ChatComposer';
+import { useParams } from 'react-router-dom';
+import { AxiosResponse } from 'axios';
 
 export default function HalamanDashboardChat() {
   const me = useAppSelector((state) => state.sesi.user);
+  const { user_id } = useParams();
 
   const [rooms, setRooms] = useState<Array<ChatRoom>>([]);
   const [users, setUsers] = useState<Array<ChatRoom>>([]);
@@ -43,6 +46,7 @@ export default function HalamanDashboardChat() {
     [],
   );
 
+  const selectedRoomRef = useRef<ChatRoom>(null);
   const writeMessageBoxRef = useRef<any>();
   const messagesAnchorRef = useRef<any>();
 
@@ -108,6 +112,8 @@ export default function HalamanDashboardChat() {
 
   useEffect(() => {
     if (!searchRoomValue) {
+      setUsers([]);
+
       const q = query(
         collection(firestore, 'chat'),
         where('user_ids', 'array-contains', me.user_id),
@@ -128,6 +134,24 @@ export default function HalamanDashboardChat() {
               return item.user_ids.find((id: string) => id !== me.user_id);
             }),
         );
+
+        if (user_id) {
+          const selected = roomDocs.find((room) => {
+            return !room.is_group && room.user_ids.includes(user_id);
+          });
+
+          // if (selected) setTimeout(() => setSelectedRoom(selected), 5000);
+          if (!selected && !selectedRoomRef.current) {
+            getPersonInitial(user_id).then(({ data }: AxiosResponse<ChatRoom[]>) => {
+              setUsers(data);
+              setSelectedRoom(
+                data.find((room) => {
+                  return !room.is_group && room.user_ids.includes(user_id);
+                }),
+              );
+            });
+          }
+        }
       });
       return () => {
         unsubscribe();
@@ -183,6 +207,12 @@ export default function HalamanDashboardChat() {
     }
   }, [selectedRoom]);
 
+  useEffect(() => {
+    setUsers((prev) =>
+      prev.filter((user) => !listUserIdAlreadyChatWith.includes(user.id)),
+    );
+  }, [listUserIdAlreadyChatWith]);
+
   return (
     <section className="absolute inset-0 w-full flex bg-white z-40">
       <div className="relative flex flex-col w-full md:w-4/12 lg:w-3/12 bg-gray-300 border-r border-l border-gray-400 overflow-y-auto">
@@ -229,7 +259,7 @@ export default function HalamanDashboardChat() {
             {searchRoomValue && (
               <>
                 <div className="p-3">
-                  <strong>PERCAKAPAN</strong>
+                  <strong className="text-color-theme">PERCAKAPAN</strong>
                 </div>
                 {rooms.length === 0 && (
                   <div className="p-5 flex flex-col items-center justify-center text-gray-400">
@@ -242,7 +272,10 @@ export default function HalamanDashboardChat() {
             {rooms.map((room) => (
               <div
                 key={room.id}
-                onClick={() => setSelectedRoom(room)}
+                onClick={() => {
+                  setSelectedRoom(room);
+                  selectedRoomRef.current = room;
+                }}
                 className={`p-3 space-x-3 flex cursor-pointer hover:bg-gray-100 ${
                   selectedRoom?.id === room.id && 'bg-gray-100'
                 }`}
@@ -305,90 +338,84 @@ export default function HalamanDashboardChat() {
             {searchRoomValue && (
               <>
                 <div className="p-3">
-                  <strong>PENGGUNA</strong>
+                  <strong className="text-color-theme">PENGGUNA</strong>
                 </div>
                 {searchRoomLoading ? (
                   <Skeleton active className="px-3 pt-5" />
                 ) : (
                   <>
-                    {users.filter((user) => !listUserIdAlreadyChatWith.includes(user.id))
-                      .length === 0 && (
+                    {users.length === 0 && (
                       <div className="p-5 flex flex-col items-center justify-center text-gray-400">
                         <SearchOutlined className="text-4xl" />
                         <p className="text-center">Tidak ada pengguna ditemukan</p>
                       </div>
                     )}
-                    {users
-                      .filter((user) => !listUserIdAlreadyChatWith.includes(user.id))
-                      .map((room) => (
+                    {users.map((room) => (
+                      <div
+                        key={room.id}
+                        onClick={() => setSelectedRoom(room)}
+                        className={`p-3 space-x-3 flex cursor-pointer hover:bg-gray-100 ${
+                          selectedRoom?.id === room.id && 'bg-gray-100'
+                        }`}
+                      >
+                        {room.id === selectedRoom?.id && selectedRoom?.is_starting ? (
+                          <div className="w-[40px] flex items-center">
+                            <LoadingOutlined className="text-3xl" />
+                          </div>
+                        ) : room.last_seen[otherPersonId(room)] === 'ONLINE' ? (
+                          <Badge dot color="blue">
+                            <Avatar size="large" src={room.avatar[otherPersonId(room)]} />
+                          </Badge>
+                        ) : (
+                          <Avatar size="large" src={room.avatar[otherPersonId(room)]} />
+                        )}
                         <div
-                          key={room.id}
-                          onClick={() => setSelectedRoom(room)}
-                          className={`p-3 space-x-3 flex cursor-pointer hover:bg-gray-100 ${
-                            selectedRoom?.id === room.id && 'bg-gray-100'
+                          className="flex-1 leading-tight overflow-hidden"
+                          title={`${
+                            room.last_sender
+                              ? room.last_sender.message
+                              : room.title[otherPersonId(room)]
                           }`}
                         >
-                          {room.id === selectedRoom?.id && selectedRoom?.is_starting ? (
-                            <div className="w-[40px] flex items-center">
-                              <LoadingOutlined className="text-3xl" />
-                            </div>
-                          ) : room.last_seen[otherPersonId(room)] === 'ONLINE' ? (
-                            <Badge dot color="blue">
-                              <Avatar
-                                size="large"
-                                src={room.avatar[otherPersonId(room)]}
-                              />
-                            </Badge>
-                          ) : (
-                            <Avatar size="large" src={room.avatar[otherPersonId(room)]} />
-                          )}
-                          <div
-                            className="flex-1 leading-tight overflow-hidden"
-                            title={`${
-                              room.last_sender
+                          <h4 className="mb-0">{room.title[otherPersonId(room)]}</h4>
+                          <div className="flex space-x-1 items-center">
+                            {room.last_sender?.user_id === me.user_id && (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                className="w-3 h-3 flex-0"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                            <p className="flex-1 mb-0 text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap">
+                              {room.last_sender
                                 ? room.last_sender.message
-                                : room.title[otherPersonId(room)]
-                            }`}
-                          >
-                            <h4 className="mb-0">{room.title[otherPersonId(room)]}</h4>
-                            <div className="flex space-x-1 items-center">
-                              {room.last_sender?.user_id === me.user_id && (
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                  className="w-3 h-3 flex-0"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                              )}
-                              <p className="flex-1 mb-0 text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap">
-                                {room.last_sender
-                                  ? room.last_sender.message
-                                  : room.subtitle[otherPersonId(room)]}
-                              </p>
-                            </div>
+                                : room.subtitle[otherPersonId(room)]}
+                            </p>
                           </div>
-                          {room.updated_at && (
-                            <small className="text-gray-400">
-                              {moment(room.updated_at.toDate()).format(
-                                moment().isSame(moment(room.updated_at.toDate()), 'day')
-                                  ? 'HH:mm'
-                                  : moment().isSame(
-                                      moment(room.updated_at.toDate()),
-                                      'year',
-                                    )
-                                  ? 'DD/MM HH:mm'
-                                  : 'YYYY/MM/DD',
-                              )}
-                            </small>
-                          )}
                         </div>
-                      ))}
+                        {room.updated_at && (
+                          <small className="text-gray-400">
+                            {moment(room.updated_at.toDate()).format(
+                              moment().isSame(moment(room.updated_at.toDate()), 'day')
+                                ? 'HH:mm'
+                                : moment().isSame(
+                                    moment(room.updated_at.toDate()),
+                                    'year',
+                                  )
+                                ? 'DD/MM HH:mm'
+                                : 'YYYY/MM/DD',
+                            )}
+                          </small>
+                        )}
+                      </div>
+                    ))}
                   </>
                 )}
               </>
@@ -450,25 +477,27 @@ export default function HalamanDashboardChat() {
                   </>
                 )}
               </div>
-              <Dropdown
-                arrow
-                placement="bottomRight"
-                overlay={
-                  <Menu>
-                    <Menu.Item key={'add-people'} icon={<UserAddOutlined />}>
+              {!selectedRoom.is_new && (
+                <Dropdown
+                  arrow
+                  placement="bottomRight"
+                  overlay={
+                    <Menu>
+                      {/* <Menu.Item key={'add-people'} icon={<UserAddOutlined />}>
                       Tambah Orang
-                    </Menu.Item>
-                    <Menu.Item key={'remove-room'} icon={<DeleteOutlined />}>
-                      Hapus Percakapan
-                    </Menu.Item>
-                  </Menu>
-                }
-                trigger={['click']}
-              >
-                <button className="text-lg">
-                  <MoreOutlined />
-                </button>
-              </Dropdown>
+                    </Menu.Item> */}
+                      <Menu.Item key={'remove-room'} icon={<DeleteOutlined />}>
+                        Hapus Percakapan
+                      </Menu.Item>
+                    </Menu>
+                  }
+                  trigger={['click']}
+                >
+                  <button className="text-lg">
+                    <MoreOutlined />
+                  </button>
+                </Dropdown>
+              )}
             </div>
             <div className="flex-1 relative overflow-y-auto">
               {selectedRoom.is_new && (

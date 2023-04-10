@@ -1,6 +1,7 @@
 import { getDetailKonsumen } from '@/services/konsumen';
 import UserKonsumen from '@/types/UserKonsumen';
-import { Image, PageHeader, Skeleton } from 'antd';
+import { WechatOutlined } from '@ant-design/icons';
+import { Button, Image, PageHeader, Skeleton } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -54,6 +55,11 @@ export default function HalamanDetailKonsumen() {
                 <div className="flex-grow">
                   <h1 className="font-bold text-xl md:text-2xl mb-0">{konsumen?.nama}</h1>
                 </div>
+                <Link to={`/chat/${konsumen.user_id}`}>
+                  <Button type="primary" icon={<WechatOutlined />}>
+                    Chat Konsumen
+                  </Button>
+                </Link>
               </div>
               <hr className="my-5" />
               <div className="grid grid-cols-2">

@@ -47,7 +47,10 @@ export default function App() {
           }
         >
           <Route index element={<HalamanDashboard />} />
-          <Route path="/chat" element={<HalamanDashboardChat />} />
+          <Route path="/chat" element={<Outlet />}>
+            <Route index element={<HalamanDashboardChat />} />
+            <Route path=":user_id" element={<HalamanDashboardChat />} />
+          </Route>
           <Route path="/produk" element={<Outlet />}>
             <Route index element={<HalamanDaftarProduk />} />
             <Route path=":id" element={<HalamanDetailProduk />} />

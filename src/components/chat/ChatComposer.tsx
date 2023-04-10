@@ -4,7 +4,7 @@ import ChatRoom from '@/types/chat/ChatRoom';
 import {
   FileOutlined,
   SendOutlined,
-  ShoppingOutlined,
+  // ShoppingOutlined,
   StarOutlined,
 } from '@ant-design/icons';
 import { Button, Dropdown, Input, Menu, message as antdMessage } from 'antd';
@@ -141,13 +141,13 @@ export default function ChatComposer({
             >
               Tautkan Produk
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               key={'order-attach'}
               icon={<ShoppingOutlined />}
               onClick={() => setAttachingType('ORDER')}
             >
               Tautkan Pesanan
-            </Menu.Item>
+            </Menu.Item> */}
           </Menu>
         }
         trigger={['click']}

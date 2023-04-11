@@ -12,6 +12,7 @@ interface ChatRoom {
   };
   avatar: object;
   user_ids: Array<string>;
+  deleted_by?: Array<string>;
   updated_at: any;
 }
 

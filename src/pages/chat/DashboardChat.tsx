@@ -11,6 +11,7 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
+  deleteDoc,
 } from 'firebase/firestore';
 import { firestore } from '@/services/firebase';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -31,6 +32,7 @@ import ChatBubble from '@/components/chat/ChatBubble';
 import ChatComposer from '@/components/chat/ChatComposer';
 import { useParams } from 'react-router-dom';
 import { AxiosResponse } from 'axios';
+import { confirmAlert } from '@/helpers/swal_helper';
 
 export default function HalamanDashboardChat() {
   const me = useAppSelector((state) => state.sesi.user);
@@ -70,7 +72,13 @@ export default function HalamanDashboardChat() {
   const handleSearchRoom = (q: string) => {
     setSearchRoomLoading(true);
     getSearchPerson(q)
-      .then(({ data }) => setUsers(data))
+      .then(({ data }: AxiosResponse<ChatRoom[]>) => {
+        setUsers(
+          data.filter((user) => {
+            return !listUserIdAlreadyChatWith.includes(user.id);
+          }),
+        );
+      })
       .finally(() => setSearchRoomLoading(false));
     setRooms((prev) =>
       prev.filter((room) => {
@@ -110,6 +118,26 @@ export default function HalamanDashboardChat() {
     }));
   };
 
+  const handleDeleteConversation = () => {
+    confirmAlert(
+      'Hapus Percakapan',
+      'Apakah anda yakin untuk menghapus percakapan ini?',
+    ).then((yes) => {
+      if (yes) {
+        updateDoc(doc(firestore, 'chat', selectedRoom.id), {
+          deleted_by: selectedRoom.deleted_by
+            ? [...selectedRoom.deleted_by, me.user_id]
+            : [me.user_id],
+        });
+        setSelectedRoom(null);
+
+        if (selectedRoom.deleted_by?.length === selectedRoom.user_ids.length - 1) {
+          deleteDoc(doc(firestore, 'chat', selectedRoom.id));
+        }
+      }
+    });
+  };
+
   useEffect(() => {
     if (!searchRoomValue) {
       setUsers([]);
@@ -126,7 +154,14 @@ export default function HalamanDashboardChat() {
         QuerySnapshot.forEach((doc) => {
           roomDocs.push({ ...doc.data(), id: doc.id });
         });
-        setRooms(roomDocs);
+        setRooms(
+          roomDocs.filter((room) => {
+            if (!room.deleted_by) {
+              return true;
+            }
+            return !room.deleted_by.includes(me.user_id);
+          }),
+        );
         setListUserIdAlreadyChatWith(
           roomDocs
             .filter((room) => !room.is_group)
@@ -206,12 +241,6 @@ export default function HalamanDashboardChat() {
       }
     }
   }, [selectedRoom]);
-
-  useEffect(() => {
-    setUsers((prev) =>
-      prev.filter((user) => !listUserIdAlreadyChatWith.includes(user.id)),
-    );
-  }, [listUserIdAlreadyChatWith]);
 
   return (
     <section className="absolute inset-0 w-full flex bg-white z-40">
@@ -486,7 +515,11 @@ export default function HalamanDashboardChat() {
                       {/* <Menu.Item key={'add-people'} icon={<UserAddOutlined />}>
                       Tambah Orang
                     </Menu.Item> */}
-                      <Menu.Item key={'remove-room'} icon={<DeleteOutlined />}>
+                      <Menu.Item
+                        key={'remove-room'}
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleDeleteConversation()}
+                      >
                         Hapus Percakapan
                       </Menu.Item>
                     </Menu>

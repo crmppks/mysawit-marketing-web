@@ -9,6 +9,7 @@ interface ChatRoom {
   last_sender?: {
     user_id: string;
     message: string;
+    is_attachment: boolean;
   };
   avatar: object;
   user_ids: Array<string>;

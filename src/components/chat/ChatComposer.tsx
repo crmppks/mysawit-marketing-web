@@ -25,7 +25,6 @@ import AttachProductComponent from './attachments/AttachProduct';
 interface Props {
   firestore: Firestore;
   containerRef: any;
-  messagesAnchorRef: any;
   rooms: ChatRoom[];
   selectedRoom: ChatRoom;
   onRoomGone: () => void;
@@ -34,7 +33,6 @@ interface Props {
 export default function ChatComposer({
   firestore,
   containerRef,
-  messagesAnchorRef,
   rooms,
   selectedRoom,
   onRoomGone,
@@ -112,13 +110,34 @@ export default function ChatComposer({
         updated_at: serverTimestamp(),
         last_sender: {
           user_id: my_id,
-          message: message ? message : `[${messageDoc.attachment.type}]`,
+          message: message ? message : messageDoc.attachment.type,
+          is_attachment: messageDoc.attachment ? true : false,
         },
       });
-
-      messagesAnchorRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const otherPersonId: any = () => {
+    if (selectedRoom) {
+      if (!selectedRoom.is_group) {
+        return selectedRoom.user_ids.find((item) => item !== my_id);
+      }
+      return selectedRoom.user_ids.filter((item) => item !== my_id);
+    }
+    return null;
+  };
+
+  if (selectedRoom.deleted_by?.includes(otherPersonId(selectedRoom))) {
+    return (
+      <div ref={containerRef} className="flex space-x-5 items-end bg-gray-300 py-3 px-5">
+        <p className="text-center flex-grow mb-0 px-5">
+          Percakapan ini telah dihapus oleh{' '}
+          <strong>{selectedRoom.title[otherPersonId()]}</strong>. Silahkan hapus
+          percakapan ini dan mulai percakapan baru.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="flex space-x-5 items-end bg-gray-300 py-3 px-5">

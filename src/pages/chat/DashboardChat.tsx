@@ -21,6 +21,7 @@ import {
   DeleteOutlined,
   LoadingOutlined,
   MoreOutlined,
+  PaperClipOutlined,
   SearchOutlined,
   // UserAddOutlined,
 } from '@ant-design/icons';
@@ -52,10 +53,13 @@ export default function HalamanDashboardChat() {
   const writeMessageBoxRef = useRef<any>();
   const messagesAnchorRef = useRef<any>();
 
-  const otherPersonId = (room: ChatRoom) => {
+  //this could be an array or string
+  const otherPersonId: any = (room: ChatRoom) => {
     if (room) {
-      const value = room.user_ids.find((item) => item !== me.user_id);
-      return value;
+      if (!room.is_group) {
+        return room.user_ids.find((item) => item !== me.user_id);
+      }
+      return room.user_ids.filter((item) => item !== me.user_id);
     }
     return null;
   };
@@ -131,7 +135,7 @@ export default function HalamanDashboardChat() {
         });
         setSelectedRoom(null);
 
-        if (selectedRoom.deleted_by?.length === selectedRoom.user_ids.length - 1) {
+        if (selectedRoom.deleted_by?.includes(otherPersonId(selectedRoom))) {
           deleteDoc(doc(firestore, 'chat', selectedRoom.id));
         }
       }
@@ -164,7 +168,11 @@ export default function HalamanDashboardChat() {
         );
         setListUserIdAlreadyChatWith(
           roomDocs
-            .filter((room) => !room.is_group)
+            .filter((room) => {
+              if (room.is_group) return false;
+              if (!room.deleted_by) return true;
+              return room.deleted_by.length === 0;
+            })
             .map((item) => {
               return item.user_ids.find((id: string) => id !== me.user_id);
             }),
@@ -235,12 +243,30 @@ export default function HalamanDashboardChat() {
               ...selectedRoom.last_seen,
               [me.user_id]: moment().toISOString(),
             },
-          });
+          }).catch((e) => console.log(e));
           unsubscribe();
         };
       }
     }
   }, [selectedRoom]);
+
+  useEffect(() => {
+    if (rooms.length > 0) {
+      if (!selectedRoom && user_id) {
+        setSelectedRoom(
+          rooms.find((room) => {
+            return !room.is_group && room.user_ids.includes(user_id as string);
+          }),
+        );
+      }
+    }
+  }, [rooms]);
+
+  useEffect(() => {
+    if (messagesAnchorRef.current) {
+      messagesAnchorRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   return (
     <section className="absolute inset-0 w-full flex bg-white z-40">
@@ -345,9 +371,17 @@ export default function HalamanDashboardChat() {
                       </svg>
                     )}
                     <p className="flex-1 mb-0 text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap">
-                      {room.last_sender
-                        ? room.last_sender.message
-                        : room.subtitle[otherPersonId(room)]}
+                      {room.last_sender ? (
+                        room.last_sender.is_attachment ? (
+                          <>
+                            <PaperClipOutlined /> {room.last_sender.message}
+                          </>
+                        ) : (
+                          room.last_sender.message
+                        )
+                      ) : (
+                        room.subtitle[otherPersonId(room)]
+                      )}
                     </p>
                   </div>
                 </div>
@@ -541,12 +575,12 @@ export default function HalamanDashboardChat() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="text-gray-400 w-20 h-20"
+                    className="text-gray-400 w-16 h-16"
                   >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
+                      d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
                     />
                   </svg>
                   <p className="text-gray-400">
@@ -579,7 +613,6 @@ export default function HalamanDashboardChat() {
             {!selectedRoom.is_new && (
               <ChatComposer
                 firestore={firestore}
-                messagesAnchorRef={messagesAnchorRef}
                 containerRef={writeMessageBoxRef}
                 rooms={rooms}
                 selectedRoom={selectedRoom}

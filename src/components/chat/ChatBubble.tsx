@@ -120,7 +120,11 @@ export default function ChatBubble({ message, before, after }: Prop) {
           {message.attachment ? (
             <>
               <small>{moment(message.created_at?.toDate()).format('HH:mm')}</small>
-              <div className="flex flex-col space-y-1 items-end">
+              <div
+                className={`flex flex-col space-y-1 ${
+                  message.user_id !== my_id ? 'items-start' : 'items-end'
+                }`}
+              >
                 {message.attachment.type === 'FILE' &&
                   (message.attachment.file.mime.includes('image') ? (
                     <img
@@ -154,11 +158,8 @@ export default function ChatBubble({ message, before, after }: Prop) {
                 {message.attachment.type === 'PRODUCT' && (
                   <Link to={`/produk/${message.attachment.product.id}`}>
                     <button
-                      className={`border ${
-                        message.user_id !== my_id
-                          ? 'border-color-theme bg-color-theme'
-                          : 'bg-gray-200'
-                      } w-28 rounded overflow-hidden shadow`}
+                      title={message.attachment.product.nama}
+                      className={`border bg-white w-28 rounded overflow-hidden shadow`}
                     >
                       <img
                         src={message.attachment.product.banner}

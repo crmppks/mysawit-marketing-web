@@ -1,6 +1,6 @@
 import { getDetailKonsumen } from '@/services/konsumen';
 import UserKonsumen from '@/types/UserKonsumen';
-import { WechatOutlined } from '@ant-design/icons';
+import { MessageOutlined } from '@ant-design/icons';
 import { Button, Image, PageHeader, Skeleton } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -56,7 +56,7 @@ export default function HalamanDetailKonsumen() {
                   <h1 className="font-bold text-xl md:text-2xl mb-0">{konsumen?.nama}</h1>
                 </div>
                 <Link to={`/chat/${konsumen.user_id}`}>
-                  <Button type="primary" icon={<WechatOutlined />}>
+                  <Button type="primary" icon={<MessageOutlined />}>
                     Chat Konsumen
                   </Button>
                 </Link>

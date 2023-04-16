@@ -15,8 +15,8 @@ import moment from 'moment';
 import {
   CheckCircleFilled,
   InfoCircleOutlined,
+  MessageOutlined,
   MoreOutlined,
-  WechatOutlined,
 } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { getOrderInsight, getPesananByKategori } from '@/services/pesanan';
@@ -341,7 +341,7 @@ export default function HalamanDaftarPesanan() {
                                     </Link>
                                   )}
                                   <Link to={`/chat/${pesanan.konsumen_id}`}>
-                                    <Button icon={<WechatOutlined />} type="primary">
+                                    <Button icon={<MessageOutlined />} type="primary">
                                       Chat Konsumen
                                     </Button>
                                   </Link>

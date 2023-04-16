@@ -1,12 +1,13 @@
 import 'webix/webix.css';
-import { Button, Pagination, PageHeader } from 'antd';
+import { Button, Pagination, PageHeader, Dropdown, Menu } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 import * as webix from '@xbs/webix-pro';
 import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getSemuaKategoriKonsumenOptions, getSemuaKonsumen } from '@/services/konsumen';
 import UserKonsumen from '@/types/UserKonsumen';
 import { webixTableParams } from '@/helpers/webix_helper';
+import { MessageOutlined, MoreOutlined } from '@ant-design/icons';
 
 export default function HalamanDaftarKonsumen() {
   const webixTableRef = useRef<any>();
@@ -174,6 +175,19 @@ export default function HalamanDaftarKonsumen() {
           >
             Lihat Detail
           </Button>
+          <Dropdown
+            disabled={!konsumen}
+            arrow
+            overlay={
+              <Menu>
+                <Menu.Item icon={<MessageOutlined />}>
+                  <Link to={`/chat/${konsumen?.user_id}`}>Chat Konsumen</Link>
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <Button type="default" icon={<MoreOutlined />}></Button>
+          </Dropdown>
         </div>
       </div>
       <div className="overflow-x-auto" ref={webixTableRef}></div>

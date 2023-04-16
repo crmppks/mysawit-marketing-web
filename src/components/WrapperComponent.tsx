@@ -54,8 +54,8 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
     <>
       <HeaderComponent />
       <main className={`${mainBgColor} flex`}>
-        <nav className="my-sidebar bg-white w-[150px] md:w-[250px] lg:w-[23vw] flex-none fixed left-0 top-0 z-40">
-          <div className="px-5 pb-5 mt-5 mb-[50px] flex space-x-3 flex-none border-b overflow-hidden">
+        <nav className="my-sidebar bg-white h-screen w-[150px] md:w-[250px] lg:w-[23vw] flex flex-col flex-none fixed left-0 top-0 z-40">
+          <div className="px-5 pb-5 mt-5 flex space-x-3 flex-none border-b overflow-hidden">
             <div className="w-28 lg:w-32 flex-none flex items-center">
               <img src="/logo_mysawit.png" alt="Logo PPKS" className="w-full" />
             </div>
@@ -67,33 +67,35 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
               </span>
             </div>
           </div>
-          <Menu mode="inline" defaultSelectedKeys={['dashboard']}>
-            <Menu.Item key={'dashboard'} icon={<HomeOutlined />}>
-              <Link to="/">Dashboard</Link>
-            </Menu.Item>
-            <Menu.Item key={'produk'} icon={<StarOutlined />}>
-              <Link to="/produk">Produk</Link>
-            </Menu.Item>
-            {user.kategori_produk_id === ID_KATEGORI_PRODUK_KECAMBAH && (
-              <Menu.Item key={'konsumen'} icon={<UserOutlined />}>
-                <Link to="/konsumen">Konsumen</Link>
+          <div className="py-6 overflow-y-auto flex-grow">
+            <Menu mode="inline" defaultSelectedKeys={['dashboard']}>
+              <Menu.Item key={'dashboard'} icon={<HomeOutlined />}>
+                <Link to="/">Dashboard</Link>
               </Menu.Item>
-            )}
-            <Menu.Item key={'pesanan'} icon={<ShoppingOutlined />}>
-              <Link to="/pesanan">Pesanan</Link>
-            </Menu.Item>
-            <Menu.SubMenu key={'laporan'} icon={<LineChartOutlined />} title="Laporan">
-              <Menu.Item key={'annual'}>
-                <Link to="/laporan/annual">Annual Sales Report</Link>
+              <Menu.Item key={'produk'} icon={<StarOutlined />}>
+                <Link to="/produk">Produk</Link>
               </Menu.Item>
-              <Menu.Item key={'monthly'}>
-                <Link to="/laporan/monthly">Monthly Sales Report</Link>
+              {user.kategori_produk_id === ID_KATEGORI_PRODUK_KECAMBAH && (
+                <Menu.Item key={'konsumen'} icon={<UserOutlined />}>
+                  <Link to="/konsumen">Konsumen</Link>
+                </Menu.Item>
+              )}
+              <Menu.Item key={'pesanan'} icon={<ShoppingOutlined />}>
+                <Link to="/pesanan">Pesanan</Link>
               </Menu.Item>
-              <Menu.Item key={'daily'}>
-                <Link to="/laporan/daily">Daily Sales Report</Link>
-              </Menu.Item>
-            </Menu.SubMenu>
-          </Menu>
+              <Menu.SubMenu key={'laporan'} icon={<LineChartOutlined />} title="Laporan">
+                <Menu.Item key={'annual'}>
+                  <Link to="/laporan/annual">Annual Sales Report</Link>
+                </Menu.Item>
+                <Menu.Item key={'monthly'}>
+                  <Link to="/laporan/monthly">Monthly Sales Report</Link>
+                </Menu.Item>
+                <Menu.Item key={'daily'}>
+                  <Link to="/laporan/daily">Daily Sales Report</Link>
+                </Menu.Item>
+              </Menu.SubMenu>
+            </Menu>
+          </div>
         </nav>
         <div className="relative flex-grow ml-[150px] md:ml-[250px] lg:ml-[23vw] min-h-[100vh] overflow-x-auto">
           {children}

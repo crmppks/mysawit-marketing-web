@@ -100,17 +100,26 @@ export default function HalamanDashboardChat() {
       is_starting: true,
     }));
 
-    const chatRoomDoc = await addDoc(collection(firestore, 'chat'), {
-      ...selectedRoom,
-      is_new: false,
-      updated_at: serverTimestamp(),
-    });
+    const chatRoomDoc = await addDoc(
+      collection(firestore, process.env.REACT_APP_CHAT_COLLECTION),
+      {
+        ...selectedRoom,
+        is_new: false,
+        updated_at: serverTimestamp(),
+      },
+    );
 
-    await addDoc(collection(doc(firestore, 'chat', chatRoomDoc.id), 'messages'), {
-      type: 'EVENT',
-      message: 'Percakapan dimulai',
-      created_at: serverTimestamp(),
-    });
+    await addDoc(
+      collection(
+        doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, chatRoomDoc.id),
+        'messages',
+      ),
+      {
+        type: 'EVENT',
+        message: 'Percakapan dimulai',
+        created_at: serverTimestamp(),
+      },
+    );
 
     setSearchRoomValue('');
     setSelectedRoom((prev) => ({
@@ -128,15 +137,20 @@ export default function HalamanDashboardChat() {
       'Apakah anda yakin untuk menghapus percakapan ini?',
     ).then((yes) => {
       if (yes) {
-        updateDoc(doc(firestore, 'chat', selectedRoom.id), {
-          deleted_by: selectedRoom.deleted_by
-            ? [...selectedRoom.deleted_by, me.user_id]
-            : [me.user_id],
-        });
+        updateDoc(
+          doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id),
+          {
+            deleted_by: selectedRoom.deleted_by
+              ? [...selectedRoom.deleted_by, me.user_id]
+              : [me.user_id],
+          },
+        );
         setSelectedRoom(null);
 
         if (selectedRoom.deleted_by?.includes(otherPersonId(selectedRoom))) {
-          deleteDoc(doc(firestore, 'chat', selectedRoom.id));
+          deleteDoc(
+            doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id),
+          );
         }
       }
     });
@@ -147,7 +161,7 @@ export default function HalamanDashboardChat() {
       setUsers([]);
 
       const q = query(
-        collection(firestore, 'chat'),
+        collection(firestore, process.env.REACT_APP_CHAT_COLLECTION),
         where('user_ids', 'array-contains', me.user_id),
         orderBy('updated_at', 'desc'),
         limit(50),
@@ -209,23 +223,29 @@ export default function HalamanDashboardChat() {
       if (!selectedRoom.is_new) {
         writeMessageBoxRef.current.scrollIntoView({ behavior: 'smooth' });
 
-        updateDoc(doc(firestore, 'chat', selectedRoom.id), {
-          last_seen: {
-            ...selectedRoom.last_seen,
-            [me.user_id]: 'ONLINE',
+        updateDoc(
+          doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id),
+          {
+            last_seen: {
+              ...selectedRoom.last_seen,
+              [me.user_id]: 'ONLINE',
+            },
+            avatar: {
+              ...selectedRoom.avatar,
+              [me.user_id]: me.avatar,
+            },
+            title: {
+              ...selectedRoom.title,
+              [me.user_id]: me.nama,
+            },
           },
-          avatar: {
-            ...selectedRoom.avatar,
-            [me.user_id]: me.avatar,
-          },
-          title: {
-            ...selectedRoom.title,
-            [me.user_id]: me.nama,
-          },
-        });
+        );
 
         const q = query(
-          collection(firestore, `chat/${selectedRoom.id}/messages`),
+          collection(
+            firestore,
+            `${process.env.REACT_APP_CHAT_COLLECTION}/${selectedRoom.id}/messages`,
+          ),
           orderBy('created_at'),
           limit(50),
         );
@@ -238,12 +258,15 @@ export default function HalamanDashboardChat() {
           messagesAnchorRef.current.scrollIntoView({ behavior: 'smooth' });
         });
         return () => {
-          updateDoc(doc(firestore, 'chat', selectedRoom.id), {
-            last_seen: {
-              ...selectedRoom.last_seen,
-              [me.user_id]: moment().toISOString(),
+          updateDoc(
+            doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id),
+            {
+              last_seen: {
+                ...selectedRoom.last_seen,
+                [me.user_id]: moment().toISOString(),
+              },
             },
-          }).catch((e) => console.log(e));
+          ).catch((e) => console.log(e));
           unsubscribe();
         };
       }

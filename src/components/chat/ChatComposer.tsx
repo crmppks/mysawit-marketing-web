@@ -97,7 +97,10 @@ export default function ChatComposer({
       }
 
       await addDoc(
-        collection(doc(firestore, 'chat', selectedRoom.id), 'messages'),
+        collection(
+          doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id),
+          'messages',
+        ),
         messageDoc,
       );
 
@@ -106,7 +109,7 @@ export default function ChatComposer({
       setAttachmentFile(null);
       setAttachmentProduct(null);
 
-      updateDoc(doc(firestore, 'chat', selectedRoom.id), {
+      updateDoc(doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id), {
         updated_at: serverTimestamp(),
         last_sender: {
           user_id: my_id,

@@ -318,18 +318,18 @@ export default function HalamanDaftarPesanan() {
                               )}
                               <div className="flex justify-between space-x-5 border-t py-1 -mx-10 px-10">
                                 <div className="flex items-center space-x-2">
-                                  {pesanan.status === 'VERIFIKASI_PERSYARATAN' && (
-                                    <Button
-                                      icon={<CheckCircleFilled />}
-                                      disabled={!pesanan.persyaratan}
-                                      onClick={() =>
-                                        setSelectedPesananKonfirmasi(pesanan)
-                                      }
-                                      type={`primary`}
-                                    >
-                                      Konfirmasi Verifikasi
-                                    </Button>
-                                  )}
+                                  {pesanan.status === 'VERIFIKASI_PERSYARATAN' &&
+                                    pesanan.persyaratan && (
+                                      <Button
+                                        icon={<CheckCircleFilled />}
+                                        onClick={() =>
+                                          setSelectedPesananKonfirmasi(pesanan)
+                                        }
+                                        type={`primary`}
+                                      >
+                                        Konfirmasi Verifikasi
+                                      </Button>
+                                    )}
                                   {pesanan.status !== 'VERIFIKASI_PERSYARATAN' && (
                                     <Link to={`/pesanan/${pesanan.id}`}>
                                       <Button
@@ -340,7 +340,11 @@ export default function HalamanDaftarPesanan() {
                                       </Button>
                                     </Link>
                                   )}
-
+                                  <Link to={`/chat/${pesanan.konsumen_id}`}>
+                                    <Button icon={<WechatOutlined />} type="primary">
+                                      Chat Konsumen
+                                    </Button>
+                                  </Link>
                                   {['VERIFIKASI_PERSYARATAN', 'SELESAI'].includes(
                                     pesanan.status,
                                   ) && (
@@ -363,11 +367,6 @@ export default function HalamanDaftarPesanan() {
                                       <Button icon={<MoreOutlined />}></Button>
                                     </Dropdown>
                                   )}
-                                  <Link to={`/chat/${pesanan.konsumen_id}`}>
-                                    <Button icon={<WechatOutlined />} type="primary">
-                                      Chat Konsumen
-                                    </Button>
-                                  </Link>
                                 </div>
                                 <div className="flex flex-col items-end">
                                   <span className="text-gray-500">Total Belanja</span>
@@ -383,6 +382,7 @@ export default function HalamanDaftarPesanan() {
                         </div>
                         <div className="flex justify-center mt-10">
                           <Pagination
+                            showSizeChanger={false}
                             onChange={(page) => handlePageChange(cat.code, page)}
                             pageSize={cat.data.per_page}
                             current={cat.data.current_page}

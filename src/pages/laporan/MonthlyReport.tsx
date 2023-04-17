@@ -188,7 +188,6 @@ export default function HalamanMonthlyReport() {
                 }, []);
               } catch (e) {
                 setFilterLaporan((o) => ({ ...o, loading: false }));
-                console.log(e);
                 return [];
               }
             },

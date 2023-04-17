@@ -103,7 +103,6 @@ export default function HalamanDetailKategoriKonsumen() {
 
                 return data;
               } catch (e) {
-                console.log(e);
                 return [];
               }
             },

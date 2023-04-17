@@ -33,7 +33,6 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
     onMessageListener()
       .then((payload: any) => {
         dispatch(getAllNotificationAction());
-        console.log(payload);
         notification.open({
           message: payload.notification.title,
           description: payload.notification.body,

@@ -106,7 +106,6 @@ export default function HalamanDaftarKonsumen() {
 
                 return data;
               } catch (e) {
-                console.log(e);
                 return [];
               }
             },

@@ -188,7 +188,6 @@ export default function HalamanDailyReport() {
                 }, []);
               } catch (e) {
                 setFilterLaporan((o) => ({ ...o, loading: false }));
-                console.log(e);
                 return [];
               }
             },

@@ -82,7 +82,7 @@ export default function HalamanLupaPassword() {
           <Steps.Step />
           <Steps.Step />
         </Steps>
-        <div>
+        <div className="mt-10">
           <TabPanel value={activeStep} index={0}>
             <h2 className="font-bold text-2xl">Masukkan email anda</h2>
             <p className="text-gray-500">

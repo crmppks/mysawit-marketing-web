@@ -12,6 +12,8 @@ import {
   doc,
   serverTimestamp,
   deleteDoc,
+  startAfter,
+  getDocs,
 } from 'firebase/firestore';
 import { firestore } from '@/services/firebase';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -43,6 +45,7 @@ export default function HalamanDashboardChat() {
   const [users, setUsers] = useState<Array<ChatRoom>>([]);
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom>(null);
   const [messages, setMessages] = useState<Array<any>>([]);
+  const [lastMessageDocument, setLastMessageDocument] = useState<any>(null);
   const [searchRoomValue, setSearchRoomValue] = useState<string>('');
   const [searchRoomLoading, setSearchRoomLoading] = useState<boolean>(false);
   const [listUserIdAlreadyChatWith, setListUserIdAlreadyChatWith] = useState<string[]>(
@@ -52,6 +55,7 @@ export default function HalamanDashboardChat() {
   const selectedRoomRef = useRef<ChatRoom>(null);
   const writeMessageBoxRef = useRef<any>();
   const messagesAnchorRef = useRef<any>();
+  const messagesListRef = useRef<any>();
 
   //this could be an array or string
   const otherPersonId: any = (room: ChatRoom) => {
@@ -156,6 +160,44 @@ export default function HalamanDashboardChat() {
     });
   };
 
+  const handleLoadPreviousMessages = async () => {
+    if (lastMessageDocument) {
+      const q = query(
+        collection(
+          firestore,
+          `${process.env.REACT_APP_CHAT_COLLECTION}/${selectedRoom.id}/messages`,
+        ),
+        orderBy('created_at', 'desc'),
+        startAfter(lastMessageDocument),
+        limit(50),
+      );
+
+      getDocs(q).then((QuerySnapshot) => {
+        if (QuerySnapshot.size > 0) {
+          setLastMessageDocument(QuerySnapshot.docs[QuerySnapshot.size - 1]);
+        } else {
+          setLastMessageDocument(null);
+        }
+
+        const messageDocs = [];
+        QuerySnapshot.forEach((doc) => {
+          messageDocs.push({ ...doc.data(), id: doc.id });
+        });
+        const reversed = messageDocs.reverse();
+        setMessages((prev) => [...reversed, ...prev]);
+      });
+    }
+  };
+
+  const handleScroll = () => {
+    const container = messagesListRef.current;
+    const scrollTop = container?.scrollTop;
+
+    if (scrollTop === 0) {
+      handleLoadPreviousMessages();
+    }
+  };
+
   useEffect(() => {
     if (!searchRoomValue) {
       setUsers([]);
@@ -164,7 +206,6 @@ export default function HalamanDashboardChat() {
         collection(firestore, process.env.REACT_APP_CHAT_COLLECTION),
         where('user_ids', 'array-contains', me.user_id),
         orderBy('updated_at', 'desc'),
-        limit(50),
       );
 
       const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
@@ -246,15 +287,19 @@ export default function HalamanDashboardChat() {
             firestore,
             `${process.env.REACT_APP_CHAT_COLLECTION}/${selectedRoom.id}/messages`,
           ),
-          orderBy('created_at'),
+          orderBy('created_at', 'desc'),
           limit(50),
         );
         const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+          if (QuerySnapshot.size > 0) {
+            setLastMessageDocument(QuerySnapshot.docs[QuerySnapshot.size - 1]);
+          }
+
           const messageDocs = [];
           QuerySnapshot.forEach((doc) => {
             messageDocs.push({ ...doc.data(), id: doc.id });
           });
-          setMessages(messageDocs);
+          setMessages(messageDocs.reverse());
           messagesAnchorRef.current.scrollIntoView({ behavior: 'smooth' });
         });
         return () => {
@@ -286,10 +331,12 @@ export default function HalamanDashboardChat() {
   }, [rooms]);
 
   useEffect(() => {
-    if (messagesAnchorRef.current) {
-      messagesAnchorRef.current.scrollIntoView({ behavior: 'smooth' });
+    const container = messagesListRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      return () => container.removeEventListener('scroll', handleScroll);
     }
-  }, [messages]);
+  }, [lastMessageDocument]);
 
   return (
     <section className="absolute inset-0 w-full flex bg-white z-40">
@@ -589,7 +636,7 @@ export default function HalamanDashboardChat() {
                 </Dropdown>
               )}
             </div>
-            <div className="flex-1 relative overflow-y-auto">
+            <div ref={messagesListRef} className="flex-1 relative overflow-y-auto">
               {selectedRoom.is_new && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <svg

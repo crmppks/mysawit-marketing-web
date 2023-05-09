@@ -8,6 +8,8 @@ import { clearSesiAction, getProfileDetailAction } from '@/store/actions/sesi';
 import { Badge, Button, Dropdown, Empty, Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { firestore } from '@/services/firebase';
 import NotificationItem from './NotificationItemComponent';
 import SearchBoxComponent from './SearchBoxComponent';
 
@@ -17,7 +19,7 @@ export default function HeaderComponent() {
   const user = useAppSelector((state) => state.sesi.user);
   const notifikasi = useAppSelector((state) => state.notifikasi);
 
-  const [badgeMessage] = useState<number>(0);
+  const [badgeChat, setBadgeChat] = useState<number>(0);
 
   const handleSignOut = () => {
     dispatch(clearSesiAction());
@@ -30,6 +32,38 @@ export default function HeaderComponent() {
   useEffect(() => {
     dispatch(getProfileDetailAction());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      const q = query(
+        collection(firestore, process.env.REACT_APP_CHAT_COLLECTION),
+        where('user_ids', 'array-contains', user.user_id),
+        orderBy('updated_at', 'desc'),
+      );
+
+      const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+        const roomDocs = [];
+        QuerySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.last_sender?.user_id !== user.user_id) {
+            if (!data.last_sender?.read_at) {
+              if (!data.deleted_by) {
+                roomDocs.push({ ...data, id: doc.id });
+              } else {
+                if (!data.deleted_by.includes(user.user_id)) {
+                  roomDocs.push({ ...data, id: doc.id });
+                }
+              }
+            }
+          }
+        });
+        setBadgeChat(roomDocs.length);
+      });
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [user]);
 
   return (
     <>
@@ -129,7 +163,7 @@ export default function HeaderComponent() {
                   </button>
                 </Badge>
               </Dropdown>
-              <Badge offset={[-7, 10]} count={badgeMessage}>
+              <Badge offset={[-7, 10]} count={badgeChat}>
                 <button
                   onClick={() => navigate('/chat')}
                   className="rounded-full hover:bg-gray-400 p-2"

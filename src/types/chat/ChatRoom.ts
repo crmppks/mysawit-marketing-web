@@ -10,6 +10,7 @@ interface ChatRoom {
     user_id: string;
     message: string;
     is_attachment: boolean;
+    read_at?: string;
   };
   avatar: object;
   user_ids: Array<string>;

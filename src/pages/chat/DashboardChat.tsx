@@ -264,22 +264,33 @@ export default function HalamanDashboardChat() {
       if (!selectedRoom.is_new) {
         writeMessageBoxRef.current.scrollIntoView({ behavior: 'smooth' });
 
+        const updateRoomDocument: any = {
+          last_seen: {
+            ...selectedRoom.last_seen,
+            [me.user_id]: 'ONLINE',
+          },
+          avatar: {
+            ...selectedRoom.avatar,
+            [me.user_id]: me.avatar,
+          },
+          title: {
+            ...selectedRoom.title,
+            [me.user_id]: me.nama,
+          },
+        };
+
+        if (selectedRoom.last_sender) {
+          if (selectedRoom.last_sender.user_id !== me.user_id) {
+            updateRoomDocument.last_sender = {
+              ...selectedRoom.last_sender,
+              read_at: moment().toISOString(),
+            };
+          }
+        }
+
         updateDoc(
           doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id),
-          {
-            last_seen: {
-              ...selectedRoom.last_seen,
-              [me.user_id]: 'ONLINE',
-            },
-            avatar: {
-              ...selectedRoom.avatar,
-              [me.user_id]: me.avatar,
-            },
-            title: {
-              ...selectedRoom.title,
-              [me.user_id]: me.nama,
-            },
-          },
+          updateRoomDocument,
         );
 
         const q = query(
@@ -424,7 +435,16 @@ export default function HalamanDashboardChat() {
                       : room.title[otherPersonId(room)]
                   }`}
                 >
-                  <h4 className="mb-0">{room.title[otherPersonId(room)]}</h4>
+                  <h4
+                    className={`mb-0 ${
+                      room.last_sender?.user_id !== me.user_id &&
+                      !room.last_sender?.read_at
+                        ? 'font-bold'
+                        : 'font-regular'
+                    }`}
+                  >
+                    {room.title[otherPersonId(room)]}
+                  </h4>
                   <div className="flex space-x-1 items-center">
                     {room.last_sender?.user_id === me.user_id && (
                       <svg
@@ -440,7 +460,14 @@ export default function HalamanDashboardChat() {
                         />
                       </svg>
                     )}
-                    <p className="flex-1 mb-0 text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap">
+                    <p
+                      className={`flex-1 mb-0 text-ellipsis overflow-hidden whitespace-nowrap ${
+                        room.last_sender?.user_id !== me.user_id &&
+                        !room.last_sender?.read_at
+                          ? 'font-bold'
+                          : 'font-regular text-gray-500'
+                      }`}
+                    >
                       {room.last_sender ? (
                         room.last_sender.is_attachment ? (
                           <>

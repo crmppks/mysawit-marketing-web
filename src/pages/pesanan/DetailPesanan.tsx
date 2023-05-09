@@ -210,7 +210,11 @@ export default function HalamanDetailPesanan() {
               {pesanan.persyaratan && (
                 <div
                   className={`bg-white p-5 rounded ${
-                    pesanan.persyaratan.status === 'LULUS' ? '' : 'border border-red-600'
+                    !pesanan.persyaratan.status
+                      ? ''
+                      : pesanan.persyaratan.status === 'LULUS'
+                      ? ''
+                      : 'border border-red-600'
                   }`}
                 >
                   <div className="flex justify-between space-x-5 mb-3 items-center">

@@ -5,13 +5,12 @@ import { useEffect, useState } from 'react';
 
 interface Props {
   uploading: boolean;
-  onClose: () => void;
   onFileChange: (file: UploadFile) => void;
 }
 
 const acceptedFileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
 
-export default function AttachFileComponent({ uploading, onClose, onFileChange }: Props) {
+export default function AttachFileComponent({ uploading, onFileChange }: Props) {
   const [attachmentFileList, setAttachmentFileList] = useState<UploadFile[]>([]);
 
   useEffect(() => {
@@ -27,23 +26,6 @@ export default function AttachFileComponent({ uploading, onClose, onFileChange }
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
           <LoadingOutlined className="text-xl" />
         </div>
-      )}
-      {!uploading && (
-        <button
-          className="absolute -top-2 -right-2 rounded-full bg-white p-1"
-          onClick={() => onClose()}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-4 h-4"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
       )}
 
       <Upload.Dragger

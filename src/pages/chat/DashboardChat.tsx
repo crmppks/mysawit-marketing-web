@@ -141,21 +141,21 @@ export default function HalamanDashboardChat() {
       'Apakah anda yakin untuk menghapus percakapan ini?',
     ).then((yes) => {
       if (yes) {
-        updateDoc(
-          doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id),
-          {
-            deleted_by: selectedRoom.deleted_by
-              ? [...selectedRoom.deleted_by, me.user_id]
-              : [me.user_id],
-          },
-        );
+        // updateDoc(
+        //   doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id),
+        //   {
+        //     deleted_by: selectedRoom.deleted_by
+        //       ? [...selectedRoom.deleted_by, me.user_id]
+        //       : [me.user_id],
+        //   },
+        // );
+
+        setRooms((prev) => prev.filter((item) => item.id !== selectedRoom.id));
         setSelectedRoom(null);
 
-        if (selectedRoom.deleted_by?.includes(otherPersonId(selectedRoom))) {
-          deleteDoc(
-            doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id),
-          );
-        }
+        // if (selectedRoom.deleted_by?.includes(otherPersonId(selectedRoom))) {
+        deleteDoc(doc(firestore, process.env.REACT_APP_CHAT_COLLECTION, selectedRoom.id));
+        // }
       }
     });
   };

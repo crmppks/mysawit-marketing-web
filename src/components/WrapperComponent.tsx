@@ -25,7 +25,9 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
 
   useEffect(() => {
     getFCMToken()
-      .then(postStoreFCMToken)
+      .then((token: string) => {
+        postStoreFCMToken(token);
+      })
       .catch((e) => {
         message.error(e.message);
       });
@@ -36,13 +38,9 @@ export default function WrapperComponent({ children }: { children: ReactNode }) 
         notification.open({
           message: payload.notification.title,
           description: payload.notification.body,
-          icon: (
-            <span className="text-color-theme">
-              <BellFilled className="text-2xl" />
-            </span>
-          ),
+          icon: <BellFilled className="text-2xl" />,
           onClick: () => {
-            //   console.log('Notification Clicked!');
+            console.log(payload);
           },
         });
       })

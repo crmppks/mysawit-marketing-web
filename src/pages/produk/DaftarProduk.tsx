@@ -59,7 +59,7 @@ export default function HalamanDaftarProduk() {
         <PageHeader title="Daftar Produk" subTitle="Daftar semua produk yang tersedia" />
       </div>
 
-      <section className="p-5">
+      <section className="px-5 pb-5">
         {produks.loading && (
           <div className="grid grid-cols-3 gap-5">
             <Skeleton.Input block active className="mb-1" />
@@ -110,7 +110,7 @@ export default function HalamanDaftarProduk() {
                   {produks.data.map((produk) => (
                     <div
                       className={`border rounded bg-white overflow-hidden shadow ${
-                        !produk.is_active && 'border-red-500'
+                        !produk.is_active ? 'border-red-500' : ''
                       }`}
                       key={produk.id}
                     >

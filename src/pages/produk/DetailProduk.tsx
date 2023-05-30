@@ -75,14 +75,22 @@ export default function HalamanDetailProduk() {
         breadcrumb={{
           routes: [
             {
-              path: 'produk',
+              path: '/produk',
               breadcrumbName: 'Daftar Produk',
             },
             {
-              path: id as string,
+              path: `/produk/${id}`,
               breadcrumbName: 'Detail Produk',
             },
           ],
+          itemRender: (route, _, routes) => {
+            const last = routes.indexOf(route) === routes.length - 1;
+            return last ? (
+              <span>{route.breadcrumbName}</span>
+            ) : (
+              <Link to={route.path}>{route.breadcrumbName}</Link>
+            );
+          },
         }}
         title="Detail Produk"
         subTitle="Lihat detail informasi tentang produk"
@@ -111,8 +119,15 @@ export default function HalamanDetailProduk() {
                 Terjual {produk?.jumlah_terjual} <SmallDashOutlined /> Dilihat{' '}
                 {produk?.jumlah_lihat}x
               </p>
-              <p className="flex items-center">
-                <span className="text-3xl font-bold">{formatCurrency(produk.harga)}</span>
+              <p className="flex items-center space-x-3">
+                <span className="text-2xl font-bold">
+                  {formatCurrency(produk.harga_display)}
+                </span>
+                {produk.diskon_aktif && (
+                  <span className="text-gray-500 line-through">
+                    {formatCurrency(produk.harga)}
+                  </span>
+                )}
               </p>
               <Tabs defaultActiveKey="1">
                 <Tabs.TabPane tab="Detail Produk" key="1">
@@ -219,6 +234,37 @@ export default function HalamanDetailProduk() {
                         return true;
                       }}
                     />
+                  )}
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="Diskon" key="4">
+                  {!produk.diskon_aktif && (
+                    <div className="bg-gray-100 p-5 rounded">
+                      <Empty
+                        description={
+                          <p className="text-gray-500">Tidak ada diskon tersedia</p>
+                        }
+                      />
+                    </div>
+                  )}
+                  {produk.diskon_aktif && (
+                    <div className="flex items-center space-x-5 justify-between px-5 py-3 rounded border">
+                      <div className="flex-grow">
+                        <small className="font-semibold">Nilai</small>
+                        <p className="leading-tight">
+                          {produk.diskon_aktif.tipe_diskon === 'NOMINAL'
+                            ? formatCurrency(produk.diskon_aktif.nilai)
+                            : `${produk.diskon_aktif.nilai}%`}
+                        </p>
+                        <small className="font-semibold">Masa berlaku</small>
+                        <p className="leading-tight mb-0">
+                          {moment(produk.diskon_aktif.dimulai_pada).format('DD MMM yyyy')}{' '}
+                          s/d{' '}
+                          {moment(produk.diskon_aktif.berakhir_pada).format(
+                            'DD MMM yyyy',
+                          )}
+                        </p>
+                      </div>
+                    </div>
                   )}
                 </Tabs.TabPane>
               </Tabs>

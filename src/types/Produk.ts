@@ -1,11 +1,14 @@
 import KategoriProduk from '@/types/Kategori';
 import UserMarketing from './UserMarketing';
+import Diskon from './Diskon';
 
 interface Produk {
   id: string;
   nama: string;
   slug: string;
   harga: number;
+  harga_diff: string;
+  harga_display: number;
   berat: number;
   unit: string;
   jumlah_terjual: number;
@@ -23,7 +26,6 @@ interface Produk {
     small: string;
     medium: string;
   };
-  harga_diff: string;
   kategori: KategoriProduk;
   marketing: UserMarketing;
   kategori_cascader: any[];
@@ -34,6 +36,8 @@ interface Produk {
     updated_at?: string;
   }>;
   is_active: boolean;
+  diskon?: Diskon[];
+  diskon_aktif?: Diskon;
 }
 
 export default Produk;

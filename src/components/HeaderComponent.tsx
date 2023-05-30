@@ -67,13 +67,7 @@ export default function HeaderComponent() {
 
   return (
     <>
-      <div className="bg-amber-500 flex justify-between px-5 pt-1 z-50 relative">
-        <a
-          href={`${process.env.REACT_APP_HOME_URL}/aplikasi`}
-          className="text-white hover:text-black"
-        >
-          Unduh Aplikasi Marketing
-        </a>
+      <div className="bg-amber-500 flex justify-end px-5 pt-1 z-50 relative">
         <div className="divide-x">
           <a
             href={`${process.env.REACT_APP_HOME_URL}/aplikasi`}

@@ -4,6 +4,7 @@ export const postStoreFCMToken = (token: string) => {
   return axios.post(`/fcm`, {
     user_tipe: 'App\\UserMarketing',
     token,
+    platform: 'BROWSER',
   });
 };
 

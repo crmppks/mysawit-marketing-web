@@ -55,14 +55,22 @@ export default function HalamanDetailKategoriProduk() {
           breadcrumb={{
             routes: [
               {
-                path: 'produk',
+                path: '/produk',
                 breadcrumbName: 'Daftar Produk',
               },
               {
-                path: id as string,
+                path: `/produk/${id}`,
                 breadcrumbName: 'Detail Kategori Produk',
               },
             ],
+            itemRender: (route, _, routes) => {
+              const last = routes.indexOf(route) === routes.length - 1;
+              return last ? (
+                <span>{route.breadcrumbName}</span>
+              ) : (
+                <Link to={route.path}>{route.breadcrumbName}</Link>
+              );
+            },
           }}
           title={kategori!.nama}
           subTitle={
@@ -83,7 +91,7 @@ export default function HalamanDetailKategoriProduk() {
               />
             )}
             {produks.data.length > 0 && (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {produks.data.map((produk) => (
                   <div
                     className="border rounded bg-white overflow-hidden shadow"

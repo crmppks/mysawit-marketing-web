@@ -16,12 +16,14 @@ export default function AttachFileComponent({ uploading, onFileChange }: Props) 
   useEffect(() => {
     if (attachmentFileList.length > 0) {
       onFileChange(attachmentFileList[0]);
+    } else {
+      onFileChange(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attachmentFileList]);
 
   return (
-    <div className="relative bg-white rounded p-5 mb-1 border no-ant-form-item-margin">
+    <div className={`relative bg-white rounded p-3 md:p-5`}>
       {uploading && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
           <LoadingOutlined className="text-xl" />

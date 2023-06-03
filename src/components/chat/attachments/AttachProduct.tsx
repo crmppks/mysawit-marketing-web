@@ -42,7 +42,7 @@ export default function AttachProductComponent({ onProductSelected }: Props) {
   }, [selected]);
 
   return (
-    <div className="relative p-5 rounded bg-white mb-1">
+    <div className="relative p-3 md:p-5 rounded bg-white mb-1">
       <Input
         className="w-full"
         placeholder="Cari produk"
@@ -54,8 +54,8 @@ export default function AttachProductComponent({ onProductSelected }: Props) {
         }}
       />
       {searchResult.loading ? (
-        <Skeleton active className="pt-5" />
-      ) : (
+        <Skeleton active />
+      ) : searchResult.data.length > 0 ? (
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-3 mt-3">
           {searchResult.data.map((product) => (
             <Tooltip title={product.nama} key={product.id}>
@@ -75,6 +75,10 @@ export default function AttachProductComponent({ onProductSelected }: Props) {
               </button>
             </Tooltip>
           ))}
+        </div>
+      ) : (
+        <div className="p-3 rounded border border-dashed mt-3">
+          <p className="text-gray-400 text-center mb-0">Tidak ada produk tersedia</p>
         </div>
       )}
     </div>

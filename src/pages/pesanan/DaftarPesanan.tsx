@@ -183,7 +183,7 @@ export default function HalamanDaftarPesanan() {
 
   return (
     <section className="p-5">
-      <div className="mb-5 grid grid-cols-12 gap-5">
+      <div className="mb-5 grid grid-cols-12 gap-2 md:gap-5">
         <div className="col-span-6 md:col-span-3">
           <DatePicker.RangePicker
             onChange={(values) =>
@@ -263,8 +263,8 @@ export default function HalamanDaftarPesanan() {
                               key={pesanan.id}
                               className="px-5 pt-5 border bg-white rounded space-y-5"
                             >
-                              <div className="flex justify-between space-x-5 mb-5">
-                                <div className="flex space-x-3 items-center">
+                              <div className="flex flex-col-reverse md:space-y-0 md:justify-between md:space-x-5 mb-5">
+                                <div className="flex space-x-3 items-center mt-3 md:mt-0">
                                   <img
                                     src={pesanan.konsumen.avatar}
                                     alt={pesanan.konsumen.nama}
@@ -272,7 +272,7 @@ export default function HalamanDaftarPesanan() {
                                   />
                                   <Link
                                     to={`/konsumen/${pesanan.konsumen_id}`}
-                                    className="font-bold text-lg"
+                                    className="font-bold text-lg leading-tight"
                                   >
                                     {pesanan.konsumen?.nama}
                                   </Link>
@@ -316,8 +316,8 @@ export default function HalamanDaftarPesanan() {
                                   </span>
                                 </div>
                               )}
-                              <div className="flex justify-between space-x-5 border-t py-1 -mx-10 px-10">
-                                <div className="flex items-center space-x-2">
+                              <div className="flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5 border-t py-5 md:py-1 -mx-10 px-10">
+                                <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0 md:space-x-2">
                                   {pesanan.status === 'VERIFIKASI_PERSYARATAN' &&
                                     pesanan.persyaratan && (
                                       <Button
@@ -326,6 +326,7 @@ export default function HalamanDaftarPesanan() {
                                           setSelectedPesananKonfirmasi(pesanan)
                                         }
                                         type={`primary`}
+                                        className="w-full md:w-auto"
                                       >
                                         Konfirmasi Verifikasi
                                       </Button>
@@ -335,13 +336,18 @@ export default function HalamanDaftarPesanan() {
                                       <Button
                                         icon={<InfoCircleOutlined />}
                                         type="primary"
+                                        className="w-full md:w-auto"
                                       >
                                         Detail Pesanan
                                       </Button>
                                     </Link>
                                   )}
                                   <Link to={`/chat/${pesanan.konsumen_id}`}>
-                                    <Button icon={<MessageOutlined />} type="primary">
+                                    <Button
+                                      icon={<MessageOutlined />}
+                                      type="primary"
+                                      className="w-full md:w-auto"
+                                    >
                                       Chat Konsumen
                                     </Button>
                                   </Link>
@@ -362,13 +368,17 @@ export default function HalamanDaftarPesanan() {
                                         </Menu>
                                       }
                                       placement="topRight"
+                                      trigger={['click']}
                                       arrow
                                     >
-                                      <Button icon={<MoreOutlined />}></Button>
+                                      <Button
+                                        icon={<MoreOutlined />}
+                                        className="w-full md:w-auto"
+                                      ></Button>
                                     </Dropdown>
                                   )}
                                 </div>
-                                <div className="flex flex-col items-end">
+                                <div className="flex flex-col md:items-end">
                                   <span className="text-gray-500">Total Belanja</span>
                                   <b className="font-bold text-xl mb-0">
                                     {formatCurrency(

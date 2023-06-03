@@ -8,18 +8,55 @@ import { clearSesiAction, getProfileDetailAction } from '@/store/actions/sesi';
 import { Badge, Button, Dropdown, Empty, Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import NotificationItem from '@/components/NotificationItemComponent';
+import SearchBoxComponent from '@/components/SearchBoxComponent';
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { firestore } from '@/services/firebase';
-import NotificationItem from './NotificationItemComponent';
-import SearchBoxComponent from './SearchBoxComponent';
 
-export default function HeaderComponent() {
+const NotifikasiOverlay = () => {
+  const dispatch = useAppDispatch();
+  const notifikasi = useAppSelector((state) => state.notifikasi);
+
+  return (
+    <div className="bg-white rounded p-3 border shadow overflow-auto w-80 md:max-w-[80vw] lg:max-w-[35vw] max-h-[70vh]">
+      {notifikasi.loading && notifikasi.list.total === 0 && <Skeleton active />}
+      {!notifikasi.loading && notifikasi.list.total === 0 && (
+        <Empty
+          description={<p className="text-gray-500">Semua aman, tidak ada notifikasi</p>}
+        />
+      )}
+      {notifikasi.list.data.map((n) => (
+        <NotificationItem key={n.id} notifikasi={n} />
+      ))}
+      {notifikasi.list.next_page_url && (
+        <div className="px-5 pt-3 flex item-center justify-center">
+          <Button
+            loading={notifikasi.loading}
+            shape="round"
+            type="primary"
+            onClick={() =>
+              dispatch(getMoreNotificationAction(notifikasi.list.next_page_url))
+            }
+          >
+            Muat lebih banyak
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+interface Props {
+  onClickSidebarMenu: () => void;
+}
+
+export default function HeaderComponent({ onClickSidebarMenu }: Props) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.sesi.user);
   const notifikasi = useAppSelector((state) => state.notifikasi);
 
-  const [badgeChat, setBadgeChat] = useState<number>(0);
+  const [chat, setChat] = useState<number>(0);
 
   const handleSignOut = () => {
     dispatch(clearSesiAction());
@@ -57,7 +94,7 @@ export default function HeaderComponent() {
             }
           }
         });
-        setBadgeChat(roomDocs.length);
+        setChat(roomDocs.length);
       });
       return () => {
         unsubscribe();
@@ -67,32 +104,57 @@ export default function HeaderComponent() {
 
   return (
     <>
-      <div className="bg-amber-500 flex justify-end px-5 pt-1 z-50 relative">
+      <div className="bg-color-theme flex items-center justify-between md:justify-end px-5 py-1 z-50 relative">
+        <div className="w-28 md:hidden">
+          <Link to={'/'}>
+            <img src="/logo_mysawit.png" alt="Logo PPKS" className="w-full" />
+          </Link>
+        </div>
         <div className="divide-x">
           <a
-            href={`${process.env.REACT_APP_HOME_URL}/aplikasi`}
-            className="first:pr-2 last:pl-2 text-white hover:text-black"
+            href={`${process.env.REACT_APP_HOME_URL}/kebijakan-privasi`}
+            className="first:pr-2 last:pl-2 text-white hover:text-black text-xs md:text-sm"
           >
             Kebijakan Privasi
           </a>
           <a
             href={process.env.REACT_APP_HOME_URL}
-            className="first:pr-2 last:pl-2 text-white hover:text-black"
+            className="first:pr-2 last:pl-2 text-white hover:text-black text-xs md:text-sm"
           >
             Situs MySawit
           </a>
         </div>
       </div>
       <nav className="flex justify-end px-5 py-2 bg-color-theme z-50 relative">
-        <div className="flex space-x-3 flex-none w-[250px] lg:w-[23vw]">
+        <div className="flex md:hidden items-center space-x-5 flex-none justify-start">
+          <button onClick={onClickSidebarMenu}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6 text-white"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+          </button>
+        </div>
+        <div className="hidden md:flex space-x-3 flex-none w-[150px] lg:w-[23vw]">
           <div className="w-28 lg:w-32 flex-none flex items-center">
-            <img src="/logo_mysawit.png" alt="Logo PPKS" className="w-full" />
+            <Link to={'/'}>
+              <img src="/logo_mysawit.png" alt="Logo PPKS" className="w-full" />
+            </Link>
           </div>
 
-          <div className="flex flex-col justify-center flex-grow mt-3 border-l pl-3 space-y-1 py-1">
-            <span className="text-xs text-gray-500">Marketing</span>
-            <span className="font-bold uppercase text-gray-700 leading-tight">
-              {user.kategori_produk.nama}
+          <div className="hidden xl:flex flex-col justify-center flex-grow border-l pl-3 py-1">
+            <span className="text-white">Marketing</span>
+            <span className="text-white uppercase tracking-wider font-bold">
+              {user.kategori_produk?.nama}
             </span>
           </div>
         </div>
@@ -106,42 +168,9 @@ export default function HeaderComponent() {
                   if (!visible) handleReadsNotification();
                   if (visible) dispatch(getAllNotificationAction());
                 }}
-                overlay={
-                  <div className="bg-white rounded p-3 border shadow overflow-auto w-96 md:max-w-[80vw] lg:max-w-[35vw] max-h-[70vh]">
-                    {notifikasi.loading && notifikasi.list.total === 0 && (
-                      <Skeleton active />
-                    )}
-                    {!notifikasi.loading && notifikasi.list.total === 0 && (
-                      <Empty
-                        description={
-                          <p className="text-gray-500">
-                            Semua aman, tidak ada notifikasi
-                          </p>
-                        }
-                      />
-                    )}
-                    {notifikasi.list.data.map((notifikasi) => (
-                      <NotificationItem key={notifikasi.id} notifikasi={notifikasi} />
-                    ))}
-                    {notifikasi.list.next_page_url && (
-                      <div className="px-5 pt-3 flex item-center justify-center">
-                        <Button
-                          loading={notifikasi.loading}
-                          shape="round"
-                          type="primary"
-                          onClick={() =>
-                            dispatch(
-                              getMoreNotificationAction(notifikasi.list.next_page_url),
-                            )
-                          }
-                        >
-                          Muat lebih banyak
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                }
+                overlay={<NotifikasiOverlay />}
                 placement="bottomRight"
+                trigger={['click']}
                 arrow
               >
                 <Badge offset={[-7, 10]} count={notifikasi.badge}>
@@ -157,7 +186,7 @@ export default function HeaderComponent() {
                   </button>
                 </Badge>
               </Dropdown>
-              <Badge offset={[-7, 10]} count={badgeChat}>
+              <Badge offset={[-7, 10]} count={chat}>
                 <button
                   onClick={() => navigate('/chat')}
                   className="rounded-full hover:bg-gray-400 p-2"
@@ -189,7 +218,7 @@ export default function HeaderComponent() {
                       />
                       <div className="flex-grow">
                         <h5 className="font-bold mb-0 leading-tight">{user.nama}</h5>
-                        <span>{user.kategori_produk?.nama}</span>
+                        <span>{user.email}</span>
                       </div>
                     </div>
                   </div>
@@ -214,10 +243,15 @@ export default function HeaderComponent() {
                 </div>
               }
               placement="bottomRight"
+              trigger={['click']}
               arrow
             >
               <button className="rounded-full overflow-hidden shadow hover:ring ring-gray-200">
-                <img src={user?.avatar} alt={user?.nama} className="w-10 h-10" />
+                <img
+                  src={user?.avatar}
+                  alt={user?.nama}
+                  className="w-6 h:6 md:w-10 md:h-10"
+                />
               </button>
             </Dropdown>
           </div>

@@ -58,7 +58,7 @@ export default function ModalKonfirmasiVerifikasiPersyaratan({
 
   return (
     <Modal
-      title="Konfirmasi Verifikasi Pesyaratan"
+      title="Konfirmasi Verifikasi Persyaratan"
       okText={'Selesai'}
       okButtonProps={{
         loading: submitting,

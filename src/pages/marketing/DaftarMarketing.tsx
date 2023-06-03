@@ -1,6 +1,5 @@
 import Paging from '@/types/Paging';
 import UserMarketing from '@/types/UserMarketing';
-import { PlusOutlined } from '@ant-design/icons';
 import { Badge, Button, Empty, PageHeader, Skeleton, Tooltip } from 'antd';
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
@@ -34,18 +33,10 @@ export default function HalamanDaftarMarketing() {
 
   return (
     <>
-      <div className="md:pr-5 flex flex-col md:space-x-5 md:flex-row md:items-center md:justify-between">
-        <PageHeader
-          title="Daftar Marketing"
-          subTitle="Daftar semua marketing yang tersedia"
-        />
-
-        <Link className="mx-5 md:mx-0" to={'tambah'}>
-          <Button className="w-full" type="primary" icon={<PlusOutlined />}>
-            Tambah Akun
-          </Button>
-        </Link>
-      </div>
+      <PageHeader
+        title="Daftar Marketing"
+        subTitle="Daftar semua marketing yang tersedia"
+      />
 
       <section className="p-5">
         {marketings.loading && (
@@ -67,7 +58,7 @@ export default function HalamanDaftarMarketing() {
               </div>
             )}
             {marketings.data.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {marketings.data.map((marketing) => (
                   <div
                     key={marketing.user_id}
@@ -97,7 +88,7 @@ export default function HalamanDaftarMarketing() {
                         </h4>
                       </Tooltip>
                       <p className="text-center text-gray-400">
-                        {marketing.jabatan} - {marketing.kategori_produk.nama}
+                        {marketing.jabatan} - {marketing.kategori_produk?.nama}
                       </p>
                     </div>
                   </div>

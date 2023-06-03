@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getSemuaKategoriKonsumenOptions, getSemuaKonsumen } from '@/services/konsumen';
 import UserKonsumen from '@/types/UserKonsumen';
 import { webixTableParams } from '@/helpers/webix_helper';
-import { MessageOutlined, MoreOutlined } from '@ant-design/icons';
+import { InfoCircleFilled, MessageOutlined, MoreOutlined } from '@ant-design/icons';
 
 export default function HalamanDaftarKonsumen() {
   const webixTableRef = useRef<any>();
@@ -157,26 +157,29 @@ export default function HalamanDaftarKonsumen() {
         title="Daftar Konsumen"
         subTitle="Daftar semua konsumen yang memilih anda sebagai Marketing Kecambah"
       />
-      <div className="p-5 flex flex-col space-y-5 md:space-y-0 md:flex-row items-center justify-between">
+      <div className="p-5 flex justify-between">
         <Pagination
           onChange={(current) => setPage((old) => ({ ...old, current }))}
           defaultCurrent={page.current}
           total={page.total}
           pageSize={page.per_page}
           showSizeChanger={false}
+          showLessItems
         />
 
         <div className="flex space-x-2">
           <Button
             onClick={() => navigate(konsumen?.user_id!)}
             disabled={!konsumen}
+            icon={<InfoCircleFilled />}
             type="primary"
           >
-            Lihat Detail
+            <strong className="hidden md:inline">Lihat Detail</strong>
           </Button>
           <Dropdown
             disabled={!konsumen}
             arrow
+            trigger={['click']}
             overlay={
               <Menu>
                 <Menu.Item icon={<MessageOutlined />}>

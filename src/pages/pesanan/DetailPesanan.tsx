@@ -22,7 +22,11 @@ import ModalKonfirmasiPengiriman from '@/components/ModalKonfirmasiPengirimanCom
 import DaftarProdukPesanan from '@/components/DaftarProdukPesananComponent';
 
 const Row = ({ children, className = '' }: any) => (
-  <div className={`flex justify-between space-x-5 ${className}`}>{children}</div>
+  <div
+    className={`flex flex-col md:flex-row md:justify-between space-y-0 md:space-x-5 ${className}`}
+  >
+    {children}
+  </div>
 );
 
 export default function HalamanDetailPesanan() {
@@ -210,14 +214,10 @@ export default function HalamanDetailPesanan() {
               {pesanan.persyaratan && (
                 <div
                   className={`bg-white p-5 rounded ${
-                    !pesanan.persyaratan.status
-                      ? ''
-                      : pesanan.persyaratan.status === 'LULUS'
-                      ? ''
-                      : 'border border-red-600'
+                    pesanan.persyaratan.status === 'LULUS' ? '' : 'border-red-600'
                   }`}
                 >
-                  <div className="flex justify-between space-x-5 mb-3 items-center">
+                  <div className="flex flex-col md:flex-row md:justify-between space-y-2 md:space-y-0 md:space-x-5 md:items-center mb-3">
                     <h4 className="font-bold text-lg mb-0">
                       Info Verifikasi Persyaratan
                     </h4>
@@ -277,7 +277,7 @@ export default function HalamanDetailPesanan() {
                     </div>
                     <Row>
                       <span>Alamat Kebun</span>
-                      <p className="mb-0 text-right max-w-[60%]">
+                      <p className="mb-0 md:text-right md:max-w-[60%]">
                         {pesanan.persyaratan.alamat_lengkap}
                       </p>
                     </Row>
@@ -296,13 +296,13 @@ export default function HalamanDetailPesanan() {
                 </div>
               )}
               <div className={`bg-white p-5`}>
-                <div className="flex justify-between mb-4 space-x-5">
+                <div className="flex flex-col md:flex-row md:justify-between mb-4 space-y-2 md:space-y-0 md:space-x-5">
                   <h4 className="font-bold text-lg mb-0">Info Pengiriman</h4>
                   {pesanan.informasi_pengiriman.duration && (
                     <span className="bg-green-600 px-3 py-[4px] rounded-full text-white text-[small]">
                       <ClockCircleFilled /> &nbsp; Durasi pengiriman{' '}
                       {pesanan.informasi_pengiriman.duration?.estimation}{' '}
-                      {pesanan.informasi_pengiriman.duration?.estimation_unit.toLowerCase()}
+                      {pesanan.informasi_pengiriman.duration.estimation_unit.toLowerCase()}
                     </span>
                   )}
                 </div>
@@ -333,14 +333,14 @@ export default function HalamanDetailPesanan() {
                   </Row>
                   <Row>
                     <span>Catatan</span>
-                    <p className="mb-0 text-gray-400 text-right max-w-[60%]">
+                    <p className="mb-0 text-gray-400 md:text-right max-w-[60%]">
                       {pesanan.catatan ?? '-'}
                     </p>
                   </Row>
                   <hr className="border-dashed my-2" />
                   <Row>
                     <span>Alamat Pengiriman</span>
-                    <div className="text-right max-w-[60%]">
+                    <div className="md:text-right md:max-w-[60%]">
                       <b>{pesanan.informasi_pengiriman.to}</b>
                       <p className="mb-0">
                         {pesanan.informasi_pengiriman.address.no_hp_lengkap}

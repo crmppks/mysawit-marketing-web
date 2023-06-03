@@ -1,6 +1,6 @@
 import { Form, Input, Button, PageHeader, message } from 'antd';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@/hooks/redux_hooks';
 import { updateProfileAction } from '@/store/actions/sesi';
 import { CheckCircleFilled } from '@ant-design/icons';
@@ -41,8 +41,16 @@ export default function HalamanUpdateProfile() {
         breadcrumb={{
           routes: [
             { path: '/profile', breadcrumbName: 'Profile' },
-            { path: '/perbaharui', breadcrumbName: 'Perbaharui Informasi' },
+            { path: '/profile/perbaharui', breadcrumbName: 'Perbaharui Informasi' },
           ],
+          itemRender: (route, _, routes) => {
+            const last = routes.indexOf(route) === routes.length - 1;
+            return last ? (
+              <span>{route.breadcrumbName}</span>
+            ) : (
+              <Link to={route.path}>{route.breadcrumbName}</Link>
+            );
+          },
         }}
         title="Perbaharui Profile"
         subTitle="Perbaharui informasi akun"
@@ -109,11 +117,11 @@ export default function HalamanUpdateProfile() {
         <div className="mt-5">
           <Button
             size="large"
-            shape="round"
             icon={<CheckCircleFilled />}
             loading={update_request.loading}
             onClick={() => form.submit()}
             type="primary"
+            className="w-full md:w-auto"
           >
             Simpan Perubahan
           </Button>

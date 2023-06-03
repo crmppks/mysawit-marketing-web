@@ -105,12 +105,12 @@ export default function HalamanDetailProduk() {
       )}
       <section className="p-5 bg-white rounded mx-5 mb-5">
         <div className="w-full md:flex-grow">
-          <div className="grid grid-cols-12 gap-10">
-            <div className="col-span-12 md:col-span-5 lg:col-span-4">
+          <div className="grid grid-cols-12 md:gap-10">
+            <div className="col-span-12 md:col-span-5 lg:col-span-4 flex justify-center md:justify-start pb-10 md:mb-0">
               <Image
                 src={produk?.banner}
                 alt={produk?.nama}
-                className="md:w-full w-52 rounded overflow-hidden"
+                style={{ maxWidth: '70vw' }}
               />
             </div>
             <div className="col-span-12 md:col-span-7 lg:col-span-8 relative">

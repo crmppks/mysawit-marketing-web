@@ -153,28 +153,27 @@ export default function HalamanDetailKategoriKonsumen() {
 
   return (
     <React.Fragment>
-      <div className="md:pr-5 flex flex-col md:space-x-5 md:flex-row md:items-center md:justify-between">
-        {loading ? (
-          <Skeleton.Input active block className="ml-[10px] mr-[10px] mt-3" />
-        ) : (
-          <PageHeader
-            className="site-page-header"
-            title={kategori?.nama}
-            subTitle={
-              kategori?.parent_kategori
-                ? `Sub kategori dari ${kategori.parent_kategori?.nama}`
-                : null
-            }
-          />
-        )}
-      </div>
-      <div className="p-5 flex flex-col space-y-5 md:space-y-0 md:flex-row items-center justify-between">
+      {loading ? (
+        <Skeleton.Input active block className="mt-3" />
+      ) : (
+        <PageHeader
+          className="site-page-header"
+          title={kategori?.nama}
+          subTitle={
+            kategori?.parent_kategori
+              ? `Sub kategori dari ${kategori.parent_kategori?.nama}`
+              : null
+          }
+        />
+      )}
+      <div className="p-5 flex justify-between">
         <Pagination
           onChange={(current) => setPage((old) => ({ ...old, current }))}
           defaultCurrent={page.current}
           total={page.total}
           pageSize={page.per_page}
           showSizeChanger={false}
+          showLessItems
         />
 
         <div className="flex space-x-2">
@@ -182,7 +181,7 @@ export default function HalamanDetailKategoriKonsumen() {
             onClick={() => navigate(`/konsumen/${konsumen?.user_id!}`)}
             disabled={!konsumen}
           >
-            Lihat Detail
+            Detail
           </Button>
         </div>
       </div>

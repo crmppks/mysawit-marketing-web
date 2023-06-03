@@ -222,7 +222,7 @@ export default function HalamanAnnualReport() {
               />
             </div>
           )}
-          <div className="flex space-x-5 items-center justify-between mb-10">
+          <div className="flex flex-col md:flex-row space-y-1 md:space-y-0 md:space-x-5 md:items-center md:justify-between mb-10">
             <h2 className="text-lg">Berdasarkan Produk</h2>
             <DatePicker
               disabled={filterPenjualanProduk.loading}
@@ -268,7 +268,7 @@ export default function HalamanAnnualReport() {
               />
             </div>
           )}
-          <div className="flex space-x-5 items-center justify-between mb-10">
+          <div className="flex flex-col md:flex-row space-y-1 md:space-y-0 md:space-x-5 md:items-center md:justify-between mb-10">
             <h2 className="text-lg">Berdasarkan Kategori</h2>
             <DatePicker
               disabled={filterPenjualanKategori.loading}
@@ -299,14 +299,16 @@ export default function HalamanAnnualReport() {
             columnBackground={{ style: { fill: 'rgba(0,0,0,0.1)' } }}
           />
         </div>
-        <div className="flex justify-between px-5">
-          <Pagination
-            onChange={(current) => setReportPage((old) => ({ ...old, current }))}
-            defaultCurrent={reportPage.current}
-            total={reportPage.total}
-            pageSize={reportPage.per_page}
-            showSizeChanger={false}
-          />
+        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:justify-between px-5">
+          <div className="flex flex-grow flex-col md:flex-row items-center md:items-start">
+            <Pagination
+              onChange={(current) => setReportPage((old) => ({ ...old, current }))}
+              defaultCurrent={reportPage.current}
+              total={reportPage.total}
+              pageSize={reportPage.per_page}
+              showSizeChanger={false}
+            />
+          </div>
           <div className="flex space-x-3">
             <Button
               type="primary"
@@ -320,6 +322,7 @@ export default function HalamanAnnualReport() {
               disabled={filterLaporan.loading}
               defaultValue={moment()}
               picker="year"
+              className="w-full md:w-auto"
               onChange={(value) => {
                 if (!value) return;
                 setFilterLaporan((o) => ({

@@ -38,7 +38,7 @@ export default function HalamanDetailProfile() {
   return (
     <>
       <PageHeader title="Profile" subTitle="Informasi mengenai akun anda" />
-      <section className="px-5">
+      <section className="px-5 pb-5">
         <div className="rounded bg-white p-5 shadow grid grid-cols-12 gap-5 md:gap-10">
           <div className="col-span-12 md:col-span-3 lg:col-span-2">
             <ImgCrop rotate>
@@ -96,12 +96,12 @@ export default function HalamanDetailProfile() {
             </ImgCrop>
           </div>
           <div className="col-span-12 md:col-span-9 lg:col-span-10">
-            <div className="flex justify-between">
+            <div className="flex flex-col md:flex-row md:justify-between">
               <div className="flex-grow">
                 <h1 className="font-bold text-xl mb-0">{marketing?.nama}</h1>
                 <span className="text-gray-500">{marketing?.kode_marketing}</span>
               </div>
-              <div className="flex-none relative flex items-center space-x-3">
+              <div className="flex-none relative flex items-center space-x-3 pt-5 md:pt-0">
                 <Switch
                   loading={isChangingStatus}
                   defaultChecked={marketing?.is_aktif}
@@ -112,10 +112,10 @@ export default function HalamanDetailProfile() {
               </div>
             </div>
             <hr className="my-5" />
-            <div className="grid grid-cols-2">
+            <div className="grid grid-cols-1 md:grid-cols-2">
               <div>
                 <span className="text-gray-400">Kategori</span>
-                <p>{marketing?.kategori_produk.nama}</p>
+                <p>{marketing?.kategori_produk?.nama}</p>
                 <span className="text-gray-400">Username</span>
                 <p>{marketing?.username}</p>
                 <span className="text-gray-400">Email</span>
@@ -147,7 +147,7 @@ export default function HalamanDetailProfile() {
               </div>
             </div>
             <hr className="my-5" />
-            <div className="grid grid-cols-2">
+            <div className="grid grid-cols-1 md:grid-cols-2">
               <div>
                 <span>Bergabung pada</span>
                 <p>{moment(marketing?.created_at).format('DD MMMM yyyy, HH:mm')}</p>
@@ -160,12 +160,16 @@ export default function HalamanDetailProfile() {
               )}
             </div>
 
-            <div className="space-x-5 mt-5">
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-5 mt-5">
               <Link to="perbaharui" className="text-green-700 font-bold">
-                <Button icon={<UserOutlined />}>Perbaharui Informasi</Button>
+                <Button icon={<UserOutlined />} className="w-full md:w-auto">
+                  Perbaharui Informasi
+                </Button>
               </Link>
               <Link to="password" className="text-yellow-700 font-bold">
-                <Button icon={<LockOutlined />}>Ubah Password</Button>
+                <Button icon={<LockOutlined />} className="w-full md:w-auto">
+                  Ubah Password
+                </Button>
               </Link>
             </div>
           </div>

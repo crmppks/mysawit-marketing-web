@@ -27,15 +27,30 @@ export default function HalamanDetailKonsumen() {
         breadcrumb={{
           routes: [
             {
-              path: 'konsumen',
+              path: '/konsumen',
               breadcrumbName: 'Daftar Konsumen',
             },
             {
-              path: id as string,
+              path: `/konsumen/${id}`,
               breadcrumbName: 'Detail Konsumen',
             },
           ],
+          itemRender: (route, _, routes) => {
+            const last = routes.indexOf(route) === routes.length - 1;
+            return last ? (
+              <span>{route.breadcrumbName}</span>
+            ) : (
+              <Link to={route.path}>{route.breadcrumbName}</Link>
+            );
+          },
         }}
+        extra={[
+          <Link key={'chat'} to={`/chat/${konsumen?.user_id}`}>
+            <Button type="primary" icon={<MessageOutlined />}>
+              Chat Konsumen
+            </Button>
+          </Link>,
+        ]}
         title="Detail Konsumen"
         subTitle="Lihat detail informasi tentang konsumen"
       />
@@ -43,11 +58,11 @@ export default function HalamanDetailKonsumen() {
       {!loading && (
         <section className="p-5">
           <div className="rounded bg-white p-5 shadow grid grid-cols-12 gap-5 md:gap-10">
-            <div className="col-span-12 md:col-span-3">
+            <div className="col-span-12 md:col-span-3 flex justify-center md:justify-start">
               <Image
                 src={konsumen?.avatar}
                 alt={konsumen?.nama}
-                className="border rounded-full shadow max-w-full"
+                style={{ maxWidth: '70vw' }}
               />
             </div>
             <div className="col-span-12 md:col-span-9">
@@ -55,14 +70,9 @@ export default function HalamanDetailKonsumen() {
                 <div className="flex-grow">
                   <h1 className="font-bold text-xl md:text-2xl mb-0">{konsumen?.nama}</h1>
                 </div>
-                <Link to={`/chat/${konsumen.user_id}`}>
-                  <Button type="primary" icon={<MessageOutlined />}>
-                    Chat Konsumen
-                  </Button>
-                </Link>
               </div>
               <hr className="my-5" />
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-1 md:grid-cols-2">
                 <div>
                   <span className="text-gray-400">Kategori</span>
                   <p>
@@ -97,7 +107,7 @@ export default function HalamanDetailKonsumen() {
                 </div>
               </div>
               <hr className="my-5" />
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-1 md:grid-cols-2">
                 <div>
                   <span className="text-gray-400">Bergabung pada</span>
                   <p>{moment(konsumen?.created_at).format('DD MMMM yyyy, HH:mm')}</p>

@@ -143,94 +143,100 @@ export default function ChatComposer({
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="flex items-center space-x-5 items-end bg-gray-300 py-3 px-5"
-    >
-      {!attachingType ? (
-        <Dropdown
-          arrow
-          placement="topLeft"
-          overlay={
-            <Menu>
-              <Menu.Item
-                key={'file-upload'}
-                icon={<FileOutlined />}
-                onClick={() => setAttachingType('FILE')}
-              >
-                Unggah File
-              </Menu.Item>
-              <Menu.Item
-                key={'product-attach'}
-                icon={<StarOutlined />}
-                onClick={() => setAttachingType('PRODUCT')}
-              >
-                Tautkan Produk
-              </Menu.Item>
-            </Menu>
-          }
-          trigger={['click']}
-        >
-          <button className="text-lg">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18.97 3.659a2.25 2.25 0 00-3.182 0l-10.94 10.94a3.75 3.75 0 105.304 5.303l7.693-7.693a.75.75 0 011.06 1.06l-7.693 7.693a5.25 5.25 0 11-7.424-7.424l10.939-10.94a3.75 3.75 0 115.303 5.304L9.097 18.835l-.008.008-.007.007-.002.002-.003.002A2.25 2.25 0 015.91 15.66l7.81-7.81a.75.75 0 011.061 1.06l-7.81 7.81a.75.75 0 001.054 1.068L18.97 6.84a2.25 2.25 0 000-3.182z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-        </Dropdown>
-      ) : (
-        <button
-          className="rounded-full bg-gray-400 px-3 py-1 text-xs text-white"
-          onClick={() => setAttachingType(null)}
-        >
-          Batal
-        </button>
+    <>
+      {attachingType && (
+        <div className="bg-gray-300 p-3 md:p-5">
+          {attachingType === 'FILE' && (
+            <AttachFileComponent uploading={uploading} onFileChange={setAttachmentFile} />
+          )}
+          {attachingType === 'PRODUCT' && (
+            <AttachProductComponent onProductSelected={setAttachmentProduct} />
+          )}
+        </div>
       )}
-
-      <div className="flex-1">
-        {attachingType === 'FILE' && (
-          <AttachFileComponent uploading={uploading} onFileChange={setAttachmentFile} />
-        )}
-        {attachingType === 'PRODUCT' && (
-          <AttachProductComponent onProductSelected={setAttachmentProduct} />
-        )}
-        <Input
-          autoFocus
-          value={message}
-          onChange={(event) => setMessage(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              handleSendMessage();
-            }
-          }}
-          placeholder="Tulis pesan"
-          className="w-full"
-          size="large"
-        />
-      </div>
-
-      <Button
-        disabled={
-          !message &&
-          !(attachingType === 'FILE' && attachmentFile) &&
-          !(attachingType === 'PRODUCT' && attachmentProduct)
-        }
-        loading={uploading}
-        type="primary"
-        size="large"
-        icon={<SendOutlined />}
-        onClick={() => handleSendMessage()}
+      <div
+        ref={containerRef}
+        className="flex items-center space-x-2 md:space-x-5 bg-gray-300 py-3 px-3 md:px-5"
       >
-        Kirim
-      </Button>
-    </div>
+        {!attachingType ? (
+          <Dropdown
+            arrow
+            placement="topLeft"
+            overlay={
+              <Menu>
+                <Menu.Item
+                  key={'file-upload'}
+                  icon={<FileOutlined />}
+                  onClick={() => setAttachingType('FILE')}
+                >
+                  Unggah File
+                </Menu.Item>
+                <Menu.Item
+                  key={'product-attach'}
+                  icon={<StarOutlined />}
+                  onClick={() => setAttachingType('PRODUCT')}
+                >
+                  Tautkan Produk
+                </Menu.Item>
+              </Menu>
+            }
+            trigger={['click']}
+          >
+            <button className="text-lg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18.97 3.659a2.25 2.25 0 00-3.182 0l-10.94 10.94a3.75 3.75 0 105.304 5.303l7.693-7.693a.75.75 0 011.06 1.06l-7.693 7.693a5.25 5.25 0 11-7.424-7.424l10.939-10.94a3.75 3.75 0 115.303 5.304L9.097 18.835l-.008.008-.007.007-.002.002-.003.002A2.25 2.25 0 015.91 15.66l7.81-7.81a.75.75 0 011.061 1.06l-7.81 7.81a.75.75 0 001.054 1.068L18.97 6.84a2.25 2.25 0 000-3.182z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          </Dropdown>
+        ) : (
+          <button
+            className="rounded-full bg-gray-400 px-3 py-1 text-xs text-white"
+            onClick={() => setAttachingType(null)}
+          >
+            Batal
+          </button>
+        )}
+
+        <div className="flex-1">
+          <Input
+            autoFocus
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                handleSendMessage();
+              }
+            }}
+            placeholder="Tulis pesan"
+            className="w-full"
+            size="large"
+          />
+        </div>
+
+        <Button
+          disabled={
+            !message &&
+            !(attachingType === 'FILE' && attachmentFile) &&
+            !(attachingType === 'PRODUCT' && attachmentProduct)
+          }
+          loading={uploading}
+          type="primary"
+          size="large"
+          icon={<SendOutlined />}
+          onClick={() => handleSendMessage()}
+        >
+          Kirim
+        </Button>
+      </div>
+    </>
   );
 }

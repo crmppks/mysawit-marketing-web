@@ -130,7 +130,7 @@ export default function ChatBubble({ message, before, after }: Prop) {
                     <img
                       src={message.attachment.file.url}
                       alt={message.attachment.file.name}
-                      className="max-w-full md:max-w-xs rounded"
+                      className="max-w-full rounded"
                     />
                   ) : (
                     <a
@@ -158,7 +158,6 @@ export default function ChatBubble({ message, before, after }: Prop) {
                 {message.attachment.type === 'PRODUCT' && (
                   <Link to={`/produk/${message.attachment.product.id}`}>
                     <button
-                      title={message.attachment.product.nama}
                       className={`border bg-white w-28 rounded overflow-hidden shadow`}
                     >
                       <img

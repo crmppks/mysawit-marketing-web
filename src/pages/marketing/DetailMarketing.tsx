@@ -1,7 +1,7 @@
 import { getDetailMarketing } from '@/services/marketing';
 import UserMarketing from '@/types/UserMarketing';
 import { CheckCircleFilled, WarningFilled } from '@ant-design/icons';
-import { PageHeader, Skeleton } from 'antd';
+import { PageHeader, Skeleton, Image } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -28,14 +28,22 @@ export default function HalamanDetailMarketing() {
         breadcrumb={{
           routes: [
             {
-              path: 'marketing',
+              path: '/marketing',
               breadcrumbName: 'Daftar Marketing',
             },
             {
-              path: id as string,
+              path: `/marketing/${id}`,
               breadcrumbName: 'Detail Marketing',
             },
           ],
+          itemRender: (route, _, routes) => {
+            const last = routes.indexOf(route) === routes.length - 1;
+            return last ? (
+              <span>{route.breadcrumbName}</span>
+            ) : (
+              <Link to={route.path}>{route.breadcrumbName}</Link>
+            );
+          },
         }}
         title="Detail Marketing"
         subTitle="Lihat detail informasi tentang marketing"
@@ -44,22 +52,22 @@ export default function HalamanDetailMarketing() {
       {!loading && (
         <section className="p-5">
           <div className="rounded bg-white p-5 shadow grid grid-cols-12 gap-5 md:gap-10">
-            <div className="col-span-12 md:col-span-3">
-              <img
+            <div className="col-span-12 md:col-span-3 flex justify-center md:justify-start">
+              <Image
                 src={marketing?.avatar}
                 alt={marketing?.nama}
-                className="border max-w-full rounded-full shadow"
+                style={{ maxWidth: '70vw' }}
               />
             </div>
             <div className="col-span-12 md:col-span-9">
-              <div className="flex justify-between">
+              <div className="flex flex-col md:flex-row justify-between">
                 <div className="flex-grow">
                   <h1 className="font-bold text-xl mb-0">{marketing?.nama}</h1>
                   <span className="text-gray-500">{marketing?.kode_marketing}</span>
                 </div>
-                <div className="flex-none relative flex items-center space-x-3">
+                <div className="flex-none relative flex items-center space-x-3 pt-5 md:pt-0">
                   <span
-                    className={`px-5 py-[3px] text-white rounded-full ${
+                    className={`px-5 py-[3px] w-full md:w-auto text-white rounded-full ${
                       marketing?.is_aktif ? 'bg-green-700' : 'bg-red-500'
                     }`}
                   >
@@ -70,10 +78,10 @@ export default function HalamanDetailMarketing() {
                 </div>
               </div>
               <hr className="my-5" />
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-1 md:grid-cols-2">
                 <div>
                   <span className="text-gray-400">Kategori</span>
-                  <p>{marketing?.kategori_produk.nama}</p>
+                  <p>{marketing?.kategori_produk?.nama}</p>
                   <span className="text-gray-400">Username</span>
                   <p>{marketing?.username}</p>
                   <span className="text-gray-400">Email</span>
@@ -105,7 +113,7 @@ export default function HalamanDetailMarketing() {
                 </div>
               </div>
               <hr className="my-5" />
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-1 md:grid-cols-2">
                 <div>
                   <span>Bergabung pada</span>
                   <p>{moment(marketing?.created_at).format('DD MMMM yyyy, HH:mm')}</p>

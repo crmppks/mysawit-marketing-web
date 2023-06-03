@@ -1,6 +1,6 @@
 import { Form, Input, Button, PageHeader, message } from 'antd';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { parseError } from '@/helpers/form_helper';
 import { useAppSelector } from '@/hooks/redux_hooks';
 import { postUpdatePassword } from '@/services/profile';
@@ -19,9 +19,17 @@ export default function HalamanUpdatePassword() {
         onBack={() => navigate('/profile')}
         breadcrumb={{
           routes: [
-            { path: '/home/profile', breadcrumbName: 'Profile' },
-            { path: '/update-password', breadcrumbName: 'Ubah Password' },
+            { path: '/profile', breadcrumbName: 'Profile' },
+            { path: '/profile/update-password', breadcrumbName: 'Ubah Password' },
           ],
+          itemRender: (route, _, routes) => {
+            const last = routes.indexOf(route) === routes.length - 1;
+            return last ? (
+              <span>{route.breadcrumbName}</span>
+            ) : (
+              <Link to={route.path}>{route.breadcrumbName}</Link>
+            );
+          },
         }}
         title="Perbaharui Password"
         subTitle="Tingkatkan keamanan akun dengan mengubah password secara regular"
@@ -78,11 +86,11 @@ export default function HalamanUpdatePassword() {
         <div className="mt-5">
           <Button
             size="large"
-            shape="round"
             icon={<CheckCircleFilled />}
             loading={loading}
             onClick={() => form.submit()}
             type="primary"
+            className="w-full md:w-auto"
           >
             Simpan Perubahan
           </Button>

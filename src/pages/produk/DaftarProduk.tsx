@@ -61,7 +61,7 @@ export default function HalamanDaftarProduk() {
 
       <section className="px-5 pb-5">
         {produks.loading && (
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-5">
             <Skeleton.Input block active className="mb-1" />
             <Skeleton.Input block active className="mb-1" />
             <Skeleton.Input block active className="mb-1" />
@@ -106,7 +106,7 @@ export default function HalamanDaftarProduk() {
                 </div>
               )}
               {produks.data.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                   {produks.data.map((produk) => (
                     <div
                       className={`border rounded bg-white overflow-hidden shadow ${

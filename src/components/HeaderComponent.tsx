@@ -18,7 +18,7 @@ const NotifikasiOverlay = () => {
   const notifikasi = useAppSelector((state) => state.notifikasi);
 
   return (
-    <div className="bg-white rounded p-3 border shadow overflow-auto w-80 md:max-w-[80vw] lg:max-w-[35vw] max-h-[70vh]">
+    <div className="bg-white rounded p-3 border shadow overflow-auto max-w-[90vw] max-h-[70vh]">
       {notifikasi.loading && notifikasi.list.total === 0 && <Skeleton active />}
       {!notifikasi.loading && notifikasi.list.total === 0 && (
         <Empty
@@ -104,7 +104,7 @@ export default function HeaderComponent({ onClickSidebarMenu }: Props) {
 
   return (
     <>
-      <div className="bg-color-theme flex items-center justify-between md:justify-end px-5 py-1 z-50 relative">
+      <div className="bg-color-theme flex items-center justify-between md:justify-end px-5 py-1 pt-3 md:pt-1 z-50 relative">
         <div className="w-28 md:hidden">
           <Link to={'/'}>
             <img src="/logo_mysawit.png" alt="Logo PPKS" className="w-full" />
@@ -143,6 +143,7 @@ export default function HeaderComponent({ onClickSidebarMenu }: Props) {
               />
             </svg>
           </button>
+          <span className="font-bold text-white">{user.kategori_produk?.nama}</span>
         </div>
         <div className="hidden md:flex space-x-3 flex-none w-[150px] lg:w-[23vw]">
           <div className="w-28 lg:w-32 flex-none flex items-center">
@@ -208,7 +209,7 @@ export default function HeaderComponent({ onClickSidebarMenu }: Props) {
             </div>
             <Dropdown
               overlay={
-                <div className="bg-white rounded border shadow">
+                <div className="bg-white rounded border shadow max-w-[90vw]">
                   <div className="p-5">
                     <div className="flex space-x-5 items-center mt-2">
                       <img

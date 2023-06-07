@@ -228,7 +228,7 @@ export default function HalamanDetailPesanan() {
                     )}
                     {pesanan.persyaratan.status === 'LULUS' && (
                       <span className="rounded-full px-4 py-[3px] bg-green-600 text-white text-[small]">
-                        <CheckCircleFilled /> &nbsp;Lulus Verifikasi
+                        <CheckCircleFilled /> &nbsp;Lulus
                       </span>
                     )}
                     {!pesanan.persyaratan.status && (
@@ -237,7 +237,6 @@ export default function HalamanDetailPesanan() {
                       </span>
                     )}
                   </div>
-                  <hr className="border-dashed mb-4" />
                   <div className="space-y-2">
                     <div className={`border px-3 py-2 rounded space-y-3`}>
                       <span>Dokumen Surat Lahan</span>
@@ -306,18 +305,17 @@ export default function HalamanDetailPesanan() {
                     </span>
                   )}
                 </div>
-
-                <hr className="border-dashed mb-4" />
                 <div className="space-y-1">
                   {pesanan.informasi_pengiriman.duration && (
                     <>
-                      <div className="px-5 py-2 rounded text-green-600 border border-green-600 flex justify-between">
+                      <div className="px-5 py-2 rounded text-green-600 border border-green-600 flex flex-col md:flex-row md:justify-between">
                         <span>
                           {moment(pesanan.informasi_pengiriman.duration.date_from).format(
                             'dddd, Do MMMM yyyy',
                           )}
                         </span>
-                        <span>&rarr;</span>
+                        <span className="hidden md:inline">&rarr;</span>
+                        <span className="md:hidden">&darr;</span>
                         <span>
                           {moment(pesanan.informasi_pengiriman.duration.date_to).format(
                             'dddd, Do MMMM yyyy',
@@ -360,7 +358,7 @@ export default function HalamanDetailPesanan() {
               <div className={`p-5 rounded bg-white`}>
                 {pesanan.tagihan && (
                   <>
-                    <div className="flex space-x-5 justify-between items-center mb-4">
+                    <div className="flex flex-col md:flex-row md:justify-between mb-4 space-y-2 md:space-y-0 md:space-x-5">
                       <h4 className="font-bold text-lg mb-0">Info Tagihan</h4>
                       <span
                         className={`${
@@ -381,7 +379,7 @@ export default function HalamanDetailPesanan() {
                         &nbsp; {pesanan.tagihan?.status}
                       </span>
                     </div>
-                    <hr className="border-dashed mb-4" />
+                    <hr className="border-dashed mb-4 hidden md:block" />
                   </>
                 )}
                 <div className="space-y-2">
@@ -389,11 +387,12 @@ export default function HalamanDetailPesanan() {
                     <>
                       <Row>
                         <span>Nomor Tagihan</span>
-                        <button
-                          onClick={() => handleCopy(pesanan.tagihan.id, 'Nomor Tagihan')}
+                        <span
+                          className="cursor-pointer"
+                          onClick={() => handleCopy(pesanan.tagihan.id, 'Nomor tagihan')}
                         >
                           {pesanan.tagihan.id}
-                        </button>
+                        </span>
                       </Row>
                       <Row>
                         <span>Metode Pembayaran</span>

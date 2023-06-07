@@ -263,7 +263,7 @@ export default function HalamanDaftarPesanan() {
                               key={pesanan.id}
                               className="px-5 pt-5 border bg-white rounded space-y-5"
                             >
-                              <div className="flex flex-col-reverse md:space-y-0 md:justify-between md:space-x-5 mb-5">
+                              <div className="flex flex-col-reverse md:flex-row md:space-y-0 md:justify-between md:space-x-5 mb-5">
                                 <div className="flex space-x-3 items-center mt-3 md:mt-0">
                                   <img
                                     src={pesanan.konsumen.avatar}

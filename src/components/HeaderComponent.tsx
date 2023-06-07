@@ -18,7 +18,7 @@ const NotifikasiOverlay = () => {
   const notifikasi = useAppSelector((state) => state.notifikasi);
 
   return (
-    <div className="bg-white rounded p-3 border shadow overflow-auto max-w-[90vw] max-h-[70vh]">
+    <div className="bg-white rounded p-3 border shadow overflow-auto w-[90vw] md:max-w-[80vw] lg:max-w-[35vw] max-h-[70vh]">
       {notifikasi.loading && notifikasi.list.total === 0 && <Skeleton active />}
       {!notifikasi.loading && notifikasi.list.total === 0 && (
         <Empty
@@ -251,7 +251,7 @@ export default function HeaderComponent({ onClickSidebarMenu }: Props) {
                 <img
                   src={user?.avatar}
                   alt={user?.nama}
-                  className="w-6 h:6 md:w-10 md:h-10"
+                  className="w-8 h:8 md:w-10 md:h-10"
                 />
               </button>
             </Dropdown>

@@ -316,7 +316,7 @@ export default function HalamanDaftarPesanan() {
                                   </span>
                                 </div>
                               )}
-                              <div className="flex flex-col md:flex-row space-y-5 md:space-y-0 md:space-x-5 border-t py-5 md:py-1 -mx-10 px-10">
+                              <div className="flex flex-col md:flex-row md:justify-between space-y-5 md:space-y-0 md:space-x-5 border-t py-5 md:py-1 -mx-10 px-10">
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0 md:space-x-2">
                                   {pesanan.status === 'VERIFIKASI_PERSYARATAN' &&
                                     pesanan.persyaratan && (

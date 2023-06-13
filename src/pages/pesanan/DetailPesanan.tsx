@@ -294,7 +294,7 @@ export default function HalamanDetailPesanan() {
                   </div>
                 </div>
               )}
-              <div className={`bg-white p-5`}>
+              <div className={`bg-white p-5 rounded`}>
                 <div className="flex flex-col md:flex-row md:justify-between mb-4 space-y-2 md:space-y-0 md:space-x-5">
                   <h4 className="font-bold text-lg mb-0">Info Pengiriman</h4>
                   {pesanan.informasi_pengiriman.duration && (

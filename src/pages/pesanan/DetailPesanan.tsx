@@ -13,9 +13,9 @@ import {
   CloseCircleFilled,
   InfoCircleOutlined,
   LinkOutlined,
-  MessageOutlined,
 } from '@ant-design/icons';
-import { Link, useParams } from 'react-router-dom';
+import { capitalize } from 'lodash';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import ModalKonfirmasiVerifikasiPersyaratan from '@/components/ModalKonfirmasiVerifikasiPersyaratanComponent';
 import { handleCopy } from '@/helpers/string_helper';
 import ModalKonfirmasiPengiriman from '@/components/ModalKonfirmasiPengirimanComponent';
@@ -23,7 +23,7 @@ import DaftarProdukPesanan from '@/components/DaftarProdukPesananComponent';
 
 const Row = ({ children, className = '' }: any) => (
   <div
-    className={`flex flex-col md:flex-row md:justify-between space-y-0 md:space-x-5 ${className}`}
+    className={`flex flex-col md:flex-row md:items-center md:justify-between space-y-0 md:space-x-5 ${className}`}
   >
     {children}
   </div>
@@ -31,6 +31,7 @@ const Row = ({ children, className = '' }: any) => (
 
 export default function HalamanDetailPesanan() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [pesanan, setPesanan] = useState<Pesanan>(null);
@@ -228,7 +229,7 @@ export default function HalamanDetailPesanan() {
                     )}
                     {pesanan.persyaratan.status === 'LULUS' && (
                       <span className="rounded-full px-4 py-[3px] bg-green-600 text-white text-[small]">
-                        <CheckCircleFilled /> &nbsp;Lulus
+                        <CheckCircleFilled /> &nbsp;Lulus Verifikasi
                       </span>
                     )}
                     {!pesanan.persyaratan.status && (
@@ -376,7 +377,10 @@ export default function HalamanDetailPesanan() {
                         ) : (
                           <ClockCircleFilled />
                         )}
-                        &nbsp; {pesanan.tagihan?.status}
+                        &nbsp;{' '}
+                        {pesanan.tagihan?.status === 'DIBUAT'
+                          ? 'Menunggu Pembayaran'
+                          : capitalize(pesanan.tagihan.status)}
                       </span>
                     </div>
                     <hr className="border-dashed mb-4 hidden md:block" />
@@ -396,7 +400,11 @@ export default function HalamanDetailPesanan() {
                       </Row>
                       <Row>
                         <span>Metode Pembayaran</span>
-                        <span>{pesanan.tagihan.metode_pembayaran}</span>
+                        <img
+                          className="w-20"
+                          src={pesanan.tagihan.metode_pembayaran_logo}
+                          alt={pesanan.tagihan.metode_pembayaran}
+                        />
                       </Row>
                     </>
                   )}
@@ -428,11 +436,25 @@ export default function HalamanDetailPesanan() {
               </div>
             </div>
             <div className="col-span-12 lg:col-span-4 space-y-2">
-              <Link to={`/chat/${pesanan.konsumen_id}`}>
-                <Button icon={<MessageOutlined />} type="primary" block size="large">
-                  Chat Konsumen
+              {pesanan.tagihan?.receipt && (
+                <Button
+                  href={pesanan.tagihan.receipt}
+                  block
+                  target="_blank"
+                  size="large"
+                  type={`primary`}
+                >
+                  Unduh Struk Tagihan
                 </Button>
-              </Link>
+              )}
+              <Button
+                onClick={() => navigate(`/chat/${pesanan.konsumen_id}`)}
+                type="primary"
+                size="large"
+                block
+              >
+                Chat Konsumen
+              </Button>
               {pesanan.status === 'VERIFIKASI_PERSYARATAN' && (
                 <Button
                   disabled={!pesanan.persyaratan}

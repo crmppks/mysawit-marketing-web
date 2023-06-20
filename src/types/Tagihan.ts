@@ -9,6 +9,7 @@ interface Tagihan {
   deskripsi: string;
   tagihable: Pesanan;
   metode_pembayaran: string;
+  metode_pembayaran_logo: string;
   metode_pembayaran_code: 'qris' | 'gopay' | 'bank_transfer' | 'echannel' | 'manual';
   payload_pg: {
     payment_type: 'qris' | 'gopay' | 'bank_transfer' | 'echannel' | 'manual';
@@ -82,6 +83,7 @@ interface Tagihan {
   }>;
   reference_type: string;
   reference_id: string;
+  receipt: string;
 }
 
 export default Tagihan;

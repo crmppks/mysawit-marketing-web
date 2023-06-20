@@ -389,7 +389,7 @@ export default function HalamanDashboardChat() {
         <div
           className={`absolute inset-0 md:inset-auto md:relative z-40 md:z-auto ${
             showListChat ? 'flex' : 'hidden md:flex'
-          } flex-col flex-none w-full md:w-4/12 lg:w-3/12 bg-gray-300 border-r border-l border-gray-400 overflow-y-auto`}
+          } flex-col flex-none w-full md:w-4/12 lg:w-3/12 bg-gray-300 border-r border-l border-gray-400 overflow-y-auto h-screen`}
         >
           <div className="px-5 py-3 md:p-3 z-50">
             <Input
@@ -424,7 +424,7 @@ export default function HalamanDashboardChat() {
               className="w-full"
             />
           </div>
-          <div className="flex-1 border-gray-400">
+          <div className="flex-1">
             {rooms.length === 0 && !searchRoomValue && (
               <div className="absolute px-3 md:px-5 inset-0 flex flex-col items-center justify-center">
                 <Skeleton />

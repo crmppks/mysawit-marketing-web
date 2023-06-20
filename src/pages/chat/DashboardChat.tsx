@@ -628,7 +628,7 @@ export default function HalamanDashboardChat() {
             </div>
           </div>
         </div>
-        <div className="relative flex-grow flex flex-col">
+        <div className="relative flex-grow flex flex-col overflow-y-auto h-screen">
           {!selectedRoom && (
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <svg

@@ -422,7 +422,7 @@ export default function HalamanDetailPesanan() {
                         {formatCurrency(pesanan.informasi_harga.harga_kode_unik)}
                       </span>
                     ) : (
-                      <span className="text-gray-400">belum ditentukan</span>
+                      <span className="text-gray-400">-</span>
                     )}
                   </Row>
                 </div>

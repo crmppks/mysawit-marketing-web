@@ -3,6 +3,7 @@ import UserMarketing from './UserMarketing';
 interface UserKonsumen {
   user_id: string;
   no_hp: string;
+  no_hp_diff: string;
   tgl_lahir: string;
   nama_atasan_perusahaan: string;
   alamat: string;

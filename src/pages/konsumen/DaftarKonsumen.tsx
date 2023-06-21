@@ -174,7 +174,7 @@ export default function HalamanDaftarKonsumen() {
             icon={<InfoCircleFilled />}
             type="primary"
           >
-            <strong className="hidden md:inline">Lihat Detail</strong>
+            <strong className="hidden md:inline">&nbsp; Lihat Detail</strong>
           </Button>
           <Dropdown
             disabled={!konsumen}

@@ -15,9 +15,10 @@ export default function HalamanDetailKonsumen() {
 
   useEffect(() => {
     setLoading(true);
-    getDetailKonsumen(id as string)
-      .then(({ data }) => setKonsumen(data))
-      .finally(() => setLoading(false));
+    getDetailKonsumen(id as string).then(({ data }) => {
+      setKonsumen(data);
+      setLoading(false);
+    });
   }, [id]);
 
   return (
@@ -103,7 +104,7 @@ export default function HalamanDetailKonsumen() {
                     )}
                   </p>
                   <span className="text-gray-400">No. HP</span>
-                  <p>{konsumen?.no_hp ?? '-'}</p>
+                  <p>{konsumen?.no_hp_diff ?? '-'}</p>
                 </div>
               </div>
               <hr className="my-5" />

@@ -38,6 +38,7 @@ interface Produk {
   is_active: boolean;
   diskon?: Diskon[];
   diskon_aktif?: Diskon;
+  is_kecambah: boolean;
 }
 
 export default Produk;

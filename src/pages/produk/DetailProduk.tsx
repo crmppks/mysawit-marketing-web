@@ -170,72 +170,84 @@ export default function HalamanDetailProduk() {
                     </p>
                   </div>
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="Stok" key={'3'}>
-                  {produk?.stok?.length === 0 && (
-                    <div className="bg-gray-100 p-5 rounded">
-                      <Empty
-                        description={
-                          <span className="text-gray-500">Tidak ada stok tersedia</span>
-                        }
-                      />
-                    </div>
-                  )}
-                  {produk.stok?.length > 0 && (
-                    <Calendar
-                      mode="month"
-                      dateCellRender={(current) => {
-                        for (const stok of produk.stok) {
-                          if (
-                            current.format('yyyy-MM-Do') ===
-                            moment(stok.available_at).format('yyyy-MM-Do')
-                          ) {
-                            return (
-                              <ul className="list-stok">
-                                <li>
-                                  {stok.jumlah > 0 ? (
-                                    <Tooltip
-                                      title={`Tersedia ${stok.jumlah} ${produk.unit}`}
-                                    >
-                                      <Badge
-                                        status={'success'}
-                                        text={
-                                          <b className="text-green-700 text-xl">
+                {produk.is_kecambah && (
+                  <Tabs.TabPane tab="Stok" key={'3'}>
+                    {produk?.stok?.length === 0 && (
+                      <div className="bg-gray-100 p-5 rounded">
+                        <Empty
+                          description={
+                            <>
+                              <p className="text-gray-500">Tidak ada stok tersedia</p>
+                            </>
+                          }
+                        />
+                      </div>
+                    )}
+                    {produk.stok?.length > 0 && (
+                      <Calendar
+                        mode="month"
+                        dateCellRender={(current) => {
+                          for (const stok of produk.stok) {
+                            if (current.isSame(moment(stok.available_at), 'day')) {
+                              return (
+                                <ul className="list-stok">
+                                  <li>
+                                    {stok.jumlah > 0 ? (
+                                      <>
+                                        {moment(stok.available_at).isBefore(
+                                          moment(),
+                                          'day',
+                                        ) ? (
+                                          <span className="text-gray-400 text-xl">
                                             {stok.jumlah}
-                                          </b>
+                                          </span>
+                                        ) : (
+                                          <Tooltip
+                                            title={`Tersedia ${stok.jumlah} ${produk.unit}`}
+                                          >
+                                            <Badge
+                                              status={'success'}
+                                              text={
+                                                <span className="text-green-700 text-xl">
+                                                  {stok.jumlah}
+                                                </span>
+                                              }
+                                            />
+                                          </Tooltip>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <Badge
+                                        status={'error'}
+                                        text={
+                                          <span className="text-red-700 text-xl">
+                                            Habis
+                                          </span>
                                         }
                                       />
-                                    </Tooltip>
-                                  ) : (
-                                    <Badge
-                                      status={'error'}
-                                      text={
-                                        <span className="text-red-700 text-xl">
-                                          Habis
-                                        </span>
-                                      }
-                                    />
-                                  )}
-                                </li>
-                              </ul>
-                            );
+                                    )}
+                                  </li>
+                                </ul>
+                              );
+                            }
                           }
-                        }
-                      }}
-                      disabledDate={(current) => {
-                        for (const stok of produk.stok) {
-                          if (
-                            current.format('yyyy-MM-Do') ===
-                            moment(stok.available_at).format('yyyy-MM-Do')
-                          ) {
-                            return false;
+                        }}
+                        disabledDate={(current) => {
+                          for (const stok of produk.stok) {
+                            if (current.isSame(moment(stok.available_at), 'day')) {
+                              if (moment(stok.available_at).isBefore(moment(), 'day')) {
+                                return true;
+                              }
+                              return false;
+                            }
                           }
-                        }
 
-                        return true;
-                      }}
-                    />
-                  )}
-                </Tabs.TabPane>
+                          return true;
+                        }}
+                      />
+                    )}
+                  </Tabs.TabPane>
+                )}
                 <Tabs.TabPane tab="Diskon" key="4">
                   {!produk.diskon_aktif && (
                     <div className="bg-gray-100 p-5 rounded">

@@ -189,9 +189,7 @@ export default function HalamanDaftarPesanan() {
             onChange={(values) =>
               setFilter((old) => ({
                 ...old,
-                rentang_waktu_pesanan: values
-                  ? values.map((item) => item.format('yyyy-MM-DD'))
-                  : [],
+                rentang_waktu_pesanan: values ? values.map((item) => item.toDate()) : [],
               }))
             }
             size="large"

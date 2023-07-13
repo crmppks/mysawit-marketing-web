@@ -48,7 +48,10 @@ export default function HalamanDetailPesanan() {
       setPesanan(data);
       setLoading(false);
       if (data.status === 'DIBATALKAN') {
-        setStepsPosition(1);
+        const has_menunggu_pembayaran = data.riwayat.find(
+          (i) => i.status === 'MENUNGGU_PEMBAYARAN',
+        );
+        setStepsPosition(has_menunggu_pembayaran ? 2 : 1);
       } else {
         if (data.riwayat.find((i) => i.status === 'SELESAI'))
           setStepsPosition(has_verifikasi_persyaratan ? 4 : 3);
@@ -101,48 +104,33 @@ export default function HalamanDetailPesanan() {
             {pesanan.riwayat.find((i) => i.status === 'VERIFIKASI_PERSYARATAN') && (
               <Steps.Step
                 title="Verifikasi Persyaratan"
-                description={moment(new Date(pesanan.created_at)).format(
-                  'DD-MMM-yyyy HH:mm',
-                )}
+                description={moment(pesanan.created_at).format('DD-MMM-yyyy HH:mm')}
               />
             )}
-            {pesanan.status === 'DIBATALKAN' &&
-              pesanan.riwayat.find((i) => i.status === 'VERIFIKASI_PERSYARATAN') && (
-                <Steps.Step
-                  title="Dibatalkan"
-                  description={moment(
-                    new Date(
-                      pesanan.riwayat.find((i) => i.status === 'DIBATALKAN').created_at,
-                    ),
-                  ).format('DD-MMM-yyyy HH:mm')}
-                />
-              )}
-            <Steps.Step
-              title="Menunggu Pembayaran"
-              description={
-                pesanan.riwayat.find((i) => i.status === 'MENUNGGU_PEMBAYARAN')
-                  ? moment(
-                      new Date(
-                        pesanan.riwayat.find(
-                          (i) => i.status === 'MENUNGGU_PEMBAYARAN',
-                        ).created_at,
-                      ),
-                    ).format('DD-MMM-yyyy HH:mm')
-                  : '-'
-              }
-            />
-            {pesanan.status === 'DIBATALKAN' &&
-              !pesanan.riwayat.find((i) => i.status === 'VERIFIKASI_PERSYARATAN') && (
-                <Steps.Step
-                  title="Dibatalkan"
-                  description={moment(
-                    new Date(
-                      pesanan.riwayat.find((i) => i.status === 'DIBATALKAN').created_at,
-                    ),
-                  ).format('DD-MMM-yyyy HH:mm')}
-                />
-              )}
 
+            {(pesanan.status !== 'DIBATALKAN' ||
+              pesanan.riwayat.find((i) => i.status === 'MENUNGGU_PEMBAYARAN')) && (
+              <Steps.Step
+                title="Menunggu Pembayaran"
+                description={
+                  pesanan.riwayat.find((i) => i.status === 'MENUNGGU_PEMBAYARAN')
+                    ? moment(
+                        pesanan.riwayat.find((i) => i.status === 'MENUNGGU_PEMBAYARAN')
+                          .created_at,
+                      ).format('DD-MMM-yyyy HH:mm')
+                    : '-'
+                }
+              />
+            )}
+
+            {pesanan.status === 'DIBATALKAN' && (
+              <Steps.Step
+                title="Dibatalkan"
+                description={moment(
+                  pesanan.riwayat.find((i) => i.status === 'DIBATALKAN')?.created_at,
+                ).format('DD-MMM-yyyy HH:mm')}
+              />
+            )}
             {pesanan.status !== 'DIBATALKAN' && (
               <>
                 <Steps.Step
@@ -150,11 +138,7 @@ export default function HalamanDetailPesanan() {
                   description={
                     pesanan.riwayat.find((i) => i.status === 'DIKEMAS')
                       ? moment(
-                          new Date(
-                            pesanan.riwayat.find(
-                              (i) => i.status === 'DIKEMAS',
-                            ).created_at,
-                          ),
+                          pesanan.riwayat.find((i) => i.status === 'DIKEMAS').created_at,
                         ).format('DD-MMM-yyyy HH:mm')
                       : '-'
                   }
@@ -164,11 +148,7 @@ export default function HalamanDetailPesanan() {
                   description={
                     pesanan.riwayat.find((i) => i.status === 'DIKIRIM')
                       ? moment(
-                          new Date(
-                            pesanan.riwayat.find(
-                              (i) => i.status === 'DIKIRIM',
-                            ).created_at,
-                          ),
+                          pesanan.riwayat.find((i) => i.status === 'DIKIRIM').created_at,
                         ).format('DD-MMM-yyyy HH:mm')
                       : '-'
                   }
@@ -178,11 +158,7 @@ export default function HalamanDetailPesanan() {
                   description={
                     pesanan.riwayat.find((i) => i.status === 'SELESAI')
                       ? moment(
-                          new Date(
-                            pesanan.riwayat.find(
-                              (i) => i.status === 'SELESAI',
-                            ).created_at,
-                          ),
+                          pesanan.riwayat.find((i) => i.status === 'SELESAI').created_at,
                         ).format('DD-MMM-yyyy HH:mm')
                       : '-'
                   }

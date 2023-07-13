@@ -3,6 +3,11 @@ export const formatCurrency = (x: string | number) => {
   return `Rp${x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
 };
 
+export const formatNumber = (x: string | number) => {
+  if (!x) return 0;
+  return `${x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+};
+
 export const formatWeight = (x: number) => {
   if (x > 1000000) {
     return Math.round(x / 1000000) + ' TON';

@@ -278,7 +278,7 @@ export default function HalamanDaftarPesanan() {
 
                                 <span>
                                   {moment(new Date(pesanan.created_at)).format(
-                                    'dddd DD MMMM yyyy, HH:mm',
+                                    'dddd, DD MMMM yyyy',
                                   )}
                                 </span>
                               </div>

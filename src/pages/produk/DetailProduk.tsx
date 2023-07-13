@@ -1,5 +1,5 @@
 import ReviewComponent from '@/components/ReviewComponent';
-import { formatCurrency } from '@/helpers/order_helper';
+import { formatCurrency, formatNumber } from '@/helpers/order_helper';
 import {
   getDetailProdukWithStok,
   getRatingProduk,
@@ -21,7 +21,6 @@ import {
   Rate,
   Skeleton,
   Tabs,
-  Tooltip,
 } from 'antd';
 import { AxiosResponse } from 'axios';
 import moment from 'moment';
@@ -106,18 +105,18 @@ export default function HalamanDetailProduk() {
       <section className="p-5 bg-white rounded mx-5 mb-5">
         <div className="w-full md:flex-grow">
           <div className="grid grid-cols-12 md:gap-10">
-            <div className="col-span-12 md:col-span-5 lg:col-span-4 flex justify-center md:justify-start pb-10 md:mb-0">
+            <div className="col-span-12 md:col-span-5 lg:col-span-4 flex items-center md:items-start justify-center pb-10 md:mb-0">
               <Image
                 src={produk?.banner}
                 alt={produk?.nama}
-                style={{ maxWidth: '70vw' }}
+                style={{ maxWidth: '70vw', borderRadius: 5 }}
               />
             </div>
             <div className="col-span-12 md:col-span-7 lg:col-span-8 relative">
               <h1 className="text-2xl md:text-3xl font-bold mb-2">{produk?.nama}</h1>
               <p className="text-gray-400 text-xs">
-                Terjual {produk?.jumlah_terjual} <SmallDashOutlined /> Dilihat{' '}
-                {produk?.jumlah_lihat}x
+                Terjual {formatNumber(produk?.jumlah_terjual)} <SmallDashOutlined />{' '}
+                Dilihat {formatNumber(produk?.jumlah_lihat)}x
               </p>
               <p className="flex items-center space-x-3">
                 <span className="text-2xl font-bold">
@@ -140,15 +139,15 @@ export default function HalamanDetailProduk() {
                   <div className="divide-y divide-gray-300 divide-dashed">
                     <p className="mb-0 pb-2 last:pb-0 pt-2 first:pt-0 flex items-center justify-between">
                       <span className="text-gray-500">Berat</span>
-                      <span>{produk.berat} gr</span>
+                      <span>{formatNumber(produk.berat)} gr</span>
                     </p>
                     <p className="mb-0 pb-2 last:pb-0 pt-2 first:pt-0 flex items-center justify-between">
                       <span className="text-gray-500">Dilihat</span>
-                      <span>{produk.jumlah_lihat} kali</span>
+                      <span>{formatNumber(produk.jumlah_lihat)} kali</span>
                     </p>
                     <p className="mb-0 pb-2 last:pb-0 pt-2 first:pt-0 flex items-center justify-between">
                       <span className="text-gray-500">Terjual</span>
-                      <span>{produk.jumlah_terjual}</span>
+                      <span>{formatNumber(produk.jumlah_terjual)}</span>
                     </p>
                     <p className="mb-0 pb-2 last:pb-0 pt-2 first:pt-0 flex items-center justify-between">
                       <span className="text-gray-500">Kategori</span>
@@ -190,44 +189,24 @@ export default function HalamanDetailProduk() {
                           for (const stok of produk.stok) {
                             if (current.isSame(moment(stok.available_at), 'day')) {
                               return (
-                                <ul className="list-stok">
-                                  <li>
-                                    {stok.jumlah > 0 ? (
-                                      <>
-                                        {moment(stok.available_at).isBefore(
-                                          moment(),
-                                          'day',
-                                        ) ? (
-                                          <span className="text-gray-400 text-xl">
-                                            {stok.jumlah}
-                                          </span>
-                                        ) : (
-                                          <Tooltip
-                                            title={`Tersedia ${stok.jumlah} ${produk.unit}`}
-                                          >
-                                            <Badge
-                                              status={'success'}
-                                              text={
-                                                <span className="text-green-700 text-xl">
-                                                  {stok.jumlah}
-                                                </span>
-                                              }
-                                            />
-                                          </Tooltip>
-                                        )}
-                                      </>
-                                    ) : (
-                                      <Badge
-                                        status={'error'}
-                                        text={
-                                          <span className="text-red-700 text-xl">
-                                            Habis
-                                          </span>
-                                        }
-                                      />
-                                    )}
-                                  </li>
-                                </ul>
+                                <>
+                                  {stok.jumlah > 0 ? (
+                                    <>
+                                      {moment(stok.available_at).isBefore(
+                                        moment(),
+                                        'day',
+                                      ) ? (
+                                        <Badge status={'warning'} />
+                                      ) : (
+                                        <span className="text-color-theme">
+                                          {formatNumber(stok.jumlah)}
+                                        </span>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <Badge status={'error'} />
+                                  )}
+                                </>
                               );
                             }
                           }

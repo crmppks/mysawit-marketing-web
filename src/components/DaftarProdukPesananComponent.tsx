@@ -1,4 +1,4 @@
-import { formatCurrency } from '@/helpers/order_helper';
+import { formatCurrency, formatNumber } from '@/helpers/order_helper';
 import { useAppSelector } from '@/hooks/redux_hooks';
 import Pesanan, { PesananProduk } from '@/types/Pesanan';
 import { useMemo } from 'react';
@@ -66,7 +66,7 @@ export default function DaftarProdukPesanan({ pesanan, showHeader = true }: Prop
                       <Link to={`/produk/${produk.id}`}>{produk.nama}</Link>
                     </h4>
                     <span className="text-gray-500">
-                      {`${produk.order_quantity} x ${formatCurrency(
+                      {`${formatNumber(produk.order_quantity)} x ${formatCurrency(
                         produk.order_item_price,
                       )}`}
                     </span>

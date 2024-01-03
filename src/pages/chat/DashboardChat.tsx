@@ -47,6 +47,7 @@ export default function HalamanDashboardChat() {
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom>(null);
   const [messages, setMessages] = useState<Array<any>>([]);
   const [lastMessageDocument, setLastMessageDocument] = useState<any>(null);
+  const [lastRoomDocument, setLastRoomDocument] = useState<any>(null);
   const [searchRoomValue, setSearchRoomValue] = useState<string>('');
   const [searchRoomLoading, setSearchRoomLoading] = useState<boolean>(false);
   const [listUserIdAlreadyChatWith, setListUserIdAlreadyChatWith] = useState<string[]>(
@@ -57,6 +58,7 @@ export default function HalamanDashboardChat() {
   const writeMessageBoxRef = useRef<any>();
   const messagesAnchorRef = useRef<any>();
   const messagesListRef = useRef<any>();
+  const roomsListRef = useRef<any>();
 
   //this could be an array or string
   const otherPersonId: any = (room: ChatRoom) => {
@@ -160,7 +162,33 @@ export default function HalamanDashboardChat() {
     });
   };
 
-  const handleLoadPreviousMessages = async () => {
+  const handleLoadPreviousRooms = () => {
+    if (lastRoomDocument) {
+      const q = query(
+        collection(firestore, process.env.REACT_APP_CHAT_COLLECTION),
+        where('user_ids', 'array-contains', me.user_id),
+        orderBy('updated_at', 'desc'),
+        startAfter(lastRoomDocument),
+        limit(50),
+      );
+
+      getDocs(q).then((QuerySnapshot) => {
+        if (QuerySnapshot.size > 0) {
+          setLastRoomDocument(QuerySnapshot.docs[QuerySnapshot.size - 1]);
+        } else {
+          setLastRoomDocument(null);
+        }
+
+        const roomDocs = [];
+        QuerySnapshot.forEach((doc) => {
+          roomDocs.push({ ...doc.data(), id: doc.id });
+        });
+        setRooms((prev) => [...prev, ...roomDocs]);
+      });
+    }
+  };
+
+  const handleLoadPreviousMessages = () => {
     if (lastMessageDocument) {
       const q = query(
         collection(
@@ -189,12 +217,19 @@ export default function HalamanDashboardChat() {
     }
   };
 
-  const handleScroll = () => {
+  const handleScrollMessage = () => {
     const container = messagesListRef.current;
-    const scrollTop = container?.scrollTop;
 
-    if (scrollTop === 0) {
+    if (container?.scrollTop === 0) {
       handleLoadPreviousMessages();
+    }
+  };
+
+  const handleScrollRooms = () => {
+    const container = roomsListRef.current;
+
+    if (container?.scrollTop + container?.offsetHeight === container?.scrollHeight) {
+      handleLoadPreviousRooms();
     }
   };
 
@@ -206,9 +241,14 @@ export default function HalamanDashboardChat() {
         collection(firestore, process.env.REACT_APP_CHAT_COLLECTION),
         where('user_ids', 'array-contains', me.user_id),
         orderBy('updated_at', 'desc'),
+        limit(50),
       );
 
       const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+        if (QuerySnapshot.size > 0) {
+          setLastRoomDocument(QuerySnapshot.docs[QuerySnapshot.size - 1]);
+        }
+
         const roomDocs = [];
         QuerySnapshot.forEach((doc) => {
           roomDocs.push({ ...doc.data(), id: doc.id });
@@ -346,10 +386,18 @@ export default function HalamanDashboardChat() {
   useEffect(() => {
     const container = messagesListRef.current;
     if (container) {
-      container.addEventListener('scroll', handleScroll);
-      return () => container.removeEventListener('scroll', handleScroll);
+      container.addEventListener('scroll', handleScrollMessage);
+      return () => container.removeEventListener('scroll', handleScrollMessage);
     }
   }, [lastMessageDocument]);
+
+  useEffect(() => {
+    const container = roomsListRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScrollRooms);
+      return () => container.removeEventListener('scroll', handleScrollRooms);
+    }
+  }, [lastRoomDocument]);
 
   return (
     <>
@@ -387,6 +435,7 @@ export default function HalamanDashboardChat() {
       </button>
       <section className="flex-grow w-full flex bg-white z-40 relative">
         <div
+          ref={roomsListRef}
           className={`absolute inset-0 md:inset-auto md:relative z-40 md:z-auto ${
             showListChat ? 'flex' : 'hidden md:flex'
           } flex-col flex-none w-full md:w-4/12 lg:w-3/12 bg-gray-300 border-r border-l border-gray-400 overflow-y-auto h-screen`}
